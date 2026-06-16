@@ -1,0 +1,70 @@
+.layout {
+  display: flex;
+  height: 100vh;
+}
+
+.sidebar {
+  width: 260px;
+  background: #0d47a1;
+  color: white;
+  display: flex;
+  flex-direction: column;
+}
+
+.logo {
+  padding: 25px;
+  font-size: 22px;
+  font-weight: bold;
+  border-bottom: 1px solid rgba(255,255,255,.2);
+}
+
+.sidebar nav {
+  display: flex;
+  flex-direction: column;
+}
+
+.sidebar nav a {
+  padding: 16px 25px;
+  color: white;
+  text-decoration: none;
+  transition: .2s;
+}
+
+.sidebar nav a:hover {
+  background: rgba(255,255,255,.15);
+}
+
+.sidebar nav a.activo {
+  background: #1976d2;
+}
+
+.contenido {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  background: #f4f6f9;
+}
+
+.topbar {
+  height: 70px;
+  background: white;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 30px;
+  box-shadow: 0 2px 6px rgba(0,0,0,.1);
+}
+
+.pagina {
+  padding: 20px;
+  overflow-y: auto;
+}
+
+.btn-salir {
+  background: #d32f2f;
+  color: white;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+}

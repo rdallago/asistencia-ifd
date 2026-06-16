@@ -1,0 +1,52 @@
+<div class="login-container">
+
+  <div class="login-card">
+
+    <img
+      src="/img/logo-ifd.png"
+      alt="Logo ISFD"
+      class="logo-login">
+
+    <h1>Sistema de Gestión de Asistencia</h1>
+
+    <p class="subtitulo">
+      Instituto Superior de Formación Docente y Técnica
+    </p>
+
+    <div class="campo">
+
+      <label>Usuario</label>
+
+      <input
+        type="text"
+        [(ngModel)]="username"
+        placeholder="Ingrese su usuario">
+
+    </div>
+
+    <div class="campo">
+
+      <label>Contraseña</label>
+
+      <input
+        type="password"
+        [(ngModel)]="password"
+        placeholder="Ingrese su contraseña">
+
+    </div>
+
+    <button
+      class="btn-login"
+      (click)="ingresar()">
+
+      Ingresar
+
+    </button>
+
+    <p class="copyright">
+      Copyright © 2026 - ISFD Ferreira - Esquina
+    </p>
+
+  </div>
+
+</div>

@@ -1,0 +1,89 @@
+<div class="layout">
+
+  <aside class="sidebar">
+
+    <div class="logo">
+      🎓 Asistencia ISFD
+    </div>
+
+    <nav>
+
+      <a routerLink="/docentes"
+         routerLinkActive="activo">
+
+        👨‍🏫 Gestión de Docentes
+
+      </a>
+
+      <a routerLink="/asistencia"
+         routerLinkActive="activo">
+
+        📋 Gestión de Asistencia
+
+      </a>
+
+      <a routerLink="/turnos"
+         routerLinkActive="activo">
+
+        📅 Gestión de Turnos
+
+      </a>
+
+      <a *ngIf="esAdmin()"
+         routerLink="/usuarios"
+         routerLinkActive="activo">
+
+        👥 Gestión de Usuarios
+
+      </a>
+
+      <a *ngIf="esAdmin()"
+         routerLink="/respaldos"
+         routerLinkActive="activo">
+
+        💾 Gestión de Respaldos
+
+      </a>
+
+      <a routerLink="/ayuda"
+         routerLinkActive="activo">
+
+        ❓ Ayuda
+
+      </a>
+
+    </nav>
+
+  </aside>
+
+  <main class="contenido">
+
+    <header class="topbar">
+
+      <div>
+
+        <strong>{{ usuario }}</strong>
+
+        <span> - {{ rol }}</span>
+
+      </div>
+
+      <button
+        class="btn-salir"
+        (click)="cerrarSesion()">
+
+        🚪 Cerrar sesión
+
+      </button>
+
+    </header>
+
+    <section class="pagina">
+
+      <router-outlet></router-outlet>
+
+    </section>
+
+  </main>
+
+</div>
