@@ -1,6 +1,7 @@
 package com.instituto.asistencia.entity;
 import java.time.LocalDate;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.*;
 import java.util.List;
 @Entity
 @Table(name = "docentes")
@@ -10,13 +11,30 @@ public class Docente {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotBlank(message = "El nombre es obligatorio")
+@Size(min = 2, max = 100,
+       message = "El nombre debe tener entre 2 y 100 caracteres")
     private String nombre;
+    
+    @NotBlank(message = "El apellido es obligatorio")
+@Size(min = 2, max = 100,
+       message = "El apellido debe tener entre 2 y 100 caracteres")
     private String apellido;
+    
+    @Pattern(
+    regexp = "^[0-9+\\- ]*$",
+    message = "El teléfono contiene caracteres inválidos"
+)
      private String telefono;
 
-private String correo;
+@Email(message = "El correo electrónico no es válido")
+@Size(max = 100)
+     private String correo;
+
+
 
 @Column(name = "fecha_nacimiento")
+@NotNull(message = "La fecha de nacimiento es obligatoria")
 private LocalDate fechaNacimiento;
 
 @Column(name = "fecha_alta")
@@ -59,7 +77,16 @@ private List<Turno> turnos;
         this.fechaAlta = fechaAlta;
     }
 
-    @Column(nullable = false, unique = true)
+    @Column(
+    nullable = false,
+    unique = true,
+    length = 20
+)
+    @NotBlank(message = "El DNI es obligatorio")
+@Pattern(
+    regexp = "^[0-9]{7,8}$",
+    message = "El DNI debe contener solo números y tener entre 7 y 8 dígitos"
+)
     private String dni;
     
     @Column(nullable = false)
@@ -112,8 +139,13 @@ private List<Turno> turnos;
     public void setCargo(String cargo) {
         this.cargo = cargo;
     }
-
+@NotBlank(message = "La dirección es obligatoria")
+@Size(min = 2, max = 250,
+       message = "La dirección debe tener entre 2 y 250 caracteres")
+    
     private String direccion;
+    
+    @NotBlank(message = "El cargo es obligatorio")
     private String cargo;
     
     public Boolean getActivo() {

@@ -5,6 +5,8 @@ import com.instituto.asistencia.service.DocenteService;
 import java.util.List;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import java.util.HashMap;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/docentes")
@@ -96,20 +98,26 @@ public class DocenteController {
     // ============================
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> eliminar(
-            @PathVariable Long id) {
+public ResponseEntity<?> eliminar(
+        @PathVariable Long id) {
 
-        try {
+    try {
 
-            docenteService.eliminar(id);
+        docenteService.eliminar(id);
 
-            return ResponseEntity.ok(
-                    "Docente eliminado correctamente");
+        Map<String, String> respuesta =
+                new HashMap<>();
 
-        } catch (Exception e) {
+        respuesta.put(
+                "mensaje",
+                "Docente eliminado correctamente");
 
-            return ResponseEntity.badRequest()
-                    .body(e.getMessage());
-        }
+        return ResponseEntity.ok(respuesta);
+
+    } catch (Exception e) {
+
+        return ResponseEntity.badRequest()
+                .body(e.getMessage());
     }
+}
 }
