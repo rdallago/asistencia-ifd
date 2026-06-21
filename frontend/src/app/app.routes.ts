@@ -8,7 +8,11 @@ import { MainLayout } from './layout/main-layout/main-layout';
 
 import { Asistencia } from './pages/asistencia/asistencia';
 
-import { Turnos} from './pages/turnos/turnos';
+import {TurnosComponent} from './pages/turnos/turnos';
+
+import { AsignacionesComponent } from './pages/asignaciones/asignaciones';
+
+import { JornadasComponent} from './pages/jornadas/jornadas';
 
 import { Usuarios} from './pages/usuarios/usuarios';
 
@@ -34,10 +38,22 @@ export const routes: Routes = [
         redirectTo: 'docentes',
         pathMatch: 'full'
       },
+{
+        path: 'turnos',
+        component: TurnosComponent
+      },
 
       {
         path: 'docentes',
         component: Dashboard
+      },
+{
+        path: 'asignaciones',
+        component: AsignacionesComponent
+      },
+{
+        path: 'jornadas',
+        component: JornadasComponent
       },
 
       {
@@ -45,11 +61,7 @@ export const routes: Routes = [
         component: Asistencia
       },
 
-      {
-        path: 'turnos',
-        component: Turnos
-      },
-
+      
       {
         path: 'usuarios',
         component: Usuarios

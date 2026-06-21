@@ -11,15 +11,15 @@ import org.springframework.data.jpa.repository.JpaRepository;
 public interface JornadaRepository
         extends JpaRepository<Jornada, Long> {
 
-    Optional<Jornada> findByFechaAndTurnoId(
-            LocalDate fecha,
-            Long turnoId
-    );
+    Optional<Jornada> findByFechaAndTurno_Id(
+        LocalDate fecha,
+        Long turnoId
+);
 
-    boolean existsByFechaAndTurnoId(
-            LocalDate fecha,
-            Long turnoId
-    );
+    boolean existsByFechaAndTurno_Id(
+        LocalDate fecha,
+        Long turnoId
+);
 
     List<Jornada> findByFecha(
             LocalDate fecha
@@ -28,5 +28,7 @@ public interface JornadaRepository
     List<Jornada> findByCerradaFalse();
 
     List<Jornada> findByHabilitadaTrueAndCerradaFalse();
+    List<Jornada> findByTurno_Id(Long turnoId);
+    boolean existsByTurno_Id(Long turnoId);
 
 }

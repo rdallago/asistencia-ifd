@@ -1,7 +1,141 @@
-<div class="construccion">
+<div class="panel-turnos">
 
-  <h1>🚧 Módulo en construcción</h1>
+  <h2>📅 Gestión de Turnos</h2>
 
-  <p>Disponible en próximos sprints.</p>
+  <!-- FILTRO -->
+  <input
+    type="text"
+    placeholder="Buscar turno..."
+    [(ngModel)]="filtroBusqueda"
+    (input)="filtrar()">
+
+  <!-- BOTÓN NUEVO -->
+  <button
+    class="btn-nuevo"
+    (click)="abrirFormulario()">
+
+    + Nuevo Turno
+
+  </button>
+
+  <!-- FORMULARIO -->
+  <div *ngIf="mostrarFormulario" class="formulario">
+
+    <h3>
+      {{ modoEdicion ? 'Editar Turno' : 'Nuevo Turno' }}
+    </h3>
+
+    <label>Nombre</label>
+    <input
+      type="text"
+      [(ngModel)]="turno.nombre">
+
+    <label>Hora Inicio</label>
+    <input
+      type="time"
+      [(ngModel)]="turno.horaInicio">
+
+    <label>Hora Fin</label>
+    <input
+      type="time"
+      [(ngModel)]="turno.horaFin">
+
+    <label class="checkbox">
+
+      <input
+        type="checkbox"
+        [(ngModel)]="turno.activo">
+
+      Activo
+
+    </label>
+
+    <div class="acciones-formulario">
+
+      <button (click)="guardar()">
+        💾 Guardar
+      </button>
+
+      <button (click)="mostrarFormulario = false">
+        ❌ Cancelar
+      </button>
+
+    </div>
+
+  </div>
+
+  <!-- TABLA -->
+  <table>
+
+    <thead>
+
+      <tr>
+        <th>ID</th>
+        <th>Nombre</th>
+        <th>Inicio</th>
+        <th>Fin</th>
+        <th>Estado</th>
+        <th>Acciones</th>
+      </tr>
+
+    </thead>
+
+    <tbody>
+
+      <tr *ngFor="let t of turnosFiltrados">
+
+        <td>{{ t.id }}</td>
+
+        <td>{{ t.nombre }}</td>
+
+        <td>{{ t.horaInicio }}</td>
+
+        <td>{{ t.horaFin }}</td>
+
+        <td>
+
+          <span [ngClass]="t.activo ? 'activo' : 'inactivo'">
+
+            {{ t.activo ? 'Activo' : 'Inactivo' }}
+
+          </span>
+
+        </td>
+
+        <td>
+
+          <button
+            class="btn-editar"
+            (click)="editar(t)">
+
+            ✏️
+
+          </button>
+
+          <button
+            *ngIf="t.activo"
+            class="btn-eliminar"
+            (click)="desactivar(t)">
+
+            🔴
+
+          </button>
+
+          <button
+            *ngIf="!t.activo"
+            class="btn-activar"
+            (click)="activar(t)">
+
+            🟢
+
+          </button>
+
+        </td>
+
+      </tr>
+
+    </tbody>
+
+  </table>
 
 </div>

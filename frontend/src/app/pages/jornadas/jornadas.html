@@ -1,0 +1,171 @@
+<div class="panel-jornadas">
+
+  <h2>📅 Gestión de Jornadas</h2>
+
+  <div class="filtros">
+
+    <input
+      type="text"
+      placeholder="Buscar turno..."
+      [(ngModel)]="filtroBusqueda"
+      (input)="filtrar()">
+
+    <select
+      [(ngModel)]="filtroTurno"
+      (change)="filtrar()">
+
+      <option [ngValue]="0">
+        Todos los turnos
+      </option>
+
+      <option
+        *ngFor="let t of turnos"
+        [ngValue]="t.id">
+
+        {{ t.nombre }}
+
+      </option>
+
+    </select>
+
+  </div>
+
+  <button
+    class="btn-nuevo"
+    (click)="abrirFormulario()">
+
+    + Abrir Jornada
+
+  </button>
+
+  <div
+    *ngIf="mostrarFormulario"
+    class="formulario">
+
+    <h3>Abrir Jornada</h3>
+
+    <label>Turno</label>
+
+    <select
+      [(ngModel)]="nuevaJornada.turnoId">
+
+      <option [ngValue]="0">
+        Seleccione un turno
+      </option>
+
+      <option
+        *ngFor="let t of turnos"
+        [ngValue]="t.id">
+
+        {{ t.nombre }}
+
+      </option>
+
+    </select>
+
+    <label>Observaciones</label>
+
+    <textarea
+      rows="3"
+      [(ngModel)]="nuevaJornada.observaciones">
+    </textarea>
+
+    <div class="acciones-formulario">
+
+      <button
+        (click)="abrirJornada()">
+
+        💾 Guardar
+
+      </button>
+
+      <button
+        class="btn-cancelar"
+        (click)="mostrarFormulario = false">
+
+        ❌ Cancelar
+
+      </button>
+
+    </div>
+
+  </div>
+
+  <table>
+
+    <thead>
+
+      <tr>
+
+        <th>ID</th>
+        <th>Fecha</th>
+        <th>Turno</th>
+        <th>Apertura</th>
+        <th>Cierre</th>
+        <th>Estado</th>
+        <th>Observaciones</th>
+        <th>Acciones</th>
+        
+      </tr>
+
+    </thead>
+
+    <tbody>
+
+      <tr
+        *ngFor="
+          let j of jornadasFiltradas
+        ">
+
+        <td>{{ j.id }}</td>
+
+        <td>{{ j.fecha }}</td>
+
+        <td>{{ j.turno.nombre }}</td>
+
+        <td>{{ j.fechaApertura || '-' }}</td>
+
+        <td>{{ j.fechaCierre || '-' }}</td>
+
+        <td>
+
+          <span [ngClass]="obtenerEstadoVisual(j)">
+            {{ obtenerTextoEstado(j) }}
+
+          </span>
+
+        </td>
+        <td>
+
+        <span
+        *ngIf="esAperturaAnticipada(j)"
+        class="apertura-anticipada">
+
+        🕐 Apertura anticipada
+
+        </span>
+
+        </td>
+        
+        
+        <td>
+
+          <button
+            *ngIf="!j.cerrada"
+            class="btn-eliminar"
+            (click)="cerrarJornada(j)"
+            title="Cerrar jornada">
+
+            🔒
+
+          </button>
+
+        </td>
+
+      </tr>
+
+    </tbody>
+
+  </table>
+
+</div>

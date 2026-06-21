@@ -6,7 +6,7 @@ import com.instituto.asistencia.entity.Usuario;
 import com.instituto.asistencia.repository.JornadaRepository;
 import com.instituto.asistencia.repository.TurnoRepository;
 import com.instituto.asistencia.repository.UsuarioRepository;
-
+import java.time.LocalTime;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -44,7 +44,7 @@ public class JornadaService {
 
         LocalDate hoy = LocalDate.now();
 
-        if (jornadaRepository.existsByFechaAndTurnoId(
+        if (jornadaRepository.existsByFechaAndTurno_Id(
                 hoy,
                 turnoId)) {
 
@@ -92,13 +92,14 @@ public class JornadaService {
     public Jornada cerrarJornada(
         Long usuarioId,
         Long turnoId,
-        String observaciones) {
+        String observaciones,
+        boolean forzarCierre) {
 
     LocalDate hoy = LocalDate.now();
 
     Jornada jornada =
             jornadaRepository
-                    .findByFechaAndTurnoId(
+                    .findByFechaAndTurno_Id(
                             hoy,
                             turnoId)
                     .orElseThrow(() ->
@@ -111,17 +112,34 @@ public class JornadaService {
                 "La jornada ya fue cerrada");
     }
 
+    Turno turno =
+            turnoRepository.findById(turnoId)
+                    .orElseThrow(() ->
+                            new RuntimeException(
+                                    "Turno no encontrado"));
+
+    LocalTime ahora = LocalTime.now();
+
+    LocalTime horaFin = turno.getHoraFin();
+
+    if (!forzarCierre && ahora.isBefore(horaFin)) {
+
+        throw new RuntimeException(
+                "CIERRE_ANTICIPADO");
+    }
+
     Usuario usuario =
             usuarioRepository.findById(usuarioId)
                     .orElseThrow(() ->
                             new RuntimeException(
                                     "Usuario no encontrado"));
 
-    // Procesa todas las asistencias del turno
     asistenciaService.procesarCierreJornada(
             turnoId);
 
     jornada.setCerrada(true);
+
+    jornada.setHabilitada(false);
 
     jornada.setFechaCierre(
             LocalDateTime.now());
@@ -131,10 +149,12 @@ public class JornadaService {
 
     jornada.setObservaciones(
             observaciones);
+    jornada.setCierreAutomatico(false);
 
     return jornadaRepository.save(
             jornada);
 }
+    
     
     // =====================================================
     // BUSCAR JORNADA
@@ -145,7 +165,7 @@ public class JornadaService {
             Long turnoId) {
 
         return jornadaRepository
-                .findByFechaAndTurnoId(
+                .findByFechaAndTurno_Id(
                         fecha,
                         turnoId)
                 .orElseThrow(() ->
@@ -162,7 +182,7 @@ public class JornadaService {
             Long turnoId) {
 
         return jornadaRepository
-                .findByFechaAndTurnoId(
+                .findByFechaAndTurno_Id(
                         fecha,
                         turnoId)
 
@@ -179,25 +199,41 @@ public class JornadaService {
 
     public void cerrarJornadasPendientes() {
 
-        LocalDate hoy = LocalDate.now();
+    LocalDate hoy = LocalDate.now();
 
-        List<Jornada> pendientes =
-                jornadaRepository
-                        .findByHabilitadaTrueAndCerradaFalse();
+    List<Jornada> pendientes =
+            jornadaRepository
+                    .findByHabilitadaTrueAndCerradaFalse();
 
-        for (Jornada jornada : pendientes) {
+    for (Jornada jornada : pendientes) {
 
-            if (jornada.getFecha()
-                    .isBefore(hoy)) {
+        if (jornada.getFecha().isBefore(hoy)) {
 
-                jornada.setCerrada(true);
+            jornada.setCerrada(true);
 
-                jornada.setFechaCierre(
-                        LocalDateTime.now());
+            jornada.setHabilitada(false);
 
-                jornadaRepository.save(
-                        jornada);
-            }
+            jornada.setFechaCierre(
+                    LocalDateTime.now());
+
+            jornada.setCierreAutomatico(true);
+            jornadaRepository.save(jornada);
         }
     }
 }
+    public List<Jornada> listar() {
+
+    return jornadaRepository.findAll();
+}
+    public List<Jornada> listarPorTurno(
+        Long turnoId) {
+
+    return jornadaRepository
+            .findByTurno_Id(turnoId);
+}
+    public List<Jornada> listarAbiertas() {
+
+    return jornadaRepository
+            .findByHabilitadaTrueAndCerradaFalse();
+}
+    }

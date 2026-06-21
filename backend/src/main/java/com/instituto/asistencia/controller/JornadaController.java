@@ -57,36 +57,42 @@ public class JornadaController {
     // CERRAR JORNADA
     // ==========================================
 
-    @PostMapping("/cerrar")
-    public ResponseEntity<?> cerrarJornada(
+@PostMapping("/cerrar")
+public ResponseEntity<?> cerrarJornada(
 
-            @RequestParam Long usuarioId,
+        @RequestParam Long usuarioId,
 
-            @RequestParam Long turnoId,
+        @RequestParam Long turnoId,
 
-            @RequestParam(
-                    required = false,
-                    defaultValue = "")
-            String observaciones) {
+        @RequestParam(
+                required = false,
+                defaultValue = "")
+        String observaciones,
 
-        try {
+        @RequestParam(
+                required = false,
+                defaultValue = "false")
+        boolean forzarCierre) {
 
-            Jornada jornada =
-                    jornadaService.cerrarJornada(
-                            usuarioId,
-                            turnoId,
-                            observaciones);
+    try {
 
-            return ResponseEntity.ok(
-                    jornada);
+        Jornada jornada =
+                jornadaService.cerrarJornada(
+                        usuarioId,
+                        turnoId,
+                        observaciones,
+                        forzarCierre);
 
-        } catch (Exception e) {
+        return ResponseEntity.ok(
+                jornada);
 
-            return ResponseEntity.badRequest()
-                    .body(e.getMessage());
-        }
+    } catch (Exception e) {
+
+        return ResponseEntity.badRequest()
+                .body(e.getMessage());
     }
-    @GetMapping("/abierta")
+}
+@GetMapping("/abierta")
 public ResponseEntity<?> jornadaAbierta(
         @RequestParam String fecha,
         @RequestParam Long turnoId) {
@@ -107,5 +113,25 @@ public ResponseEntity<?> buscar(
             jornadaService.buscarPorFechaYTurno(
                     java.time.LocalDate.parse(fecha),
                     turnoId));
+}
+@GetMapping
+public ResponseEntity<?> listar() {
+
+    return ResponseEntity.ok(
+            jornadaService.listar());
+}
+@GetMapping("/turno/{turnoId}")
+public ResponseEntity<?> listarPorTurno(
+        @PathVariable Long turnoId) {
+
+    return ResponseEntity.ok(
+            jornadaService
+                    .listarPorTurno(turnoId));
+}
+@GetMapping("/abiertas")
+public ResponseEntity<?> listarAbiertas() {
+
+    return ResponseEntity.ok(
+            jornadaService.listarAbiertas());
 }
 }

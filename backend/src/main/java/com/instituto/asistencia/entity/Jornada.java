@@ -1,7 +1,7 @@
 package com.instituto.asistencia.entity;
 
 import jakarta.persistence.*;
-
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
@@ -45,15 +45,38 @@ public class Jornada {
     @Column(name = "fecha_cierre")
     private LocalDateTime fechaCierre;
 
-    @ManyToOne
-    @JoinColumn(name = "usuario_apertura_id")
-    private Usuario usuarioApertura;
+    @Column(name = "cierre_automatico")
+private Boolean cierreAutomatico = false;
 
-    @ManyToOne
-    @JoinColumn(name = "usuario_cierre_id")
-    private Usuario usuarioCierre;
+    public Boolean getCierreAutomatico() {
+        return cierreAutomatico;
+    }
 
-    @Column(length = 255)
+    public void setCierreAutomatico(Boolean cierreAutomatico) {
+        this.cierreAutomatico = cierreAutomatico;
+    }
+    
+    @ManyToOne
+@JoinColumn(name = "usuario_apertura_id")
+@JsonIgnoreProperties({
+    "docente",
+    "password",
+    "hibernateLazyInitializer",
+    "handler"
+})
+private Usuario usuarioApertura;
+
+@ManyToOne
+@JoinColumn(name = "usuario_cierre_id")
+@JsonIgnoreProperties({
+    "docente",
+    "password",
+    "hibernateLazyInitializer",
+    "handler"
+})
+private Usuario usuarioCierre;
+
+    @Column(length = 500)
     private String observaciones;
 
     public Jornada() {

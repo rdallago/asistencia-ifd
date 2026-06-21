@@ -46,4 +46,11 @@ export class DocenteService {
     `${environment.apiUrl}/docentes/${id}`
   );
 }
+getAll(): Observable<any[]> {
+
+  return this.http.get<any[]>(
+    `${environment.apiUrl}/docentes`
+  );
+
+}
 }

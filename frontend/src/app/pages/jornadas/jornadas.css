@@ -1,0 +1,112 @@
+.panel-jornadas {
+  padding: 20px;
+}
+
+.filtros {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.filtros input,
+.filtros select {
+  padding: 10px;
+}
+
+.btn-nuevo {
+  margin-bottom: 20px;
+}
+
+.formulario {
+  margin-bottom: 20px;
+  padding: 20px;
+  border: 1px solid #ddd;
+}
+
+.formulario label {
+  display: block;
+  margin-top: 10px;
+}
+
+.formulario input,
+.formulario select,
+.formulario textarea {
+  width: 100%;
+  padding: 10px;
+  margin-top: 5px;
+}
+
+.acciones-formulario {
+  display: flex;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th,
+td {
+  padding: 12px;
+  border-bottom: 1px solid #ddd;
+}
+
+.activo {
+  color: green;
+  font-weight: bold;
+}
+
+.inactivo {
+  color: red;
+  font-weight: bold;
+}
+.abierta {
+  background: #d4edda;
+  color: #155724;
+}
+
+.cerrada-ok {
+  background: #d1e7dd;
+  color: #0f5132;
+}
+
+.cerrada-demora {
+  background: #fff3cd;
+  color: #856404;
+}
+
+.cerrada-automatica {
+  background: #f8d7da;
+  color: #842029;
+}
+.abierta {
+  color: #16a34a;
+  font-weight: 600;
+}
+
+.cerrada-ok {
+  color: #2563eb;
+  font-weight: 600;
+}
+
+.cerrada-demora {
+  color: #ca8a04;
+  font-weight: 600;
+}
+
+.cerrada-anticipada {
+  color: #ea580c;
+  font-weight: 600;
+}
+
+.cerrada-automatica {
+  color: #dc2626;
+  font-weight: 600;
+}
+
+.apertura-anticipada {
+  color: #9333ea;
+  font-weight: 600;
+}

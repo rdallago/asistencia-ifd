@@ -141,7 +141,7 @@ CREATE TABLE jornadas (
 
     usuario_cierre_id BIGINT NULL,
 
-    observaciones VARCHAR(255),
+    observaciones VARCHAR(500),
 
     CONSTRAINT fk_jornada_turno
         FOREIGN KEY (turno_id)

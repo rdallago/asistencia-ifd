@@ -75,10 +75,10 @@ public class AsistenciaService {
 
         Asistencia asistencia =
                 asistenciaRepository
-                        .findByDocenteIdAndTurnoIdAndFecha(
-                                docente.getId(),
-                                turnoId,
-                                hoy)
+                        .findByDocenteIdAndTurnoIdAndJornadaId(
+    docente.getId(),
+    turnoId,
+    jornada.getId())
                         .orElse(new Asistencia());
 
         asistencia.setDocente(docente);
@@ -126,10 +126,10 @@ public class AsistenciaService {
 
         Asistencia asistencia =
                 asistenciaRepository
-                        .findByDocenteIdAndTurnoIdAndFecha(
-                                docente.getId(),
-                                turnoId,
-                                hoy)
+                        .findByDocenteIdAndTurnoIdAndJornadaId(
+    docente.getId(),
+    turnoId,
+    jornada.getId())
                         .orElseThrow(() ->
                                 new RuntimeException(
                                         "No existe ingreso registrado"));
@@ -164,7 +164,7 @@ public String procesarCierreJornada(Long turnoId) {
 
     Jornada jornada =
             jornadaRepository
-                    .findByFechaAndTurnoId(
+                    .findByFechaAndTurno_Id(
                             hoy,
                             turnoId)
                     .orElseThrow(() ->
@@ -185,10 +185,10 @@ public String procesarCierreJornada(Long turnoId) {
 
         Asistencia asistencia =
                 asistenciaRepository
-                        .findByDocenteIdAndTurnoIdAndFecha(
-                                docente.getId(),
-                                turno.getId(),
-                                hoy)
+                     .findByDocenteIdAndTurnoIdAndJornadaId(
+    docente.getId(),
+    turno.getId(),
+    jornada.getId())
                         .orElse(null);
 
         // =====================================
@@ -261,12 +261,9 @@ public String procesarCierreJornada(Long turnoId) {
     // REPORTE DIARIO
     // =====================================================
 
-    public List<Asistencia> reporteDiario(
-            LocalDate fecha) {
-
-        return asistenciaRepository
-                .findByFecha(fecha);
-    }
+public List<Asistencia> reporteDiario(LocalDate fecha) {
+    return asistenciaRepository.findByFecha(fecha);
+}
 
     // =====================================================
     // GENERACION PDF
@@ -287,7 +284,7 @@ public String procesarCierreJornada(Long turnoId) {
 
     Jornada jornada =
             jornadaRepository
-                    .findByFechaAndTurnoId(
+                    .findByFechaAndTurno_Id(
                             hoy,
                             turnoId)
                     .orElseThrow(() ->

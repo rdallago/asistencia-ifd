@@ -14,6 +14,24 @@
         👨‍🏫 Gestión de Docentes
 
       </a>
+ <a routerLink="/turnos"
+         routerLinkActive="activo">
+
+        📅 Gestión de Turnos
+
+      </a>
+ <a routerLink="/asignaciones"
+         routerLinkActive="activo">
+
+        🔗 Gestión de Asignaciones (Docente-Turno)
+
+      </a>
+ <a routerLink="/jornadas"
+         routerLinkActive="activo">
+
+        📅 Gestión de Jornada (apertura / cierre)
+
+      </a>
 
       <a routerLink="/asistencia"
          routerLinkActive="activo">
@@ -22,12 +40,7 @@
 
       </a>
 
-      <a routerLink="/turnos"
-         routerLinkActive="activo">
-
-        📅 Gestión de Turnos
-
-      </a>
+     
 
       <a *ngIf="esAdmin()"
          routerLink="/usuarios"

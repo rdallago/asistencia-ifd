@@ -32,9 +32,7 @@ export class MainLayout {
     return this.rol === 'SECRETARIO';
   }
 
-  toggleMenu(): void {
-    this.menuAbierto = !this.menuAbierto;
-  }
+
 
   cerrarSesion(): void {
     localStorage.removeItem('token');
@@ -43,4 +41,16 @@ export class MainLayout {
 
     this.router.navigate(['/login']);
   }
+  mostrarMenuUsuario = false;
+
+toggleMenu(): void {
+  this.mostrarMenuUsuario = !this.mostrarMenuUsuario;
+  
+}
+
+
+abrirCambioClave(): void {
+  // Podés abrir un modal o navegar a pantalla de perfil
+  console.log('Abrir cambio de contraseña');
+}
 }

@@ -2,6 +2,7 @@ package com.instituto.asistencia.entity;
 import java.time.LocalDate;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import java.util.List;
 @Entity
 @Table(name = "docentes")

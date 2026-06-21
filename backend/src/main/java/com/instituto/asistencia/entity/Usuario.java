@@ -3,6 +3,7 @@ import jakarta.persistence.*;
 import com.instituto.asistencia.entity.enums.Rol;
 import java.time.LocalDate;
 import com.fasterxml.jackson.annotation.JsonProperty;
+//import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Entity
 @Table(name = "usuarios")

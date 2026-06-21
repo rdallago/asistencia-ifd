@@ -1,0 +1,196 @@
+<div class="panel-asignaciones">
+
+  <h2>🔗 Gestión de Asignaciones</h2>
+
+  <div class="filtros">
+
+    <input
+      type="text"
+      placeholder="Buscar docente o turno..."
+      [(ngModel)]="filtroBusqueda"
+      (input)="filtrar()">
+
+    <select
+      [(ngModel)]="filtroTurno"
+      (change)="filtrar()">
+
+      <option [ngValue]="0">
+        Todos los turnos
+      </option>
+
+      <option
+        *ngFor="let t of turnos"
+        [ngValue]="t.id">
+
+        {{ t.nombre }}
+
+      </option>
+
+    </select>
+
+  </div>
+
+  <div class="acciones-superiores">
+
+    <button
+      class="btn-nuevo"
+      (click)="abrirFormulario()">
+
+      + Nueva Asignación
+
+    </button>
+
+    <button
+      class="btn-filtro"
+      (click)="cambiarFiltro()">
+
+      {{ mostrarSoloActivas
+          ? '👁️ Mostrar historial'
+          : '✅ Mostrar solo activas' }}
+
+    </button>
+
+  </div>
+
+  <div
+    *ngIf="mostrarFormulario"
+    class="formulario">
+
+    <h3>Nueva Asignación</h3>
+
+    <label>Docente</label>
+
+    <select [(ngModel)]="asignacion.docenteId">
+
+      <option [ngValue]="0">
+        Seleccione un docente
+      </option>
+
+      <option
+        *ngFor="let d of docentes"
+        [ngValue]="d.id">
+
+        {{ d.apellido }}, {{ d.nombre }} ({{ d.dni }})
+
+      </option>
+
+    </select>
+
+    <label>Turno</label>
+
+    <select [(ngModel)]="asignacion.turnoId">
+
+      <option [ngValue]="0">
+        Seleccione un turno
+      </option>
+
+      <option
+        *ngFor="let t of turnos"
+        [ngValue]="t.id">
+
+        {{ t.nombre }}
+
+      </option>
+
+    </select>
+
+    <label>Fecha desde</label>
+
+    <input
+      type="date"
+      [(ngModel)]="asignacion.fechaDesde">
+
+    <div class="acciones-formulario">
+
+      <button (click)="guardar()">
+        💾 Guardar
+      </button>
+
+      <button
+        class="btn-cancelar"
+        (click)="mostrarFormulario = false">
+
+        ❌ Cancelar
+
+      </button>
+
+    </div>
+
+  </div>
+
+  <table>
+
+    <thead>
+
+      <tr>
+
+        <th>ID</th>
+        <th>Docente</th>
+        <th>Turno</th>
+        <th>Desde</th>
+        <th>Hasta</th>
+        <th>Estado</th>
+        <th>Acciones</th>
+
+      </tr>
+
+    </thead>
+
+    <tbody>
+
+      <tr *ngFor="let a of asignacionesFiltradas">
+
+        <td>{{ a.id }}</td>
+
+        <td>
+          {{ a.docente.apellido }},
+          {{ a.docente.nombre }}
+        </td>
+
+        <td>{{ a.turno.nombre }}</td>
+
+        <td>{{ a.fechaDesde }}</td>
+
+        <td>{{ a.fechaHasta || '-' }}</td>
+
+        <td>
+
+          <span [ngClass]="a.activo ? 'activo' : 'inactivo'">
+
+            {{ a.activo ? 'Activa' : 'Finalizada' }}
+
+          </span>
+
+        </td>
+
+        <td>
+
+          <button
+            *ngIf="a.activo"
+            class="btn-eliminar"
+            (click)="desasignar(a)"
+            title="Desasignar docente del turno">
+
+            🔴
+
+          </button>
+
+          <button
+            *ngIf="!a.activo"
+            class="btn-activar"
+            (click)="reactivar(a)"
+            title="Reactivar asignación">
+
+            🟢
+
+          </button>
+
+        </td>
+
+      </tr>
+
+    </tbody>
+
+  </table>
+
+</div>

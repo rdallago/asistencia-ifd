@@ -2,48 +2,57 @@ package com.instituto.asistencia.repository;
 
 import com.instituto.asistencia.entity.Asistencia;
 import com.instituto.asistencia.entity.enums.EstadoAsistencia;
-
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
-public interface AsistenciaRepository
-        extends JpaRepository<Asistencia, Long> {
+public interface AsistenciaRepository extends JpaRepository<Asistencia, Long> {
 
-    Optional<Asistencia>
-    findByDocenteIdAndTurnoIdAndFecha(
-            Long docenteId,
-            Long turnoId,
-            LocalDate fecha
-    );
+    // =========================================
+    // BUSQUEDA BASE OPERATIVA
+    // =========================================
 
-    List<Asistencia>
-    findByFecha(
-            LocalDate fecha
-    );
+    Optional<Asistencia> findByDocenteIdAndTurnoIdAndJornadaId(Long docenteId, Long turnoId, Long jornadaId);
 
-    List<Asistencia>
-    findByFechaAndEstado(
-            LocalDate fecha,
-            EstadoAsistencia estado
-    );
+    List<Asistencia> findByJornadaId(Long jornadaId);
 
-    List<Asistencia>
-    findByDocenteId(
-            Long docenteId
-    );
+    List<Asistencia> findByTurnoId(Long turnoId);
 
-    boolean existsByDocenteIdAndTurnoIdAndFecha(
-            Long docenteId,
-            Long turnoId,
-            LocalDate fecha
-    );
+    List<Asistencia> findByDocenteId(Long docenteId);
+
+    // =========================================
+    // ESTADOS
+    // =========================================
+
+    List<Asistencia> findByJornadaIdAndEstado(Long jornadaId, EstadoAsistencia estado);
+
+    List<Asistencia> findByTurnoIdAndEstado(Long turnoId, EstadoAsistencia estado);
+
+    // =========================================
+    // CONTROL DE EXISTENCIA
+    // =========================================
+
+    boolean existsByDocenteIdAndTurnoIdAndJornadaId(Long docenteId, Long turnoId, Long jornadaId);
+
+    // =========================================
+    // CASOS ESPECIALES DE CONSULTA
+    // =========================================
+
+    List<Asistencia> findByJornadaIdAndHoraIngresoIsNull(Long jornadaId);
+
+    List<Asistencia> findByJornadaIdAndHoraIngresoIsNotNullAndHoraEgresoIsNull(Long jornadaId);
     
-    Optional<Asistencia>
-findByDocenteIdAndFecha(
-        Long docenteId,
-        LocalDate fecha
-);
+    @Query("""
+SELECT a FROM Asistencia a
+WHERE a.jornada.id = :jornadaId
+AND a.turno.id = :turnoId
+ORDER BY a.docente.apellido
+""")
+List<Asistencia> findPlanillaJornadaTurno(Long jornadaId, Long turnoId);
+List<Asistencia> findByFecha(LocalDate fecha);
+
+
 }
