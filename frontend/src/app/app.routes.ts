@@ -14,7 +14,7 @@ import { AsignacionesComponent } from './pages/asignaciones/asignaciones';
 
 import { JornadasComponent} from './pages/jornadas/jornadas';
 
-import { Usuarios} from './pages/usuarios/usuarios';
+import { UsuariosComponent} from './pages/usuarios/usuarios';
 
 import { Respaldos} from './pages/respaldos/respaldos';
 
@@ -64,7 +64,7 @@ export const routes: Routes = [
       
       {
         path: 'usuarios',
-        component: Usuarios
+        component: UsuariosComponent
       },
 
       {

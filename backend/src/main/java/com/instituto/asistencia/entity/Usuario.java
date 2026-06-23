@@ -3,7 +3,7 @@ import jakarta.persistence.*;
 import com.instituto.asistencia.entity.enums.Rol;
 import java.time.LocalDate;
 import com.fasterxml.jackson.annotation.JsonProperty;
-//import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Entity
 @Table(name = "usuarios")
@@ -17,14 +17,56 @@ public class Usuario {
     private String username;
 
    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-private String password;
-    @Enumerated(EnumType.STRING)
-    private Rol rol;
+   @Column(nullable = false)
+   private String password;
 
+   @Column(nullable = false)
+   @Enumerated(EnumType.STRING)
+   private Rol rol;
+   
+   @Column(nullable = false, length = 100)
+    private String nombre;
+
+    @Column(nullable = false, length = 100)
+    private String apellido;
+
+    @Column(nullable = false)
     private Boolean activo = true;
+    
+    public String getNombre() {
+        return nombre;
+    }
+
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
+    }
+
+    public String getApellido() {
+        return apellido;
+    }
+
+    public void setApellido(String apellido) {
+        this.apellido = apellido;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    @Column(nullable = false, unique = true, length = 150)
+    private String email;
+
+   @JsonIgnoreProperties({
+        "hibernateLazyInitializer",
+        "handler"
+})
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "docente_id")
+    @JoinColumn(name = "docente_id",unique=true,nullable=true)
     private Docente docente;
     
      

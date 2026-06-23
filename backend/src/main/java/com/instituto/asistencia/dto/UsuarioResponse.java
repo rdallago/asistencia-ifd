@@ -6,11 +6,19 @@ public class UsuarioResponse {
 
     private String username;
 
+    private String nombre;
+
+    private String apellido;
+
+    private String email;
+
     private String rol;
 
     private Boolean activo;
 
-    private String docente;
+    private Long docenteId;
+
+    private String docenteNombre;
 
     public UsuarioResponse() {
     }
@@ -31,6 +39,30 @@ public class UsuarioResponse {
         this.username = username;
     }
 
+    public String getNombre() {
+        return nombre;
+    }
+
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
+    }
+
+    public String getApellido() {
+        return apellido;
+    }
+
+    public void setApellido(String apellido) {
+        this.apellido = apellido;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
     public String getRol() {
         return rol;
     }
@@ -47,11 +79,19 @@ public class UsuarioResponse {
         this.activo = activo;
     }
 
-    public String getDocente() {
-        return docente;
+    public Long getDocenteId() {
+        return docenteId;
     }
 
-    public void setDocente(String docente) {
-        this.docente = docente;
+    public void setDocenteId(Long docenteId) {
+        this.docenteId = docenteId;
+    }
+
+    public String getDocenteNombre() {
+        return docenteNombre;
+    }
+
+    public void setDocenteNombre(String docenteNombre) {
+        this.docenteNombre = docenteNombre;
     }
 }

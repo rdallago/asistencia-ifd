@@ -1,7 +1,7 @@
 package com.instituto.asistencia.task;
 
 import com.instituto.asistencia.service.JornadaService;
-
+import java.time.LocalDateTime;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import jakarta.annotation.PostConstruct;
@@ -16,8 +16,15 @@ public class CierreAutomaticoTask {
         this.jornadaService = jornadaService;
     }
 
-    @Scheduled(cron = "5 0 0 * * *")
+    @Scheduled(
+            cron = "0 5 0 * * *",
+            zone = "America/Argentina/Buenos_Aires"
+    )
     public void ejecutar() {
+          System.out.println(
+            "***** CIERRE AUTOMÁTICO EJECUTADO: "
+            + LocalDateTime.now()
+        );
 
         jornadaService.cerrarJornadasPendientes();
 

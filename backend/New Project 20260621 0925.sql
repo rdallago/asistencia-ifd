@@ -1,4 +1,4 @@
--- MySQL Administrator dump 1.4
+﻿-- MySQL Administrator dump 1.4
 --
 -- ------------------------------------------------------
 -- Server version	5.6.25
@@ -53,7 +53,7 @@ CREATE TABLE `asistencias` (
 --
 
 /*!40000 ALTER TABLE `asistencias` DISABLE KEYS */;
-INSERT INTO `asistencias` (`id`,`docente_id`,`turno_id`,`jornada_id`,`fecha`,`hora_ingreso`,`hora_egreso`,`estado`,`observaciones`,`fecha_creacion`,`fecha_modificacion`) VALUES 
+INSERT INTO `asistencias` (`id`,`docente_id`,`turno_id`,`jornada_id`,`fecha`,`hora_ingreso`,`hora_egreso`,`estado`,`observaciones`,`fecha_creacion`,`fecha_modificacion`) VALUES
  (1,1,2,1,'2026-06-19','18:25:00','23:35:00','PRESENTE','Asistencia completa','2026-06-19 12:35:20',NULL),
  (2,2,2,1,'2026-06-19','18:30:00',NULL,'SIN_EGRESO','No registro egreso','2026-06-19 12:35:20',NULL),
  (3,3,2,1,'2026-06-19',NULL,NULL,'SIN_FIRMA_TOTAL','Ausente','2026-06-19 12:35:20',NULL);
@@ -269,31 +269,6 @@ INSERT INTO `turnos` (`id`,`institucion_id`,`nombre`,`hora_inicio`,`hora_fin`,`a
  (1,1,'Turno Tarde','13:30:00','18:10:00',1,NULL),
  (2,1,'Turno Noche','18:20:00','23:40:00',1,NULL);
 /*!40000 ALTER TABLE `turnos` ENABLE KEYS */;
-
-
---
--- Definition of table `usuario`
---
-
-DROP TABLE IF EXISTS `usuario`;
-CREATE TABLE `usuario` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `activo` bit(1) DEFAULT NULL,
-  `password` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `rol` enum('ADMIN','SECRETARIO') COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `username` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `docente_id` bigint(20) DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `FK60dpth2sap0h6jy1vabk8o2xr` (`docente_id`),
-  CONSTRAINT `FK60dpth2sap0h6jy1vabk8o2xr` FOREIGN KEY (`docente_id`) REFERENCES `docente` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
---
--- Dumping data for table `usuario`
---
-
-/*!40000 ALTER TABLE `usuario` DISABLE KEYS */;
-/*!40000 ALTER TABLE `usuario` ENABLE KEYS */;
 
 
 --

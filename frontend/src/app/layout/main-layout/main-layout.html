@@ -14,7 +14,8 @@
         👨‍🏫 Gestión de Docentes
 
       </a>
- <a routerLink="/turnos"
+  <a *ngIf="esAdmin()"
+         routerLink="/turnos"
          routerLinkActive="activo">
 
         📅 Gestión de Turnos

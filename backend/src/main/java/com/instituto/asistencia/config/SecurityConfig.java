@@ -29,58 +29,77 @@ public class SecurityConfig {
     }
 
     @Bean
-    public SecurityFilterChain securityFilterChain(
-            HttpSecurity http) throws Exception {
+public SecurityFilterChain securityFilterChain(
+        HttpSecurity http) throws Exception {
 
-        http
-            .cors(cors -> {})
-            .csrf(csrf -> csrf.disable())
+    http
+        .cors(cors -> {})
+        .csrf(csrf -> csrf.disable())
 
-            .sessionManagement(session ->
-                    session.sessionCreationPolicy(
-                            SessionCreationPolicy.STATELESS))
+        .sessionManagement(session ->
+                session.sessionCreationPolicy(
+                        SessionCreationPolicy.STATELESS))
 
-            .authorizeHttpRequests(auth -> auth
+        .authorizeHttpRequests(auth -> auth
 
-                    .requestMatchers(
-                            "/api/auth/**"
-                    ).permitAll()
+                // Login
+                .requestMatchers(
+                        "/api/auth/**"
+                ).permitAll()
 
-                    .requestMatchers(
-                            "/api/usuarios/**"
-                    ).hasRole("ADMIN")
+                // Solo ADMIN
+                .requestMatchers(
+                        "/api/usuarios/**"
+                ).hasRole("ADMIN")
 
-                    .requestMatchers(
-                            "/api/asistencia/**"
-                    ).hasAnyRole(
-                            "ADMIN",
-                            "SECRETARIO"
-                    )
+                .requestMatchers(
+                        "/api/turnos/**"
+                ).hasRole("ADMIN")
 
-                    .requestMatchers(
-                            "/api/docentes/**"
-                    ).hasAnyRole(
-                            "ADMIN",
-                            "SECRETARIO"
-                    )
-                    .requestMatchers(
+                .requestMatchers(
+                        "/api/respaldos/**"
+                ).hasRole("ADMIN")
+
+                // ADMIN y SECRETARIO
+                .requestMatchers(
+                        "/api/asistencia/**"
+                ).hasAnyRole(
+                        "ADMIN",
+                        "SECRETARIO"
+                )
+
+                .requestMatchers(
+                        "/api/docentes/**"
+                ).hasAnyRole(
+                        "ADMIN",
+                        "SECRETARIO"
+                )
+
+                .requestMatchers(
+                        "/api/asignaciones/**"
+                ).hasAnyRole(
+                        "ADMIN",
+                        "SECRETARIO"
+                )
+
+                .requestMatchers(
                         "/api/jornadas/**"
-                        ).hasAnyRole(
-                    "ADMIN",
-                    "SECRETARIO"
-)
-                    .anyRequest()
-                    .authenticated()
+                ).hasAnyRole(
+                        "ADMIN",
+                        "SECRETARIO"
+                )
 
-            )
-                    
+                .anyRequest()
+                .authenticated()
+        )
 
-            .addFilterBefore(
-                    jwtFilter,
-                    UsernamePasswordAuthenticationFilter.class
-            );
-        return http.build();
-    }
+        .addFilterBefore(
+                jwtFilter,
+                UsernamePasswordAuthenticationFilter.class
+        );
+
+    return http.build();
+}
 
     @Bean
     public AuthenticationManager authenticationManager(

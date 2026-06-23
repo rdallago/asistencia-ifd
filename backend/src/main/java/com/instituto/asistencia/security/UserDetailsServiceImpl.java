@@ -32,17 +32,17 @@ public class UserDetailsServiceImpl implements UserDetailsService {
                                 "Usuario no encontrado"));
 
         return new User(
-                usuario.getUsername(),
-                usuario.getPassword(),
-                usuario.getActivo(),
-                true,
-                true,
-                true,
-                Collections.singletonList(
-                        new SimpleGrantedAuthority(
-                                "ROLE_" + usuario.getRol().name()
-                        )
+        usuario.getUsername(),
+        usuario.getPassword(),
+        Boolean.TRUE.equals(usuario.getActivo()),
+        true,
+        true,
+        true,
+        Collections.singletonList(
+                new SimpleGrantedAuthority(
+                        "ROLE_" + usuario.getRol().name()
                 )
-        );
+        )
+);
     }
 }

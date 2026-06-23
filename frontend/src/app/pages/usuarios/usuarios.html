@@ -1,7 +1,187 @@
-<div class="construccion">
+<div class="panel-usuarios">
 
-  <h1>🚧 Módulo en construcción</h1>
+  <h2>👥 Gestión de Usuarios</h2>
 
-  <p>Disponible en próximos sprints.</p>
+  <div class="filtros">
+
+    <input
+      type="text"
+      placeholder="Buscar usuario..."
+      [(ngModel)]="filtro"
+      (input)="filtrar()">
+
+    <button
+      class="btn-nuevo"
+      (click)="nuevo()">
+
+      + Nuevo Usuario
+
+    </button>
+
+  </div>
+
+  <div
+    *ngIf="mostrarFormulario"
+    class="formulario">
+
+    <h3>
+
+      {{ editando
+          ? 'Editar Usuario'
+          : 'Nuevo Usuario' }}
+
+    </h3>
+
+    <input
+      type="text"
+      placeholder="Usuario"
+      [(ngModel)]="usuarioActual.username">
+
+    <input
+      type="text"
+      placeholder="Nombre"
+      [(ngModel)]="usuarioActual.nombre">
+
+    <input
+      type="text"
+      placeholder="Apellido"
+      [(ngModel)]="usuarioActual.apellido">
+
+    <input
+      type="email"
+      placeholder="Correo electrónico"
+      [(ngModel)]="usuarioActual.email">
+
+    <input
+      type="password"
+      placeholder="Contraseña"
+      [(ngModel)]="usuarioActual.password">
+
+    <select
+      [(ngModel)]="usuarioActual.rol">
+
+      <option value="ADMIN">
+        Administrador
+      </option>
+
+      <option value="SECRETARIO">
+        Secretario
+      </option>
+
+    </select>
+
+    <div class="acciones-formulario">
+
+      <button
+        (click)="guardar()">
+
+        💾 Guardar
+
+      </button>
+
+      <button
+        class="btn-cancelar"
+        (click)="cancelar()">
+
+        ❌ Cancelar
+
+      </button>
+
+    </div>
+
+  </div>
+
+  <table>
+
+    <thead>
+
+      <tr>
+
+        <th>Usuario</th>
+        <th>Nombre</th>
+        <th>Apellido</th>
+        <th>Email</th>
+        <th>Rol</th>
+        <th>Estado</th>
+        <th>Docente</th>
+        <th>Acciones</th>
+
+      </tr>
+
+    </thead>
+
+    <tbody>
+
+      <tr
+        *ngFor="
+          let u of usuariosFiltrados
+        ">
+
+        <td>{{ u.username }}</td>
+
+        <td>{{ u.nombre }}</td>
+
+        <td>{{ u.apellido }}</td>
+
+        <td>{{ u.email }}</td>
+
+        <td>{{ u.rol }}</td>
+
+       <td>
+
+          <span
+            [ngClass]="
+              u.activo
+                ? 'activo'
+                : 'inactivo'
+            ">
+
+            {{ u.activo
+                ? 'Activo'
+                : 'Inactivo' }}
+
+          </span>
+
+</td>
+
+    
+
+        <td>
+
+          {{ u.docenteNombre || '-' }}
+
+        </td>
+
+        <td>
+
+          <button
+            class="btn-editar"
+            (click)="editar(u)">
+
+            ✏️
+
+          </button>
+
+          <button
+    *ngIf="u.activo"
+    class="btn-eliminar"
+    (click)="desactivar(u)">
+    🚫
+  </button>
+
+  <button
+    *ngIf="!u.activo"
+    class="btn-activar"
+    (click)="activar(u)">
+    ✅
+  </button>
+
+        </td>
+
+      </tr>
+
+    </tbody>
+
+  </table>
 
 </div>
