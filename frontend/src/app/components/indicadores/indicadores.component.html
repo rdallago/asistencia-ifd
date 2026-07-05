@@ -1,11 +1,4 @@
 <div class="contenedor">
-<p style="font-size:22px;color:red;">
-Presentes: {{estadisticas.presentes}}
-<br>
-Total docentes: {{estadisticas.totalDocentes}}
-<br>
-Registrados: {{indicadores.docentesRegistrados}}
-</p>
     
     <div class="encabezado">
 
@@ -208,25 +201,24 @@ Registrados: {{indicadores.docentesRegistrados}}
 
         <div class="grafico-card">
 
-            <h5>Distribución de asistencia</h5>
+            <h5>Distribución de asistencia del día</h5>
+            
+            <div class="grafico-contenedor">
 
-            <div class="grafico-placeholder">
+    <canvas #graficoAsistencia></canvas>
 
-                Próximamente
-
-            </div>
+</div>
 
         </div>
 
         <div class="grafico-card">
 
-            <h5>Asistencia por día</h5>
+            <h5>Indicadores institucionales</h5>
+           <div class="grafico-contenedor">
 
-            <div class="grafico-placeholder">
+    <canvas #graficoInstitucional></canvas>
 
-                Próximamente
-
-            </div>
+</div>
 
         </div>
 

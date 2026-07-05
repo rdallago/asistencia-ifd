@@ -12,6 +12,10 @@ import { Estadisticas } from '../../modelos/estadisticas';
 
 import { IndicadoresInstitucionales } from '../../modelos/indicadores-institucionales';
 
+import {AfterViewInit,ViewChild,ElementRef} from '@angular/core';
+
+import {Chart,registerables} from 'chart.js';
+
 @Component({
   selector: 'app-indicadores',
   standalone: true,
@@ -22,7 +26,7 @@ import { IndicadoresInstitucionales } from '../../modelos/indicadores-institucio
   templateUrl: './indicadores.component.html',
   styleUrls: ['./indicadores.component.css']
 })
-export class IndicadoresComponent implements OnInit {
+export class IndicadoresComponent implements OnInit, AfterViewInit {
 
   //fecha = new Date().toISOString().split('T')[0];
 fecha='';
@@ -46,6 +50,16 @@ fecha='';
     asignacionesVigentes: 0,
     jornadasAbiertas: 0
   };
+  
+  @ViewChild('graficoAsistencia')
+graficoCanvas!: ElementRef<HTMLCanvasElement>;
+
+private grafico!: Chart;
+
+@ViewChild('graficoInstitucional')
+graficoInstitucionalCanvas!: ElementRef<HTMLCanvasElement>;
+
+private graficoInstitucional!: Chart;
 
   constructor(
     private asistenciaService: AsistenciaService,
@@ -65,8 +79,6 @@ fecha='';
 
     this.fecha = hoy.toISOString().split('T')[0];
 
-    console.log("FECHA:", this.fecha);
-
     setTimeout(() => {
 
         this.actualizarDashboard();
@@ -77,24 +89,38 @@ fecha='';
 
   cargarIndicadores(): void {
 
- console.log("CONSULTANDO FECHA:", this.fecha);
-
   this.asistenciaService
-  .obtenerEstadisticas(this.fecha)
-  .subscribe(data => {
+    .obtenerEstadisticas(this.fecha)
+    .subscribe(data => {
 
-    this.zone.run(() => {
+      this.zone.run(() => {
 
-      this.estadisticas = data;
+        this.estadisticas = data;
 
-      this.cdr.detectChanges();
+        if (this.grafico) {
 
-      console.log("ESTADISTICAS DESPUÉS", this.estadisticas);
+          this.grafico.data.datasets[0].data = [
+
+            data.presentes,
+
+            data.sinEgreso,
+
+            data.sinFirmaTotal
+
+          ];
+
+          this.grafico.update();
+
+        }
+
+        this.cdr.detectChanges();
+
+      });
 
     });
 
-  });
 }
+
   cargarIndicadoresInstitucionales(): void {
 
     this.asistenciaService
@@ -104,11 +130,30 @@ fecha='';
     this.zone.run(() => {
 
       this.indicadores = data;
+      
+      if (this.graficoInstitucional) {
+
+    this.graficoInstitucional.data.datasets[0].data = [
+
+        data.docentesRegistrados,
+
+        data.docentesActivos,
+
+        data.turnosConfigurados,
+
+        data.jornadasAbiertas,
+
+        data.asignacionesVigentes
+
+    ];
+
+    this.graficoInstitucional.update();
+
+}
 
       this.cdr.detectChanges();
 
-      console.log("INDICADORES DESPUÉS", this.indicadores);
-
+ 
     });
 
   });
@@ -131,4 +176,163 @@ fecha='';
 
 }
 
+ngAfterViewInit(): void {
+
+    Chart.register(...registerables);
+
+    this.crearGrafico();
+    this.crearGraficoInstitucional();
+
+}
+private crearGrafico(): void {
+
+  this.grafico = new Chart(
+    this.graficoCanvas.nativeElement,
+    {
+      type: 'doughnut',
+
+      data: {
+
+        labels: [
+
+          'Presentes',
+
+          'Sin egreso',
+
+          'Sin firma total'
+
+        ],
+
+        datasets: [
+
+          {
+
+            data: [1, 1, 1],
+
+            backgroundColor: [
+
+              '#198754',
+
+              '#ffc107',
+
+              '#dc3545'
+
+            ],
+
+            borderWidth: 1
+
+          }
+
+        ]
+
+      },
+
+      options: {
+
+        responsive: true,
+
+        maintainAspectRatio: false,
+
+        plugins: {
+
+          legend: {
+
+            position: 'bottom'
+
+          }
+
+        }
+
+      }
+
+    }
+
+  );
+
+}
+private crearGraficoInstitucional(): void {
+
+  this.graficoInstitucional = new Chart(
+    this.graficoInstitucionalCanvas.nativeElement,
+    {
+
+      type: 'bar',
+
+      data: {
+
+        labels: [
+
+          'Registrados',
+
+          'Activos',
+
+          'Turnos',
+
+          'Jornadas',
+
+          'Asignaciones'
+
+        ],
+
+        datasets: [
+
+          {
+
+            label: 'Cantidad',
+
+            data: [0, 0, 0, 0, 0],
+
+            backgroundColor: [
+
+              '#0d6efd',
+
+              '#198754',
+
+              '#ffc107',
+
+              '#6f42c1',
+
+              '#fd7e14'
+
+            ]
+
+          }
+
+        ]
+
+      },
+
+      options: {
+
+        responsive: true,
+
+        maintainAspectRatio: false,
+
+        plugins: {
+
+          legend: {
+
+            display: false
+
+          }
+
+        },
+
+        scales: {
+
+          y: {
+
+            beginAtZero: true
+
+          }
+
+        }
+
+      }
+
+    }
+
+  );
+
+}
 }
