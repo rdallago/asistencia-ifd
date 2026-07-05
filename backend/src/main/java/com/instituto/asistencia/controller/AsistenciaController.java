@@ -1,39 +1,49 @@
 package com.instituto.asistencia.controller;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
+import com.instituto.asistencia.entity.Usuario;
+import org.springframework.security.core.Authentication;
+import com.instituto.asistencia.exportador.ExcelExporter;
+import com.instituto.asistencia.dto.ReporteAsistenciaDTO;
+import java.util.List;
+import com.instituto.asistencia.dto.EstadisticasDTO;
+import org.springframework.security.core.context.SecurityContextHolder;
 import com.instituto.asistencia.service.AsistenciaService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import java.time.LocalDate;
-import com.instituto.asistencia.entity.enums.TipoReporte;
+import com.instituto.asistencia.repository.UsuarioRepository;
+import com.instituto.asistencia.dto.AsistenciaRequest;
+import com.instituto.asistencia.dto.IndicadoresInstitucionalesDTO;
+
 @RestController
 @RequestMapping("/api/asistencia")
 @CrossOrigin(origins = "*")
 public class AsistenciaController {
 
     private final AsistenciaService asistenciaService;
+    private final UsuarioRepository usuarioRepository;
 
-    public AsistenciaController(AsistenciaService asistenciaService) {
+    public AsistenciaController(AsistenciaService asistenciaService,UsuarioRepository usuarioRepository) {
         this.asistenciaService = asistenciaService;
+        this.usuarioRepository=usuarioRepository;
     }
+    
+  
 
     // =========================
     // 🔵 MARCAR ENTRADA
     // =========================
-    @PostMapping("/entrada")
+ @PostMapping("/entrada")
 public ResponseEntity<?> marcarEntrada(
-        @RequestParam String dni,
-        @RequestParam Long turnoId) {
+        @RequestBody AsistenciaRequest request) {
 
     try {
 
-        String respuesta =
+        return ResponseEntity.ok(
                 asistenciaService.marcarEntrada(
-                        dni,
-                        turnoId);
-
-        return ResponseEntity.ok(
-                respuesta);
+                        request.getDni(),
+                        request.getJornadaId()));
 
     } catch (Exception e) {
 
@@ -41,20 +51,18 @@ public ResponseEntity<?> marcarEntrada(
                 .body(e.getMessage());
     }
 }
-   @PostMapping("/salida")
+
+
+  @PostMapping("/salida")
 public ResponseEntity<?> marcarSalida(
-        @RequestParam String dni,
-        @RequestParam Long turnoId) {
+        @RequestBody AsistenciaRequest request) {
 
     try {
 
-        String respuesta =
-                asistenciaService.marcarSalida(
-                        dni,
-                        turnoId);
-
         return ResponseEntity.ok(
-                respuesta);
+                asistenciaService.marcarSalida(
+                        request.getDni(),
+                        request.getJornadaId()));
 
     } catch (Exception e) {
 
@@ -62,6 +70,7 @@ public ResponseEntity<?> marcarSalida(
                 .body(e.getMessage());
     }
 }
+
 @PostMapping("/cierre")
 public ResponseEntity<?> cerrarJornada(
         @RequestParam Long turnoId) {
@@ -69,27 +78,142 @@ public ResponseEntity<?> cerrarJornada(
     return ResponseEntity.ok(
             asistenciaService.procesarCierreJornada(turnoId));
 }
-@GetMapping("/reporte")
-public ResponseEntity<?> reporte(@RequestParam String fecha) {
 
-    LocalDate f = LocalDate.parse(fecha);
-
-    return ResponseEntity.ok(asistenciaService.reporteDiario(f));
-}
-
-@GetMapping("/reporte/pdf")
+@GetMapping("/pdf")
 public ResponseEntity<byte[]> generarPdf(
-        @RequestParam LocalDate fecha,
-        @RequestParam TipoReporte tipo) {
 
-    byte[] pdf = asistenciaService.generarReporte(fecha, tipo);
+        @RequestParam String fecha,
+
+        @RequestParam(required = false)
+        Long turnoId,
+
+        @RequestParam(required = false)
+        Long docenteId,
+
+        @RequestParam(required = false)
+        String estado) {
+    
+    Authentication auth =
+        SecurityContextHolder
+                .getContext()
+                .getAuthentication();
+
+String username = auth.getName();
+
+Usuario usuario =
+        usuarioRepository
+                .findByUsername(username)
+                .orElseThrow(() ->
+                        new RuntimeException("Usuario no encontrado"));
+
+String nombreCompleto =
+        usuario.getApellido()
+        + ", "
+        + usuario.getNombre();
+
+    byte[] pdf = asistenciaService.generarPdf(
+
+            LocalDate.parse(fecha),
+
+            turnoId,
+
+            docenteId,
+
+            estado,nombreCompleto);
 
     return ResponseEntity.ok()
+
             .header(
                     HttpHeaders.CONTENT_DISPOSITION,
-                    "attachment; filename=reporte_asistencia.pdf"
-            )
+                    "inline; filename=reporte_asistencia.pdf")
+
             .contentType(MediaType.APPLICATION_PDF)
+
             .body(pdf);
+}
+@GetMapping("/reporte")
+public ResponseEntity<?> reporte(
+
+        @RequestParam String fecha,
+
+        @RequestParam(required = false)
+        Long turnoId,
+
+        @RequestParam(required = false)
+        Long docenteId,
+
+        @RequestParam(required = false)
+        String estado) {
+
+    return ResponseEntity.ok(
+
+            asistenciaService.reporte(
+
+                    LocalDate.parse(fecha),
+
+                    turnoId,
+
+                    docenteId,
+
+                    estado
+            ));
+}
+@GetMapping("/excel")
+public ResponseEntity<byte[]> excel(
+
+        @RequestParam String fecha,
+
+        @RequestParam(required = false)
+        Long turnoId,
+
+        @RequestParam(required = false)
+        Long docenteId,
+
+        @RequestParam(required = false)
+        String estado
+
+) throws Exception {
+
+    List<ReporteAsistenciaDTO> datos =
+            asistenciaService.reporte(
+                    LocalDate.parse(fecha),
+                    turnoId,
+                    docenteId,
+                    estado);
+
+    byte[] archivo =
+            ExcelExporter.exportar(datos);
+
+    return ResponseEntity.ok()
+
+            .header(
+                    HttpHeaders.CONTENT_DISPOSITION,
+                    "attachment; filename=Reporte_Asistencias.xlsx")
+
+            .contentType(
+                    MediaType.APPLICATION_OCTET_STREAM)
+
+            .body(archivo);
+}
+@GetMapping("/estadisticas")
+public ResponseEntity<EstadisticasDTO> estadisticas(
+
+        @RequestParam String fecha) {
+
+    return ResponseEntity.ok(
+
+            asistenciaService.obtenerEstadisticas(
+
+                    LocalDate.parse(fecha)));
+}
+@GetMapping("/indicadores")
+public ResponseEntity<IndicadoresInstitucionalesDTO> obtenerIndicadores() {
+
+    return ResponseEntity.ok(
+
+            asistenciaService.obtenerIndicadoresInstitucionales()
+
+    );
+
 }
 }

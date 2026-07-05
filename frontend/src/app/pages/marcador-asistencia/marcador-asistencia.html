@@ -1,0 +1,61 @@
+<div class="pantalla-marcacion">
+
+  <div class="logo-fondo"></div>
+
+  <div class="encabezado">
+
+    <img
+      src="/img/logo-ifd.png";
+      alt="ISFD"
+      class="logo-isfd">
+
+    <h1>
+      Sistema de Gestión de Asistencia
+    </h1>
+
+    <h2>
+      Instituto Superior de Formación Docente y Técnica
+    </h2>
+
+  </div>
+
+  <div class="card-asistencia">
+
+    <h3>📝 Registro de Asistencia</h3>
+
+    <p>
+      Ingrese su DNI para registrar
+      ingreso o egreso.
+    </p>
+
+        <input
+      type="text"
+      placeholder="Ingrese DNI"
+      [(ngModel)]="dni"
+      maxlength="8"
+      inputmode="numeric"
+      (input)="soloNumeros()">
+
+    <div class="acciones">
+
+      <button
+        class="btn-ingreso"
+        (click)="registrarIngreso()">
+
+        Registrar Ingreso
+
+      </button>
+
+      <button
+        class="btn-egreso"
+        (click)="registrarEgreso()">
+
+        Registrar Egreso
+
+      </button>
+
+    </div>
+
+  </div>
+
+</div>

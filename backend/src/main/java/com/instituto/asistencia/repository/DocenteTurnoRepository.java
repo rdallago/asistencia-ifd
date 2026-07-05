@@ -40,5 +40,6 @@ boolean existsByDocente_IdAndTurno_IdAndActivoTrue(
         Long docenteId,
         Long turnoId
 );
+long countByActivoTrue();
 
 }

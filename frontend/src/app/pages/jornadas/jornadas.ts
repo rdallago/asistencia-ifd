@@ -5,6 +5,7 @@ import {
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
 import { Turno } from '../turnos/turnos';
 import { JornadaService } from '../../services/jornada.service';
 import { TurnoService } from '../../services/turno.service';
@@ -71,7 +72,8 @@ implements OnInit {
   constructor(
     private jornadaService: JornadaService,
     private turnoService: TurnoService,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
@@ -359,5 +361,24 @@ esAperturaAnticipada(j: Jornada): boolean {
 
   return fechaApertura < horaInicio;
 }
+abrirAsistencia(jornada: Jornada): void {
+
+  this.router.navigate([
+    '/asistencia',
+    jornada.id
+  ]);
+}
+
+abrirPantallaAsistencia(
+  jornada: Jornada
+): void {
+
+  window.open(
+  `/marcador/${jornada.id}`,
+  '_blank'
+);
+}
 
 }
+
+

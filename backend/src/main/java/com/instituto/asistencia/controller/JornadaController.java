@@ -128,10 +128,13 @@ public ResponseEntity<?> listarPorTurno(
             jornadaService
                     .listarPorTurno(turnoId));
 }
+
+
 @GetMapping("/abiertas")
-public ResponseEntity<?> listarAbiertas() {
+public ResponseEntity<?> abiertas() {
 
     return ResponseEntity.ok(
-            jornadaService.listarAbiertas());
+            jornadaService.listarAbiertas()
+    );
 }
 }

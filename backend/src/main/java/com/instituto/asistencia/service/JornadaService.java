@@ -236,4 +236,5 @@ public class JornadaService {
     return jornadaRepository
             .findByHabilitadaTrueAndCerradaFalse();
 }
+   
     }

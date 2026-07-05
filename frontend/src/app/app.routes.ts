@@ -6,7 +6,11 @@ import { Dashboard } from './dashboard/dashboard';
 
 import { MainLayout } from './layout/main-layout/main-layout';
 
-import { Asistencia } from './pages/asistencia/asistencia';
+import { AsistenciaComponent } from './pages/asistencia/asistencia';
+
+import { IndicadoresComponent } from './components/indicadores/indicadores.component';
+
+import { MarcadorAsistenciaComponent } from './pages/marcador-asistencia/marcador-asistencia';
 
 import {TurnosComponent} from './pages/turnos/turnos';
 
@@ -26,6 +30,11 @@ export const routes: Routes = [
     path: 'login',
     component: Login
   },
+
+{
+path: 'marcador/:jornadaId',
+  component: MarcadorAsistenciaComponent
+},
 
   {
     path: '',
@@ -56,11 +65,22 @@ export const routes: Routes = [
         component: JornadasComponent
       },
 
-      {
-        path: 'asistencia',
-        component: Asistencia
-      },
+{
+  path: 'asistencia',
+  component: AsistenciaComponent
+},
 
+     {
+ 
+
+  path: 'asistencia/:jornadaId',
+  component: AsistenciaComponent
+},
+
+  {
+    path: 'indicadores',
+    component: IndicadoresComponent
+},
       
       {
         path: 'usuarios',

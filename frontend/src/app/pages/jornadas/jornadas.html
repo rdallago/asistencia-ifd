@@ -105,7 +105,7 @@
         <th>Estado</th>
         <th>Observaciones</th>
         <th>Acciones</th>
-        
+
       </tr>
 
     </thead>
@@ -126,42 +126,52 @@
         <td>{{ j.fechaApertura || '-' }}</td>
 
         <td>{{ j.fechaCierre || '-' }}</td>
+        
+        
 
         <td>
 
           <span [ngClass]="obtenerEstadoVisual(j)">
             {{ obtenerTextoEstado(j) }}
+          </span>
+
+        </td>
+
+        <td>
+
+          <span
+            *ngIf="esAperturaAnticipada(j)"
+            class="apertura-anticipada">
+
+            🕐 Apertura anticipada
 
           </span>
 
         </td>
+
         <td>
 
-        <span
-        *ngIf="esAperturaAnticipada(j)"
-        class="apertura-anticipada">
+  <button
+    *ngIf="!j.cerrada"
+    class="btn-eliminar"
+    (click)="cerrarJornada(j)"
+    title="Cerrar jornada">
 
-        🕐 Apertura anticipada
+    🔒
 
-        </span>
+  </button>
 
-        </td>
-        
-        
-        <td>
+  <button
+    *ngIf="j.habilitada && !j.cerrada"
+    class="btn-asistencia"
+    (click)="abrirPantallaAsistencia(j)"
+    title="Abrir pantalla de asistencia">
 
-          <button
-            *ngIf="!j.cerrada"
-            class="btn-eliminar"
-            (click)="cerrarJornada(j)"
-            title="Cerrar jornada">
+    📝
 
-            🔒
+  </button>
 
-          </button>
-
-        </td>
-
+</td>
       </tr>
 
     </tbody>

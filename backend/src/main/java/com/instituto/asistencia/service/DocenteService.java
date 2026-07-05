@@ -213,5 +213,8 @@ public void eliminar(Long id) {
         );
     }
 }
+    public List<Docente> listar() {
+    return docenteRepository.findAll();
+}
   
 }

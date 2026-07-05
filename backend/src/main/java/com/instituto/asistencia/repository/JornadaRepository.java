@@ -30,5 +30,5 @@ public interface JornadaRepository
     List<Jornada> findByHabilitadaTrueAndCerradaFalse();
     List<Jornada> findByTurno_Id(Long turnoId);
     boolean existsByTurno_Id(Long turnoId);
-
+    long countByCerradaFalse();
 }

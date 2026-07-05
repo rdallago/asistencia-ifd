@@ -1,4 +1,91 @@
-.construccion {
-  text-align: center;
-  margin-top: 100px;
+.panel-asistencia {
+
+  padding: 20px;
+}
+
+.panel-asistencia h2 {
+
+  margin-bottom: 20px;
+}
+
+.filtros {
+
+  display: flex;
+
+  gap: 20px;
+
+  align-items: end;
+
+  margin-bottom: 30px;
+}
+
+.filtros label {
+
+  display: block;
+
+  margin-bottom: 5px;
+
+  font-weight: bold;
+}
+
+.filtros input,
+.filtros select {
+
+  padding: 8px;
+
+  min-width: 180px;
+}
+
+.btn-buscar {
+
+  background: #1976d2;
+
+  color: white;
+
+  border: none;
+
+  padding: 10px 20px;
+
+  cursor: pointer;
+
+  border-radius: 6px;
+}
+
+.btn-marcador {
+
+  background: #28a745;
+
+  color: white;
+
+  border: none;
+
+  padding: 8px 12px;
+
+  cursor: pointer;
+
+  border-radius: 6px;
+}
+
+table {
+
+  width: 100%;
+
+  border-collapse: collapse;
+
+  margin-bottom: 30px;
+}
+
+th {
+
+  background: #f2f2f2;
+}
+
+th,
+td {
+
+  border: 1px solid #ddd;
+
+  padding: 10px;
+
+  text-align: left;
 }

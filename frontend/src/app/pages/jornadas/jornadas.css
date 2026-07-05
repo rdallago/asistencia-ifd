@@ -110,3 +110,19 @@ td {
   color: #9333ea;
   font-weight: 600;
 }
+.btn-asistencia {
+
+  background: #17a2b8;
+
+  color: white;
+
+  border: none;
+
+  padding: 6px 12px;
+
+  border-radius: 6px;
+
+  cursor: pointer;
+
+  margin-left: 5px;
+}

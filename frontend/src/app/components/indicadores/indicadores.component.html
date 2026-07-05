@@ -1,0 +1,247 @@
+<div class="contenedor">
+<p style="font-size:22px;color:red;">
+Presentes: {{estadisticas.presentes}}
+<br>
+Total docentes: {{estadisticas.totalDocentes}}
+<br>
+Registrados: {{indicadores.docentesRegistrados}}
+</p>
+    
+    <div class="encabezado">
+
+        <h2>Indicadores Institucionales</h2>
+
+        <p class="subtitulo">
+
+            Panel de seguimiento de asistencia y gestión institucional
+
+        </p>
+
+    </div>
+
+    <div class="filtro">
+
+        <label>Fecha</label>
+
+        <input
+            type="date"
+            [(ngModel)]="fecha"
+            (change)="actualizarDashboard()">
+
+    </div>
+
+    <h4>Indicadores de Asistencia Docente</h4>
+
+    <div class="cards">
+
+        <div class="card presente">
+
+            <div class="numero">
+
+                {{estadisticas.presentes}}
+
+            </div>
+
+            <div class="texto">
+
+                Presentes
+
+            </div>
+
+        </div>
+
+        <div class="card egreso">
+
+            <div class="numero">
+
+                {{estadisticas.sinEgreso}}
+
+            </div>
+
+            <div class="texto">
+
+                Sin egreso
+
+            </div>
+
+        </div>
+
+        <div class="card firma">
+
+            <div class="numero">
+
+                {{estadisticas.sinFirmaTotal}}
+
+            </div>
+
+            <div class="texto">
+
+                Sin firma total
+
+            </div>
+
+        </div>
+
+        <div class="card porcentaje">
+
+            <div class="numero">
+
+                {{estadisticas.porcentajeAsistencia}}%
+
+            </div>
+
+            <div class="texto">
+
+                % Asistencia
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <h4>Indicadores Institucionales</h4>
+
+    <div class="cards">
+
+        <div class="card total">
+
+            <div class="numero">
+
+                {{estadisticas.totalDocentes}}
+
+            </div>
+
+            <div class="texto">
+
+                Total docentes
+
+            </div>
+
+        </div>
+
+        <div class="card registrados">
+
+            <div class="numero">
+
+                {{indicadores.docentesRegistrados}}
+
+            </div>
+
+            <div class="texto">
+
+                Docentes registrados
+
+            </div>
+
+        </div>
+
+        <div class="card activos">
+
+            <div class="numero">
+
+                {{indicadores.docentesActivos}}
+
+            </div>
+
+            <div class="texto">
+
+                Docentes activos
+
+            </div>
+
+        </div>
+
+        <div class="card jornadas">
+
+            <div class="numero">
+
+                {{indicadores.jornadasAbiertas}}
+
+            </div>
+
+            <div class="texto">
+
+                Jornadas abiertas
+
+            </div>
+
+        </div>
+
+        <div class="card turnos">
+
+            <div class="numero">
+
+                {{indicadores.turnosConfigurados}}
+
+            </div>
+
+            <div class="texto">
+
+                Turnos configurados
+
+            </div>
+
+        </div>
+
+        <div class="card asignaciones">
+
+            <div class="numero">
+
+                {{indicadores.asignacionesVigentes}}
+
+            </div>
+
+            <div class="texto">
+
+                Asignaciones vigentes
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <h4>Gráficos de análisis</h4>
+
+    <div class="graficos">
+
+        <div class="grafico-card">
+
+            <h5>Distribución de asistencia</h5>
+
+            <div class="grafico-placeholder">
+
+                Próximamente
+
+            </div>
+
+        </div>
+
+        <div class="grafico-card">
+
+            <h5>Asistencia por día</h5>
+
+            <div class="grafico-placeholder">
+
+                Próximamente
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <h4>Detalle del reporte</h4>
+
+    <div class="detalle-card">
+
+        <p>
+
+            Próximamente podremos exportar el reporte en PDF y Excel.
+
+        </p>
+
+    </div>
+
+</div>

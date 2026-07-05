@@ -1,7 +1,241 @@
-<div class="construccion">
+<div class="panel-asistencia">
 
-  <h1>🚧 Módulo en construcción</h1>
+  <h2>
+    📋 Gestión de Asistencias
+  </h2>
 
-  <p>Disponible en próximos sprints.</p>
+  <div class="filtros">
+
+    <div>
+
+      <label>Fecha</label>
+
+      <input
+        type="date"
+        [(ngModel)]="fecha">
+
+    </div>
+      <div class="cards">
+
+  <div class="card">
+    <h3>Presentes</h3>
+    <span>{{ estadisticas.presentes }}</span>
+  </div>
+
+  <div class="card">
+    <h3>Sin Egreso</h3>
+    <span>{{ estadisticas.sinEgreso }}</span>
+  </div>
+
+  <div class="card">
+    <h3>Sin Firma</h3>
+    <span>{{ estadisticas.sinFirmaTotal }}</span>
+  </div>
+
+  <div class="card">
+    <h3>Total</h3>
+    <span>{{ estadisticas.total }}</span>
+  </div>
+
+</div>
+      <button
+ (click)="exportarExcel()">
+
+ 📊 Excel
+
+</button>
+      <button
+ (click)="exportarPdf()">
+
+ 📄 PDF
+
+</button>
+
+    <div>
+
+      <label>Turno</label>
+
+      <select
+        [(ngModel)]="turnoId">
+
+        <option [ngValue]="null">
+          Todos
+        </option>
+
+        <option
+          *ngFor="let t of turnos"
+          [ngValue]="t.id">
+
+          {{ t.nombre }}
+
+        </option>
+
+      </select>
+      <label>Docente</label>
+
+<select [(ngModel)]="docenteId">
+
+  <option [ngValue]="null">
+    Todos
+  </option>
+
+  <option
+    *ngFor="let d of docentes"
+    [ngValue]="d.id">
+
+    {{d.apellido}},
+    {{d.nombre}}
+
+  </option>
+
+</select>
+      <label>Estado</label>
+
+<select [(ngModel)]="estado">
+
+  <option value="">
+    Todos
+  </option>
+
+  <option value="PRESENTE">
+    Presente
+  </option>
+
+  <option value="SIN_EGRESO">
+    Sin egreso
+  </option>
+
+  <option value="SIN_FIRMA_TOTAL">
+    Sin firma total
+  </option>
+
+</select>
+      <button
+  class="btn-limpiar"
+  (click)="limpiarFiltros()">
+
+  Limpiar
+
+</button>
+
+    </div>
+
+    <div>
+
+      <button
+        class="btn-buscar"
+        (click)="buscarReporte()">
+
+        🔎 Buscar
+
+      </button>
+
+    </div>
+
+  </div>
+
+  <h3>
+    Jornadas Abiertas
+  </h3>
+
+  <table>
+
+    <thead>
+
+      <tr>
+
+        <th>ID</th>
+
+        <th>Fecha</th>
+
+        <th>Turno</th>
+
+        <th>Acción</th>
+
+      </tr>
+
+    </thead>
+
+    <tbody>
+
+      <tr
+        *ngFor="
+          let j of jornadasAbiertas
+        ">
+
+        <td>{{ j.id }}</td>
+
+        <td>{{ j.fecha }}</td>
+
+        <td>{{ j.turno.nombre }}</td>
+
+        <td>
+
+          <button
+            class="btn-marcador"
+            (click)="abrirMarcador(j.id)">
+
+            📝 Abrir Marcador
+
+          </button>
+
+        </td>
+
+      </tr>
+
+    </tbody>
+
+  </table>
+
+  <h3>
+    Reporte de Asistencias
+  </h3>
+
+  <table>
+
+    <thead>
+
+      <tr>
+
+        <th>DNI</th>
+
+        <th>Docente</th>
+
+        <th>Turno</th>
+
+        <th>Ingreso</th>
+
+        <th>Egreso</th>
+
+        <th>Estado</th>
+
+      </tr>
+
+    </thead>
+
+    <tbody>
+
+      <tr
+        *ngFor="
+          let r of reporte
+        ">
+
+        <td>{{ r.dni }}</td>
+
+        <td>{{ r.docente }}</td>
+
+        <td>{{ r.turno }}</td>
+
+        <td>{{ r.ingreso }}</td>
+
+        <td>{{ r.egreso }}</td>
+
+        <td>{{ r.estado }}</td>
+
+      </tr>
+
+    </tbody>
+
+  </table>
 
 </div>

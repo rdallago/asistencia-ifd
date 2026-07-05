@@ -62,5 +62,17 @@ export class JornadaService {
     }
   );
 }
+abiertas() {
+
+  return this.http.get<any[]>(
+    `${this.api}/abiertas`
+  );
+}
+ getAbiertas(): Observable<any[]> {
+
+  return this.http.get<any[]>(
+    `${this.api}/abiertas`
+  );
+}
 
 }

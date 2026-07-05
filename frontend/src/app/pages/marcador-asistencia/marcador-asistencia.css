@@ -1,0 +1,200 @@
+.pantalla-marcacion {
+
+    min-height: 100vh;
+
+    display: flex;
+    flex-direction: column;
+
+    justify-content: center;
+    align-items: center;
+
+    background: #f5f7fa;
+
+    position: relative;
+
+    overflow: hidden;
+
+    padding: 20px;
+}
+
+/* Logo gigante de fondo */
+
+.logo-fondo {
+
+    position: fixed;
+
+    width: 1000px;
+    height: 1000px;
+
+    background-image: url('/img/fondo.png');
+
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+
+    opacity: 0.40;
+
+    filter: blur(1px);
+
+    z-index: 0;
+
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+}
+/* Encabezado */
+
+.encabezado {
+
+    text-align: center;
+
+    margin-bottom: 30px;
+
+    z-index: 2;
+}
+
+.logo-isfd {
+
+    width: 400px;
+
+    height: auto;
+    border-radius: 20px;
+    margin-bottom: 10px;
+    box-shadow:0 6px 20px rgba(0,0,0,0.25);
+
+    padding: 8px;
+
+    background: white;
+}
+
+.encabezado h1 {
+
+    margin: 0;
+
+    color: #003366;
+
+    font-size: 2rem;
+
+    font-weight: 700;
+}
+
+.encabezado h2 {
+
+    margin-top: 10px;
+
+    color: #666;
+
+    font-size: 1.1rem;
+
+    font-weight: 400;
+}
+
+/* Tarjeta principal */
+
+.card-asistencia {
+
+    width: 450px;
+
+    background: white;
+
+    border-radius: 16px;
+
+    padding: 30px;
+
+    box-shadow:
+        0 10px 30px rgba(0,0,0,.12);
+
+    text-align: center;
+
+    z-index: 2;
+}
+
+.card-asistencia h3 {
+
+    margin-top: 0;
+
+    color: #2c3e50;
+}
+
+.descripcion {
+
+    margin-bottom: 25px;
+
+    color: #666;
+}
+
+/* Campo DNI */
+
+.card-asistencia input {
+
+    width: 100%;
+
+    padding: 12px;
+
+    font-size: 18px;
+
+    border: 1px solid #ccc;
+
+    border-radius: 8px;
+
+    margin-bottom: 20px;
+
+    box-sizing: border-box;
+}
+
+/* Botones */
+
+.acciones {
+
+    display: flex;
+
+    gap: 10px;
+
+    justify-content: center;
+}
+
+.btn-ingreso {
+
+    background: #28a745;
+
+    color: white;
+
+    border: none;
+
+    padding: 12px 20px;
+
+    border-radius: 8px;
+
+    cursor: pointer;
+
+    font-weight: bold;
+
+    transition: .2s;
+}
+
+.btn-egreso {
+
+    background: #dc3545;
+
+    color: white;
+
+    border: none;
+
+    padding: 12px 20px;
+
+    border-radius: 8px;
+
+    cursor: pointer;
+
+    font-weight: bold;
+
+    transition: .2s;
+}
+
+.btn-ingreso:hover,
+.btn-egreso:hover {
+
+    transform: translateY(-2px);
+
+    opacity: .95;
+}

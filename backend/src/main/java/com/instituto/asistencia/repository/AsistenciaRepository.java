@@ -54,5 +54,18 @@ ORDER BY a.docente.apellido
 List<Asistencia> findPlanillaJornadaTurno(Long jornadaId, Long turnoId);
 List<Asistencia> findByFecha(LocalDate fecha);
 
+Optional<Asistencia>
+findByDocenteIdAndTurnoIdAndFecha(
+        Long docenteId,
+        Long turnoId,
+        LocalDate fecha);
+
+List<Asistencia> findByFechaAndTurnoId(
+        LocalDate fecha,
+        Long turnoId);
+
+List<Asistencia> findByFechaAndDocenteId(
+        LocalDate fecha,
+        Long docenteId);
 
 }
