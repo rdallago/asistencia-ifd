@@ -1,9 +1,16 @@
 package com.instituto.asistencia.service;
 import com.instituto.asistencia.entity.DocenteTurno;
-import com.instituto.asistencia.entity.Asistencia;
+import java.util.Observable;
 import com.instituto.asistencia.entity.Docente;
-import com.instituto.asistencia.dto.EstadisticasDTO;
-import java.time.LocalDate;
+import com.instituto.asistencia.dto.EvolucionAsistenciaDTO;
+import com.instituto.asistencia.dto.ResumenEjecutivoDTO;
+import com.instituto.asistencia.entity.Asistencia;
+import com.instituto.asistencia.dto.EstadoGeneralJornadaDTO;
+
+
+
+import java.util.ArrayList;
+import java.util.List;
 import com.instituto.asistencia.entity.Jornada;
 import com.itextpdf.text.BaseColor;
 import com.instituto.asistencia.dto.EstadisticasDTO;
@@ -38,6 +45,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 import com.instituto.asistencia.dto.IndicadoresInstitucionalesDTO;
+import java.time.LocalDate;
 
 @Service
 public class AsistenciaService {
@@ -671,29 +679,41 @@ public EstadisticasDTO obtenerEstadisticas(LocalDate fecha) {
     EstadisticasDTO dto = new EstadisticasDTO();
 
     // ======================================
-    // Asistencia
-    // ======================================
+// Estado REAL de los registros
+// ======================================
 
-    long presentes =
-            lista.stream()
-                    .filter(a ->
-                            a.getEstado() ==
-                            EstadoAsistencia.PRESENTE)
-                    .count();
+long presentes =
+        lista.stream()
+                .filter(a ->
 
-    long sinEgreso =
-            lista.stream()
-                    .filter(a ->
-                            a.getEstado() ==
-                            EstadoAsistencia.SIN_EGRESO)
-                    .count();
+                        a.getHoraIngreso() != null
+                        &&
 
-    long sinFirmaTotal =
-            lista.stream()
-                    .filter(a ->
-                            a.getEstado() ==
-                            EstadoAsistencia.SIN_FIRMA_TOTAL)
-                    .count();
+                        a.getHoraEgreso() != null
+
+                )
+                .count();
+
+long sinEgreso =
+        lista.stream()
+                .filter(a ->
+
+                        a.getHoraIngreso() != null
+                        &&
+
+                        a.getHoraEgreso() == null
+
+                )
+                .count();
+
+long sinFirmaTotal =
+        lista.stream()
+                .filter(a ->
+
+                        a.getHoraIngreso() == null
+
+                )
+                .count();
 
     dto.setPresentes(presentes);
 
@@ -740,10 +760,118 @@ public EstadisticasDTO obtenerEstadisticas(LocalDate fecha) {
                         / dto.getDocentesRegistrados());
 
     }
+dto.setActividadRegistrada(
+
+        presentes
+      + sinEgreso
+      + sinFirmaTotal
+
+);
+    return dto;
+
+}
+
+public EstadoGeneralJornadaDTO obtenerEstadoGeneralJornada(LocalDate fecha) {
+
+    EstadoGeneralJornadaDTO dto =
+            new EstadoGeneralJornadaDTO();
+
+    // Reutilizamos las estadísticas existentes
+    EstadisticasDTO est =
+            obtenerEstadisticas(fecha);
+
+    long actividad =
+            est.getActividadRegistrada();
+
+    // ==========================================
+    // Sin actividad
+    // ==========================================
+
+    if (actividad == 0) {
+
+        dto.setPuntaje(0);
+        dto.setEstado("SIN ACTIVIDAD");
+        dto.setDescripcion(
+                "No existen registros para la fecha seleccionada.");
+
+        return dto;
+    }
+
+    // ==========================================
+    // Calidad del Registro Diario
+    //
+    // Se evalúa únicamente sobre los docentes
+    // que iniciaron un registro de asistencia.
+    // ==========================================
+
+    long registrosIniciados =
+            est.getPresentes()
+          + est.getSinEgreso();
+    
+    dto.setRegistrosCompletos(
+        est.getPresentes());
+
+    dto.setRegistrosIniciados(
+        registrosIniciados);
+
+    int puntaje;
+
+    if (registrosIniciados == 0) {
+
+        puntaje = 0;
+
+    } else {
+
+        puntaje = (int) Math.round(
+
+                (est.getPresentes() * 100.0)
+
+                / registrosIniciados
+
+        );
+
+    }
+
+    dto.setPuntaje(puntaje);
+
+    // ==========================================
+    // Clasificación
+    // ==========================================
+
+    if (puntaje >= 90) {
+
+        dto.setEstado("EXCELENTE");
+
+        dto.setDescripcion(
+                "La calidad del registro diario es excelente. Todos los registros iniciados fueron completados correctamente.");
+
+    } else if (puntaje >= 75) {
+
+        dto.setEstado("BUENO");
+
+        dto.setDescripcion(
+                "La mayoría de los registros iniciados fueron completados correctamente.");
+
+    } else if (puntaje >= 60) {
+
+        dto.setEstado("REGULAR");
+
+        dto.setDescripcion(
+                "Se detectan varios registros iniciados sin egreso. Se recomienda revisar la jornada.");
+
+    } else {
+
+        dto.setEstado("CRÍTICO");
+
+        dto.setDescripcion(
+                "La mayoría de los registros iniciados quedaron incompletos. Se recomienda realizar seguimiento administrativo.");
+
+    }
 
     return dto;
 
 }
+
 public IndicadoresInstitucionalesDTO obtenerIndicadoresInstitucionales() {
 
     IndicadoresInstitucionalesDTO dto =
@@ -778,6 +906,259 @@ public IndicadoresInstitucionalesDTO obtenerIndicadoresInstitucionales() {
     return dto;
 
 }
+public List<EvolucionAsistenciaDTO> obtenerEvolucion(
+        LocalDate desde,
+        LocalDate hasta) {
+
+    
+
+    List<Asistencia> asistencias =
+            asistenciaRepository.findByFechaBetweenOrderByFecha(
+                    desde,
+                    hasta);
+
+    List<EvolucionAsistenciaDTO> resultado =
+            new ArrayList<>();
+
+    for (LocalDate fecha = desde;
+         !fecha.isAfter(hasta);
+         fecha = fecha.plusDays(1)) {
+
+        final LocalDate fechaActual = fecha;
+
+        EvolucionAsistenciaDTO dto =
+                new EvolucionAsistenciaDTO();
+
+        dto.setFecha(fechaActual);
+
+        long presentes =
+                asistencias.stream()
+                        .filter(a ->
+                                a.getFecha().equals(fechaActual)
+                                &&
+                                a.getEstado() == EstadoAsistencia.PRESENTE)
+                        .count();
+
+        long sinEgreso =
+                asistencias.stream()
+                        .filter(a ->
+                                a.getFecha().equals(fechaActual)
+                                &&
+                                a.getEstado() == EstadoAsistencia.SIN_EGRESO)
+                        .count();
+
+        long sinFirma =
+                asistencias.stream()
+                        .filter(a ->
+                                a.getFecha().equals(fechaActual)
+                                &&
+                                a.getEstado() == EstadoAsistencia.SIN_FIRMA_TOTAL)
+                        .count();
+
+        dto.setPresentes(presentes);
+
+        dto.setSinEgreso(sinEgreso);
+
+        dto.setSinFirmaTotal(sinFirma);
+
+        resultado.add(dto);
+
+    }
+
+    return resultado;
+
+}
+public ResumenEjecutivoDTO obtenerResumenEjecutivo(LocalDate fecha) {
+
+    ResumenEjecutivoDTO dto = new ResumenEjecutivoDTO();
+
+    List<String> conclusiones = new ArrayList<>();
+
+    // ==========================================
+    // Estadísticas del día seleccionado
+    // ==========================================
+
+    EstadisticasDTO est = obtenerEstadisticas(fecha);
+
+    long actividad = est.getActividadRegistrada();
+
+    if (actividad == 0) {
+
+        conclusiones.add(
+                "No existe actividad registrada para la fecha seleccionada.");
+
+        dto.setConclusiones(conclusiones);
+
+        return dto;
+    }
+
+    // ==========================================
+    // Evolución histórica (últimos 30 días)
+    // ==========================================
+
+    LocalDate desde = fecha.minusDays(29);
+
+    List<EvolucionAsistenciaDTO> evolucion =
+            obtenerEvolucion(desde, fecha);
+
+    double promedioPresentes =
+            evolucion.stream()
+                    .mapToLong(EvolucionAsistenciaDTO::getPresentes)
+                    .average()
+                    .orElse(0);
+
+    double promedioSinEgreso =
+            evolucion.stream()
+                    .mapToLong(EvolucionAsistenciaDTO::getSinEgreso)
+                    .average()
+                    .orElse(0);
+
+    double promedioSinFirma =
+            evolucion.stream()
+                    .mapToLong(EvolucionAsistenciaDTO::getSinFirmaTotal)
+                    .average()
+                    .orElse(0);
+
+    // ==========================================
+    // Indicadores porcentuales
+    // ==========================================
+
+    double completos =
+            (est.getPresentes() * 100.0) / actividad;
+
+    double pendientes =
+            (est.getSinEgreso() * 100.0) / actividad;
+
+    double sinFirma =
+            (est.getSinFirmaTotal() * 100.0) / actividad;
+
+    // ==========================================
+// Tendencias
+// ==========================================
+
+if (est.getPresentes() > promedioPresentes + 0.5) {
+
+    dto.getTendencias().add(
+            "📈 La asistencia fue superior al promedio de los últimos 30 días.");
+
+} else if (est.getPresentes() < promedioPresentes - 0.5) {
+
+    dto.getTendencias().add(
+            "📉 La asistencia fue inferior al promedio de los últimos 30 días.");
+
+} else {
+
+    dto.getTendencias().add(
+            "➖ La asistencia se mantuvo dentro del comportamiento habitual.");
+}
+
+// ==========================================
+// Observaciones
+// ==========================================
+
+if (est.getSinEgreso() > promedioSinEgreso + 0.5) {
+
+    dto.getObservaciones().add(
+            "⚠ La cantidad de pendientes de egreso supera el comportamiento habitual.");
+
+} else if (est.getSinEgreso() == 0) {
+
+    dto.getObservaciones().add(
+            "✔ No existen pendientes de egreso.");
+}    
+
+
+    // ==========================================
+// Observaciones
+// ==========================================
+
+if (est.getSinFirmaTotal() > promedioSinFirma + 0.5) {
+
+    dto.getObservaciones().add(
+            "🔴 La cantidad de registros sin firma supera el comportamiento habitual.");
+
+} else if (est.getSinFirmaTotal() == 0) {
+
+    dto.getObservaciones().add(
+            "✔ No existen registros sin firma.");
+}
+
+    // ==========================================
+    // Análisis porcentual de la jornada
+    // ==========================================
+
+    if (completos >= 90) {
+
+        conclusiones.add(
+                "La jornada presenta un excelente nivel de registros completos.");
+
+    } else if (completos >= 70) {
+
+        conclusiones.add(
+                "La mayoría de los docentes registró correctamente ingreso y egreso.");
+
+    } else {
+
+        conclusiones.add(
+                "Se observa una disminución en los registros completos de la jornada.");
+    }
+
+   // ============================================
+// Recomendaciones
+// ============================================
+
+if (pendientes > 30) {
+
+    dto.getRecomendaciones().add(
+            "Revisar el cierre de la jornada y solicitar el registro de egresos pendientes.");
+
+} else if (pendientes > 0) {
+
+    dto.getRecomendaciones().add(
+            "Controlar los registros de egreso antes del cierre de la jornada.");
+
+}
+
+   // ============================================
+// Recomendaciones
+// ============================================
+
+if (sinFirma > 20) {
+
+    dto.getRecomendaciones().add(
+            "Verificar los docentes que aún no registraron asistencia y realizar el seguimiento correspondiente.");
+
+}
+
+   // ==========================================
+// Estado general de la jornada
+// ==========================================
+
+if (est.getSinFirmaTotal() == 0
+        && est.getSinEgreso() == 0
+        && est.getPresentes() >= promedioPresentes) {
+
+    dto.setEstadoGeneral(
+            "🟢 Jornada con funcionamiento excelente.");
+
+} else if (est.getSinFirmaTotal() <= 1
+        && est.getSinEgreso() <= 1) {
+
+    dto.setEstadoGeneral(
+            "🟡 Jornada con observaciones menores.");
+
+} else {
+
+    dto.setEstadoGeneral(
+            "🔴 Jornada que requiere seguimiento administrativo.");
+
+}
+
+    dto.setConclusiones(conclusiones);
+
+    return dto;
+}
+
 
 }
 

@@ -12,6 +12,8 @@ export interface Estadisticas {
 
   porcentajeAsistencia: number;
 
+  actividadRegistrada: number;
+
   // ==========================
   // Indicadores institucionales
   // ==========================

@@ -12,6 +12,73 @@
 
     </div>
 
+    <div class="estado-general-card"
+     [ngClass]="obtenerClaseEstado()">
+
+  <div class="estado-titulo">
+    Calidad del Registro Diario
+  </div>
+
+  <div class="estado-resumen">
+
+    <div class="estado-cantidad">
+
+        {{ estadoGeneral.registrosCompletos }}
+
+        <span class="separador">de</span>
+
+        {{ estadoGeneral.registrosIniciados }}
+
+    </div>
+
+    <div class="estado-detalle">
+
+        registros iniciados fueron completados correctamente
+
+    </div>
+
+</div>
+
+<div class="estado-resumen">
+
+    <div class="estado-cantidad">
+
+        {{ estadoGeneral.registrosCompletos }}
+
+        <span class="separador">de</span>
+
+        {{ estadoGeneral.registrosIniciados }}
+
+    </div>
+
+    <div class="estado-detalle">
+
+        registros iniciados fueron completados correctamente
+
+    </div>
+
+</div>
+
+<div class="estado-puntaje">
+
+    {{ estadoGeneral.puntaje }}%
+
+</div>
+
+<div class="estado-nivel">
+
+    {{ estadoGeneral.estado }}
+
+</div>
+
+<div class="estado-descripcion">
+
+    {{ estadoGeneral.descripcion }}
+
+</div>
+        
+</div>
+    
     <div class="filtro">
 
         <label>Fecha</label>
@@ -19,11 +86,26 @@
         <input
             type="date"
             [(ngModel)]="fecha"
-            (change)="actualizarDashboard()">
+            (ngModelChange)="actualizarDashboard()">
 
     </div>
 
     <h4>Indicadores de Asistencia Docente</h4>
+    <div class="card actividad">
+
+    <div class="numero">
+
+        {{estadisticas.actividadRegistrada}}
+
+    </div>
+
+    <div class="texto">
+
+        Actividad registrada
+
+    </div>
+
+</div>
 
     <div class="cards">
 
@@ -195,37 +277,196 @@
 
     </div>
 
-    <h4>Gráficos de análisis</h4>
+   <h4>Gráficos de análisis</h4>
 
-    <div class="graficos">
+<div class="graficos">
 
-        <div class="grafico-card">
+    <!-- ============================= -->
+    <!-- DONA -->
+    <!-- ============================= -->
 
-            <h5>Distribución de asistencia del día</h5>
-            
-            <div class="grafico-contenedor">
+    <div class="grafico-card">
 
-    <canvas #graficoAsistencia></canvas>
+        <h5>Estado de los registros del día</h5>
 
-</div>
+        <p class="grafico-descripcion">
+            Situación actual de los registros correspondientes a la fecha seleccionada.
+        </p>
 
-        </div>
+        <div class="grafico-contenedor">
 
-        <div class="grafico-card">
-
-            <h5>Indicadores institucionales</h5>
-           <div class="grafico-contenedor">
-
-    <canvas #graficoInstitucional></canvas>
-
-</div>
+            <canvas #graficoAsistencia></canvas>
 
         </div>
 
     </div>
 
-    <h4>Detalle del reporte</h4>
+    <!-- ============================= -->
+    <!-- GRAFICO HISTORICO -->
+    <!-- ============================= -->
 
+    <div class="grafico-card">
+
+        <h5>Evolución de incidencias (últimos 30 días)</h5>
+
+        <p class="grafico-descripcion">
+            Evolución diaria de registros completos, pendientes de egreso y docentes sin registro.
+        </p>
+
+        <div class="grafico-contenedor">
+
+            <canvas #graficoInstitucional></canvas>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- ===================================================== -->
+<!-- RESUMEN DEL DIA -->
+<!-- ===================================================== -->
+
+<div class="resumen-jornada">
+
+    <h6>Resumen de la jornada</h6>
+
+    <p>
+        🟢 Registros completos:
+        <strong>{{estadisticas.presentes}}</strong>
+    </p>
+
+    <p>
+        🟡 Pendientes de egreso:
+        <strong>{{estadisticas.sinEgreso}}</strong>
+    </p>
+
+    <p>
+        🔴 Sin registro:
+        <strong>{{estadisticas.sinFirmaTotal}}</strong>
+    </p>
+
+    <p>
+        📋 Actividad registrada:
+        <strong>{{estadisticas.actividadRegistrada}}</strong>
+        docentes
+    </p>
+
+</div>
+
+<!-- ===================================================== -->
+<!-- RESUMEN HISTORICO -->
+<!-- ===================================================== -->
+
+<div class="resumen-bi">
+
+    <h6>Resumen Ejecutivo</h6>
+
+    <!-- Estado General -->
+
+    <div class="bloque-bi">
+
+        <h5>🟢 Estado General</h5>
+
+        <p>{{ resumenEjecutivo.estadoGeneral }}</p>
+
+    </div>
+
+    <!-- Tendencias -->
+
+    <div
+        class="bloque-bi"
+        *ngIf="resumenEjecutivo.tendencias.length">
+
+        <h5>📈 Tendencias</h5>
+
+        <ul>
+
+            <li *ngFor="let t of resumenEjecutivo.tendencias">
+
+                {{ t }}
+
+            </li>
+
+        </ul>
+
+    </div>
+
+    <!-- Observaciones -->
+
+    <div
+        class="bloque-bi"
+        *ngIf="resumenEjecutivo.observaciones.length">
+
+        <h5>⚠ Observaciones</h5>
+
+        <ul>
+
+            <li *ngFor="let o of resumenEjecutivo.observaciones">
+
+                {{ o }}
+
+            </li>
+
+        </ul>
+
+    </div>
+
+    <!-- Recomendaciones -->
+
+    <div
+        class="bloque-bi"
+        *ngIf="resumenEjecutivo.recomendaciones.length">
+
+        <h5>💡 Recomendaciones</h5>
+
+        <ul>
+
+            <li *ngFor="let r of resumenEjecutivo.recomendaciones">
+
+                {{ r }}
+
+            </li>
+
+        </ul>
+
+    </div>
+
+</div>
+
+
+<!-- ===================================================== -->
+<!-- EXPLICACION DEL GRAFICO -->
+<!-- ===================================================== -->
+
+<div class="info-grafico">
+
+    <strong>¿Cómo interpretar el gráfico de evolución?</strong>
+
+    <p>
+    El gráfico muestra la evolución diaria de las incidencias de asistencia correspondientes a los últimos treinta días.
+    </p>
+
+    <ul>
+
+        <li>
+            <strong>🟢 Registro completo:</strong>
+            ingreso y egreso registrados correctamente.
+        </li>
+
+        <li>
+            <strong>🟡 Pendiente de egreso:</strong>
+            el docente registró ingreso, pero no registró egreso.
+        </li>
+
+        <li>
+            <strong>🔴 Sin registro:</strong>
+            el docente no registró ingreso en la jornada.
+        </li>
+
+    </ul>
+
+</div>
     <div class="detalle-card">
 
         <p>

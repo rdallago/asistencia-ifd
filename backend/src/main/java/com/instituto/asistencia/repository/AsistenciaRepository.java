@@ -68,4 +68,8 @@ List<Asistencia> findByFechaAndDocenteId(
         LocalDate fecha,
         Long docenteId);
 
+List<Asistencia> findByFechaBetweenOrderByFecha(
+        LocalDate desde,
+        LocalDate hasta);
+
 }

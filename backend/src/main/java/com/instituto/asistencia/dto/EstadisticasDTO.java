@@ -23,6 +23,16 @@ public class EstadisticasDTO {
     private long asignacionesVigentes;
 
     private Double porcentajeAsistencia;
+    
+    private long actividadRegistrada;
+
+    public long getActividadRegistrada() {
+        return actividadRegistrada;
+    }
+
+    public void setActividadRegistrada(long actividadRegistrada) {
+        this.actividadRegistrada = actividadRegistrada;
+    }
 
     public EstadisticasDTO() {
     }

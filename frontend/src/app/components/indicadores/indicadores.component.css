@@ -156,14 +156,26 @@ h4 {
 }
 
 .grafico-contenedor {
-  position: relative;
-  width: 100%;
-  min-height: 280px;
-}
 
-.grafico-contenedor canvas {
-  width: 100% !important;
-  height: 280px !important;
+    position: relative;
+
+    width: 100%;
+
+    height: 360px;
+
+    display: flex;
+
+    justify-content: center;
+
+    align-items: center;
+
+}
+.grafico-contenedor canvas{
+
+    max-width:320px !important;
+
+    max-height:320px !important;
+
 }
 
 .grafico-placeholder {
@@ -190,4 +202,399 @@ h4 {
 .detalle-card p {
   margin: 0;
   color: #495057;
+}
+.grafico-descripcion{
+
+    margin-top:-10px;
+
+    margin-bottom:15px;
+
+    color:#6c757d;
+
+    font-size:14px;
+
+    font-style:italic;
+
+}
+.info-grafico{
+
+    margin-top:20px;
+
+    background:#eef6ff;
+
+    border-left:5px solid #0d6efd;
+
+    padding:15px;
+
+    border-radius:10px;
+
+}
+
+.info-grafico p{
+
+    margin-bottom:10px;
+
+}
+
+.info-grafico ul{
+
+    margin:0;
+
+    padding-left:18px;
+
+}
+.resumen-bi{
+
+    margin-top:20px;
+
+    padding:15px;
+
+    background:#eef6ff;
+
+    border-left:5px solid #0d6efd;
+
+    border-radius:10px;
+
+}
+
+.resumen-bi h6{
+
+    margin-bottom:12px;
+
+    font-weight:bold;
+
+    color:#0d6efd;
+
+}
+
+.resumen-bi p{
+
+    margin:6px 0;
+
+    color:#333;
+
+}
+.actividad{
+
+    background: linear-gradient(135deg,#17a2b8,#0dcaf0);
+
+    margin-bottom:20px;
+
+}
+.grafico-aclaracion{
+
+    margin-top: -8px;
+
+    margin-bottom: 16px;
+
+    font-size: 0.82rem;
+
+    color: #6c757d;
+
+    line-height: 1.4;
+
+}
+.resumen-jornada{
+
+    margin-top:20px;
+
+    padding:16px;
+
+    border-radius:10px;
+
+    background:#f8f9fa;
+
+    border-left:5px solid #0d6efd;
+
+}
+
+.resumen-jornada h6{
+
+    margin-bottom:12px;
+
+    color:#0d6efd;
+
+    font-weight:600;
+
+}
+
+.resumen-jornada p{
+
+    margin:6px 0;
+
+    color:#495057;
+
+}
+/* ===========================
+   Resumen Ejecutivo BI
+=========================== */
+
+.item-resumen{
+
+    display:flex;
+
+    align-items:flex-start;
+
+    gap:15px;
+
+    background:#ffffff;
+
+    border:1px solid #e9ecef;
+
+    border-radius:12px;
+
+    padding:14px;
+
+    margin-bottom:12px;
+
+    transition:all .2s ease;
+
+}
+
+.item-resumen:hover{
+
+    box-shadow:0 4px 12px rgba(0,0,0,.08);
+
+    transform:translateY(-2px);
+
+}
+
+.icono-resumen{
+
+    width:42px;
+
+    height:42px;
+
+    border-radius:50%;
+
+    background:#eef6ff;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    font-size:22px;
+
+    flex-shrink:0;
+
+}
+
+.texto-resumen{
+
+    flex:1;
+
+    color:#495057;
+
+    line-height:1.45;
+
+    font-size:.95rem;
+
+}
+/* ======================================
+   Bloques ejecutivos BI
+====================================== */
+
+.bloque-bi{
+
+    margin-top:18px;
+
+    padding:18px;
+
+    background:#ffffff;
+
+    border-radius:12px;
+
+    border-left:6px solid #0d6efd;
+
+    box-shadow:0 3px 10px rgba(0,0,0,.08);
+
+}
+
+.bloque-bi h5{
+
+    margin-bottom:12px;
+
+    font-size:1rem;
+
+    font-weight:600;
+
+    color:#0d6efd;
+
+}
+
+.bloque-bi p{
+
+    margin:0;
+
+    color:#495057;
+
+    line-height:1.6;
+
+}
+
+.bloque-bi ul{
+
+    margin:0;
+
+    padding-left:20px;
+
+}
+
+.bloque-bi li{
+
+    margin-bottom:8px;
+
+    color:#495057;
+
+    line-height:1.5;
+
+}
+/* ======================================
+   Bloques ejecutivos BI
+====================================== */
+
+.bloque-bi{
+
+    margin-top:18px;
+
+    padding:18px;
+
+    background:#ffffff;
+
+    border-radius:12px;
+
+    border-left:6px solid #0d6efd;
+
+    box-shadow:0 3px 10px rgba(0,0,0,.08);
+
+}
+
+.bloque-bi h5{
+
+    margin-bottom:12px;
+
+    font-size:1rem;
+
+    font-weight:600;
+
+    color:#0d6efd;
+
+}
+
+.bloque-bi p{
+
+    margin:0;
+
+    color:#495057;
+
+    line-height:1.6;
+
+}
+
+.bloque-bi ul{
+
+    margin:0;
+
+    padding-left:20px;
+
+}
+
+.bloque-bi li{
+
+    margin-bottom:8px;
+
+    color:#495057;
+
+    line-height:1.5;
+
+}
+.estado-general-card{
+
+    margin-bottom:25px;
+
+    padding:28px;
+
+    border-radius:16px;
+
+    background:linear-gradient(135deg,#0d6efd,#20c997);
+
+    color:white;
+
+    text-align:center;
+
+    box-shadow:0 8px 18px rgba(0,0,0,.18);
+
+}
+
+.estado-titulo{
+
+    font-size:20px;
+
+    font-weight:600;
+
+    margin-bottom:10px;
+
+}
+
+.estado-puntaje{
+
+    font-size:58px;
+
+    font-weight:bold;
+
+    line-height:1;
+
+}
+
+.estado-nivel{
+
+    margin-top:12px;
+
+    font-size:24px;
+
+    font-weight:700;
+
+    letter-spacing:1px;
+
+}
+
+.estado-descripcion{
+
+    margin-top:18px;
+
+    font-size:15px;
+
+    opacity:.95;
+
+}
+/* ================================
+   Estado General - Colores dinámicos
+================================== */
+
+.estado-excelente{
+
+    background: linear-gradient(135deg,#198754,#20c997);
+
+}
+
+.estado-bueno{
+
+    background: linear-gradient(135deg,#ffc107,#ffca2c);
+
+    color:#212529;
+
+}
+
+.estado-regular{
+
+    background: linear-gradient(135deg,#fd7e14,#ff922b);
+
+}
+
+.estado-critico{
+
+    background: linear-gradient(135deg,#dc3545,#ff6b6b);
+
 }

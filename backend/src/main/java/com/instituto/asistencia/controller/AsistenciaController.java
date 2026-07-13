@@ -4,6 +4,9 @@ import org.springframework.security.core.Authentication;
 import com.instituto.asistencia.exportador.ExcelExporter;
 import com.instituto.asistencia.dto.ReporteAsistenciaDTO;
 import java.util.List;
+import com.instituto.asistencia.dto.EstadoGeneralJornadaDTO;
+import com.instituto.asistencia.dto.ResumenEjecutivoDTO;
+import com.instituto.asistencia.dto.EvolucionAsistenciaDTO;
 import com.instituto.asistencia.dto.EstadisticasDTO;
 import org.springframework.security.core.context.SecurityContextHolder;
 import com.instituto.asistencia.service.AsistenciaService;
@@ -206,12 +209,48 @@ public ResponseEntity<EstadisticasDTO> estadisticas(
 
                     LocalDate.parse(fecha)));
 }
+@GetMapping("/estado-general")
+public ResponseEntity<EstadoGeneralJornadaDTO> estadoGeneral(
+        @RequestParam String fecha) {
+
+    return ResponseEntity.ok(
+            asistenciaService.obtenerEstadoGeneralJornada(
+                    LocalDate.parse(fecha)));
+}
+
 @GetMapping("/indicadores")
 public ResponseEntity<IndicadoresInstitucionalesDTO> obtenerIndicadores() {
 
     return ResponseEntity.ok(
 
             asistenciaService.obtenerIndicadoresInstitucionales()
+
+    );
+
+}
+@GetMapping("/evolucion")
+public ResponseEntity<List<EvolucionAsistenciaDTO>> obtenerEvolucion() {
+    LocalDate hasta = LocalDate.now();
+    LocalDate desde = hasta.minusDays(29);
+    return ResponseEntity.ok(
+
+            asistenciaService.obtenerEvolucion(desde,hasta)
+
+    );
+
+}
+@GetMapping("/resumen-ejecutivo")
+public ResponseEntity<ResumenEjecutivoDTO> obtenerResumenEjecutivo(
+
+        @RequestParam String fecha) {
+
+    return ResponseEntity.ok(
+
+            asistenciaService.obtenerResumenEjecutivo(
+
+                    LocalDate.parse(fecha)
+
+            )
 
     );
 

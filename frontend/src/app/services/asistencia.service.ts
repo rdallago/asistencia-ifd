@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
 import { IndicadoresInstitucionales } from '../modelos/indicadores-institucionales';
-
+import { EvolucionAsistencia } from '../modelos/evolucion-asistencia';
+import { ResumenEjecutivo } from '../modelos/resumen-ejecutivo';
+import { EstadoGeneralJornada } from '../modelos/estado-general-jornada';
 import {
   HttpClient
 } from '@angular/common/http';
@@ -214,4 +216,34 @@ obtenerIndicadoresInstitucionales()
     );
 
 }
+obtenerEvolucion(): Observable<EvolucionAsistencia[]> {
+
+  return this.http.get<EvolucionAsistencia[]>(
+
+    `${this.api}/evolucion`
+
+  );
+
+}
+obtenerResumenEjecutivo(
+  fecha: string
+): Observable<ResumenEjecutivo> {
+
+  return this.http.get<ResumenEjecutivo>(
+
+      `${this.api}/resumen-ejecutivo?fecha=${fecha}`
+
+  );
+
+}
+obtenerEstadoGeneral(fecha: string): Observable<EstadoGeneralJornada> {
+
+  return this.http.get<EstadoGeneralJornada>(
+
+    `${this.api}/estado-general?fecha=${fecha}`
+
+  );
+
+}
+
 }
