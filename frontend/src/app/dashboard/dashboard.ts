@@ -110,9 +110,18 @@ nuevoDocente = {
   activo: true
 };
 
+
 abrirFormulario() {
-this.errores = {};
-  this.mostrarFormulario = true;
+
+    this.errores = {};
+
+    this.modoEdicion = false;
+
+    this.docenteEditandoId = null;
+
+    this.resetFormulario();
+
+    this.mostrarFormulario = true;
 }
 
 cancelarCambioClave(): void {

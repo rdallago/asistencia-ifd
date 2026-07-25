@@ -42,4 +42,6 @@ boolean existsByDocente_IdAndTurno_IdAndActivoTrue(
 );
 long countByActivoTrue();
 
+
+
 }

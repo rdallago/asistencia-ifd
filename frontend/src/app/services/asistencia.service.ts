@@ -2,7 +2,9 @@ import { Injectable } from '@angular/core';
 import { IndicadoresInstitucionales } from '../modelos/indicadores-institucionales';
 import { EvolucionAsistencia } from '../modelos/evolucion-asistencia';
 import { ResumenEjecutivo } from '../modelos/resumen-ejecutivo';
+import { ComparacionHistorica } from '../modelos/comparacion-historica';
 import { EstadoGeneralJornada } from '../modelos/estado-general-jornada';
+import { EstadisticasTurno } from '../modelos/estadisticas-turno';
 import {
   HttpClient
 } from '@angular/common/http';
@@ -243,6 +245,49 @@ obtenerEstadoGeneral(fecha: string): Observable<EstadoGeneralJornada> {
     `${this.api}/estado-general?fecha=${fecha}`
 
   );
+
+}
+
+obtenerComparacionHistorica(
+  fecha: string
+): Observable<ComparacionHistorica> {
+
+  return this.http.get<ComparacionHistorica>(
+
+    `${this.api}/comparacion-historica?fecha=${fecha}`
+
+  );
+
+}
+exportarReporteEjecutivo(fecha: string): Observable<Blob> {
+
+  return this.http.get(
+
+    `http://localhost:8080/api/reportes/ejecutivo?fecha=${fecha}`,
+
+    {
+
+      responseType: 'blob'
+
+    }
+
+  );
+
+}
+obtenerEstadisticasTurno(
+    fecha: string,
+    turnoId: number) {
+
+  return this.http.get<EstadisticasTurno>(
+
+      `${this.api}/estadisticas-turno`,
+
+      {
+        params: {
+          fecha,
+          turnoId
+        }
+      });
 
 }
 

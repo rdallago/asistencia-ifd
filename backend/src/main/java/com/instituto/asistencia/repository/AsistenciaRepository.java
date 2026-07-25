@@ -72,4 +72,9 @@ List<Asistencia> findByFechaBetweenOrderByFecha(
         LocalDate desde,
         LocalDate hasta);
 
+List<Asistencia> findByTurnoIdAndFecha(
+        Long turnoId,
+        LocalDate fecha);
+
+
 }

@@ -88,6 +88,13 @@ public SecurityFilterChain securityFilterChain(
                         "ADMIN",
                         "SECRETARIO"
                 )
+                
+                .requestMatchers(
+                 "/api/reportes/**"
+                ).hasAnyRole(
+                        "ADMIN",
+                        "SECRETARIO"
+                )
 
                 .anyRequest()
                 .authenticated()

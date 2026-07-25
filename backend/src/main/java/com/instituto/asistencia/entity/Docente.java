@@ -43,13 +43,8 @@ private LocalDate fechaAlta;
     public String getTelefono() {
        return telefono;
     }
-@ManyToMany
-@JoinTable(
-    name = "docentes_turnos",
-    joinColumns = @JoinColumn(name = "docente_id"),
-    inverseJoinColumns = @JoinColumn(name = "turno_id")
-)
-private List<Turno> turnos;
+
+
     public void setTelefono(String telefono) {
         this.telefono = telefono;
     }

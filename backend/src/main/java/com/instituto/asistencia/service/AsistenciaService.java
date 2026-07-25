@@ -1,16 +1,17 @@
 package com.instituto.asistencia.service;
 import com.instituto.asistencia.entity.DocenteTurno;
-import java.util.Observable;
+import com.instituto.asistencia.dto.ComparacionHistoricaDTO;
 import com.instituto.asistencia.entity.Docente;
 import com.instituto.asistencia.dto.EvolucionAsistenciaDTO;
 import com.instituto.asistencia.dto.ResumenEjecutivoDTO;
 import com.instituto.asistencia.entity.Asistencia;
 import com.instituto.asistencia.dto.EstadoGeneralJornadaDTO;
+import com.instituto.asistencia.dto.EstadisticasTurnoDTO;
+import java.util.Optional;
 
 
 
 import java.util.ArrayList;
-import java.util.List;
 import com.instituto.asistencia.entity.Jornada;
 import com.itextpdf.text.BaseColor;
 import com.instituto.asistencia.dto.EstadisticasDTO;
@@ -104,7 +105,24 @@ public class AsistenciaService {
                     .orElseThrow(() ->
                             new RuntimeException(
                                     "Docente no encontrado"));
+    // ======================================
+// Verificar asignación al turno
+// ======================================
 
+boolean asignado =
+        docenteTurnoRepository
+                .existsByDocente_IdAndTurno_Id(
+                        docente.getId(),
+                        turno.getId());
+
+if (!asignado) {
+
+    throw new RuntimeException(
+            "El docente no está asignado al turno "
+                    + turno.getNombre());
+
+
+}
     if (ahora.isBefore(turno.getHoraInicio())) {
 
         throw new RuntimeException(
@@ -179,6 +197,21 @@ public class AsistenciaService {
                     .orElseThrow(() ->
                             new RuntimeException(
                                     "Docente no encontrado"));
+    
+    boolean asignado =
+        docenteTurnoRepository
+                .existsByDocente_IdAndTurno_Id(
+                        docente.getId(),
+                        turno.getId());
+
+if (!asignado) {
+
+    throw new RuntimeException(
+            "El docente no está asignado al turno "
+                    + turno.getNombre());
+
+
+}
 
     Asistencia asistencia =
             asistenciaRepository
@@ -671,8 +704,127 @@ private byte[] agregarPieConPaginas(byte[] pdfBase, String usuario) {
         throw new RuntimeException("Error al agregar pie de página", e);
     }
 }
+
+public EstadisticasTurnoDTO obtenerEstadisticasPorTurno(
+        LocalDate fecha,
+        Long turnoId) {
+
+    EstadisticasTurnoDTO dto =
+            new EstadisticasTurnoDTO();
+
+    Turno turno =
+            turnoRepository.findById(turnoId)
+                    .orElseThrow(() ->
+                            new RuntimeException("Turno no encontrado"));
+
+    dto.setTurno(turno.getNombre());
+
+    //=========================================
+    // Docentes asignados al turno
+    //=========================================
+
+List<DocenteTurno> asignados =
+        docenteTurnoRepository.findActivosPorTurnoYFecha(
+                turnoId,
+                fecha);
+
+System.out.println("Asignados encontrados: " + asignados.size());
+
+for (DocenteTurno dt : asignados) {
+
+    System.out.println(
+        dt.getDocente().getApellido()
+        + " "
+        + dt.getDocente().getNombre()
+        + " - Desde: "
+        + dt.getFechaDesde()
+        + " - Hasta: "
+        + dt.getFechaHasta()
+    );
+
+}
+
+    dto.setDocentesAsignados(
+            asignados.size());
+    
+    System.out.println(
+    "Después del set = " +
+    dto.getDocentesAsignados()
+);
+
+    //=========================================
+    // Asistencias del turno
+    //=========================================
+
+    List<Asistencia> asistencias =
+            asistenciaRepository
+                    .findByTurnoIdAndFecha(
+                            turnoId,
+                            fecha);
+//=========================================
+// Conteo de estados
+//=========================================
+
+long presentes =
+        asistencias.stream()
+                .filter(a ->
+                        a.getHoraIngreso() != null &&
+                        a.getHoraEgreso() != null)
+                .count();
+
+long sinEgreso =
+        asistencias.stream()
+                .filter(a ->
+                        a.getHoraIngreso() != null &&
+                        a.getHoraEgreso() == null)
+                .count();
+
+long sinFirma =
+        dto.getDocentesAsignados()
+        - presentes
+        - sinEgreso;
+
+if (sinFirma < 0) {
+    sinFirma = 0;
+}
+
+dto.setPresentes(presentes);
+dto.setSinEgreso(sinEgreso);
+dto.setSinFirmaTotal(sinFirma);
+
+//=========================================
+// Porcentaje de asistencia
+//=========================================
+
+if (dto.getDocentesAsignados() == 0) {
+
+    dto.setPorcentajeAsistencia(0);
+
+} else {
+
+    dto.setPorcentajeAsistencia(
+
+            (presentes * 100.0)
+
+                    / dto.getDocentesAsignados());
+
+}
+System.out.println("====================================");
+System.out.println("DTO FINAL");
+System.out.println("Turno: " + dto.getTurno());
+System.out.println("Asignados: " + dto.getDocentesAsignados());
+System.out.println("Presentes: " + dto.getPresentes());
+System.out.println("Sin egreso: " + dto.getSinEgreso());
+System.out.println("Sin firma: " + dto.getSinFirmaTotal());
+System.out.println("%: " + dto.getPorcentajeAsistencia());
+System.out.println("====================================");
+return dto;
+}
+
+
 public EstadisticasDTO obtenerEstadisticas(LocalDate fecha) {
 
+  
     List<Asistencia> lista =
             asistenciaRepository.findByFecha(fecha);
 
@@ -742,24 +894,74 @@ long sinFirmaTotal =
 
     dto.setAsignacionesVigentes(
             docenteTurnoRepository.countByActivoTrue());
+    
+    // ======================================
+// Docentes asignados al turno de la jornada
+// ======================================
+
+long docentesAsignados = 0;
+
+
+Optional<Jornada> jornadaOpt =
+        jornadaRepository.findFirstByFecha(fecha);
+
+
+List<Jornada> jornadas =
+        jornadaRepository.findByFecha(fecha);
+
+for (Jornada jornada : jornadas) {
+
+    if (Boolean.TRUE.equals(jornada.getHabilitada())) {
+
+        long cantidad = docenteTurnoRepository
+                .findActivosPorTurnoYFecha(
+                        jornada.getTurno().getId(),
+                        fecha)
+                .size();
+
+        docentesAsignados += cantidad;
+
+        System.out.println(
+                "Turno: "
+                        + jornada.getTurno().getNombre()
+                        + " -> "
+                        + cantidad
+                        + " docentes");
+    }
+}
+
+if (jornadaOpt.isPresent()) {
+
+    Jornada jornada = jornadaOpt.get();
+
+
+List<DocenteTurno> asignados =
+        docenteTurnoRepository.findActivosPorTurnoYFecha(
+                jornada.getTurno().getId(),
+                fecha);
+
+
+
+docentesAsignados = asignados.size();
+
+}
 
     // ======================================
     // Porcentaje asistencia
     // ======================================
+if (docentesAsignados == 0) {
 
-    if (dto.getDocentesRegistrados() == 0) {
+    dto.setPorcentajeAsistencia(0.0);
 
-        dto.setPorcentajeAsistencia(0.0);
+} else {
 
-    } else {
+    dto.setPorcentajeAsistencia(
 
-        dto.setPorcentajeAsistencia(
+            (presentes * 100.0)
 
-                (presentes * 100.0)
+                    / docentesAsignados);
 
-                        / dto.getDocentesRegistrados());
-
-    }
+}
 dto.setActividadRegistrada(
 
         presentes
@@ -767,6 +969,10 @@ dto.setActividadRegistrada(
       + sinFirmaTotal
 
 );
+
+
+System.out.println("=================================");
+System.out.println("SALGO DE OBTENER ESTADISTICAS");
     return dto;
 
 }
@@ -979,7 +1185,6 @@ public ResumenEjecutivoDTO obtenerResumenEjecutivo(LocalDate fecha) {
     // ==========================================
 
     EstadisticasDTO est = obtenerEstadisticas(fecha);
-
     long actividad = est.getActividadRegistrada();
 
     if (actividad == 0) {
@@ -1155,13 +1360,116 @@ if (est.getSinFirmaTotal() == 0
 }
 
     dto.setConclusiones(conclusiones);
+    return dto;
+    
+}
+
+public ComparacionHistoricaDTO obtenerComparacionHistorica(LocalDate fecha) {
+
+    ComparacionHistoricaDTO dto = new ComparacionHistoricaDTO();
+
+    LocalDate desde = fecha.minusDays(29);
+
+    List<EvolucionAsistenciaDTO> evolucion =
+            obtenerEvolucion(desde, fecha);
+
+    if (evolucion.isEmpty()) {
+
+        dto.setPromedioHistorico(0);
+        dto.setValorActual(0);
+        dto.setDiferencia(0);
+        dto.setTendencia("SIN DATOS");
+
+        return dto;
+    }
+
+    // ==============================
+    // Promedio histórico
+    // ==============================
+
+    double promedio = evolucion.stream()
+
+            .mapToDouble(e -> {
+
+                long actividad =
+                        e.getPresentes()
+                      + e.getSinEgreso()
+                      + e.getSinFirmaTotal();
+
+                long iniciados =
+                        e.getPresentes()
+                      + e.getSinEgreso();
+
+                if (actividad == 0 || iniciados == 0) {
+                    return 0;
+                }
+
+                return (e.getPresentes() * 100.0) / iniciados;
+
+            })
+
+            .average()
+
+            .orElse(0);
+
+    // ==============================
+    // Día seleccionado
+    // ==============================
+
+    EstadisticasDTO est =
+            obtenerEstadisticas(fecha);
+
+    long iniciados =
+            est.getPresentes()
+          + est.getSinEgreso();
+
+    double actual = 0;
+
+    if (iniciados > 0) {
+
+        actual =
+                (est.getPresentes() * 100.0)
+                / iniciados;
+
+    }
+
+    // ==============================
+    // Diferencia
+    // ==============================
+
+    double diferencia =
+            actual - promedio;
+
+    dto.setPromedioHistorico(
+            Math.round(promedio * 10.0) / 10.0);
+
+    dto.setValorActual(
+            Math.round(actual * 10.0) / 10.0);
+
+    dto.setDiferencia(
+            Math.round(diferencia * 10.0) / 10.0);
+
+    // ==============================
+    // Tendencia
+    // ==============================
+
+    if (diferencia > 3) {
+
+        dto.setTendencia("SUBE");
+
+    } else if (diferencia < -3) {
+
+        dto.setTendencia("BAJA");
+
+    } else {
+
+        dto.setTendencia("ESTABLE");
+
+    }
 
     return dto;
-}
-
 
 }
 
 
-
-
+}

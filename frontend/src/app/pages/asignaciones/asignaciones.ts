@@ -1,5 +1,6 @@
 import {
-  Component,ChangeDetectorRef,
+  Component,
+  ChangeDetectorRef,
   OnInit
 } from '@angular/core';
 
@@ -11,66 +12,52 @@ import { DocenteService } from '../../services/docente.service';
 import { TurnoService } from '../../services/turno.service';
 
 export interface Asignacion {
-
   id?: number;
-
   docente: {
     id: number;
     nombre: string;
     apellido: string;
     dni: string;
   };
-
   turno: {
     id: number;
     nombre: string;
   };
-
   fechaDesde: string;
   fechaHasta?: string;
   activo: boolean;
 }
 
 export interface AsignacionRequest {
-
   docenteId: number;
   turnoId: number;
   fechaDesde: string;
-  
 }
-
 
 @Component({
   selector: 'app-asignaciones',
   standalone: true,
-  imports: [
-    CommonModule,
-    FormsModule
-  ],
+  imports: [CommonModule, FormsModule],
   templateUrl: './asignaciones.html',
   styleUrls: ['./asignaciones.css']
 })
 export class AsignacionesComponent implements OnInit {
-
   asignaciones: Asignacion[] = [];
   asignacionesFiltradas: Asignacion[] = [];
-
   docentes: any[] = [];
   turnos: any[] = [];
 
   filtroBusqueda = '';
   filtroTurno = 0;
-
+  estadoSeleccionado: string = 'ACTIVAS';
   mostrarFormulario = false;
   mostrarHistorial = false;
-  mostrarSoloActivas = true;
+  mostrarSoloActivas: boolean = true;
 
   asignacion: AsignacionRequest = {
     docenteId: 0,
     turnoId: 0,
-    fechaDesde: new Date()
-      .toISOString()
-      .split('T')[0]
+    fechaDesde: new Date().toISOString().split('T')[0]
   };
 
   constructor(
@@ -81,166 +68,99 @@ export class AsignacionesComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-
     this.listar();
 
-    this.docenteService.getAll()
-      .subscribe(data => this.docentes = data);
-
-    this.turnoService.getAll()
-      .subscribe(data => this.turnos = data);
+    this.docenteService.getAll().subscribe(data => this.docentes = data);
+    this.turnoService.getAll().subscribe(data => this.turnos = data);
   }
 
   listar(): void {
-
-  this.asignacionService
-    .getAll()
-    .subscribe(data => {
-
+    this.asignacionService.getAll().subscribe(data => {
       this.asignaciones = data;
-
-this.filtrar();
-
-this.cdr.detectChanges();
-
       this.filtrar();
-
       this.cdr.detectChanges();
     });
-}
+  }
 
   abrirFormulario(): void {
-
     this.asignacion = {
       docenteId: 0,
       turnoId: 0,
-      fechaDesde: new Date()
-        .toISOString()
-        .split('T')[0]
+      fechaDesde: new Date().toISOString().split('T')[0]
     };
-
     this.mostrarFormulario = true;
   }
 
   guardar(): void {
-
-  this.asignacionService
-    .create(this.asignacion)
-    .subscribe({
-
+    this.asignacionService.create(this.asignacion).subscribe({
       next: () => {
-
         this.mostrarFormulario = false;
         this.listar();
       },
-
       error: err => {
-
-        alert(
-          err.error?.message ??
-          'Error al crear la asignación'
-        );
+        alert(err.error?.message ?? 'Error al crear la asignación');
       }
     });
-}
-
-  desasignar(asignacion: Asignacion): void {
-
-  if (!confirm('¿Desea desasignar al docente de este turno?')) {
-    return;
   }
 
-  this.asignacionService
-    .desasignar(asignacion.id!)
-    .subscribe({
+  desasignar(asignacion: Asignacion): void {
+    if (!confirm('¿Desea desasignar al docente de este turno?')) {
+      return;
+    }
 
+    this.asignacionService.desasignar(asignacion.id!).subscribe({
       next: () => this.listar(),
-
       error: err => {
-
-        alert(
-          err.error?.message ??
-          'Error al desasignar al docente'
-        );
+        alert(err.error?.message ?? 'Error al desasignar al docente');
       }
     });
-}
+  }
 
   filtrar(): void {
+    const texto = this.filtroBusqueda.toLowerCase().trim();
 
-  const texto = this.filtroBusqueda.toLowerCase();
-
-  this.asignacionesFiltradas =
-    this.asignaciones.filter(a => {
-
+    this.asignacionesFiltradas = this.asignaciones.filter(a => {
       const coincideTexto =
-
-        a.docente.nombre
-          .toLowerCase()
-          .includes(texto)
-
-        ||
-
-        a.docente.apellido
-          .toLowerCase()
-          .includes(texto)
-
-        ||
-
-        a.turno.nombre
-          .toLowerCase()
-          .includes(texto);
+        a.docente.nombre.toLowerCase().includes(texto) ||
+        a.docente.apellido.toLowerCase().includes(texto) ||
+        a.turno.nombre.toLowerCase().includes(texto);
 
       const coincideTurno =
-
         this.filtroTurno === 0 ||
-
         a.turno.id === this.filtroTurno;
 
       const coincideEstado =
+        this.estadoSeleccionado === 'TODAS' ||
+        (this.estadoSeleccionado === 'ACTIVAS' && a.activo) ||
+        (this.estadoSeleccionado === 'INACTIVAS' && !a.activo);
 
-        !this.mostrarSoloActivas ||
-
-        a.activo;
-
-      return coincideTexto
-        && coincideTurno
-        && coincideEstado;
+      return coincideTexto && coincideTurno && coincideEstado;
     });
-}
+  }
+
+  filtrarAsignaciones(): void {
+    this.filtrar();
+  }
+
+  cambiarFiltro(): void {
+    this.mostrarSoloActivas = !this.mostrarSoloActivas;
+    this.estadoSeleccionado = this.mostrarSoloActivas ? 'ACTIVAS' : 'TODAS';
+    this.filtrar();
+  }
 
   cambiarVista(): void {
+    this.mostrarHistorial = !this.mostrarHistorial;
+    this.listar();
+  }
 
-  this.mostrarHistorial =
-    !this.mostrarHistorial;
-
-  this.listar();
-}
-cambiarFiltro(): void {
-
-  this.mostrarSoloActivas =
-    !this.mostrarSoloActivas;
-
-  this.filtrar();
-}
-reactivar(asignacion: Asignacion): void {
-
-  this.asignacionService
-    .reactivar(asignacion.id!)
-    .subscribe({
-
+  reactivar(asignacion: Asignacion): void {
+    this.asignacionService.reactivar(asignacion.id!).subscribe({
       next: () => {
-
         this.listar();
       },
-
       error: err => {
-
-        alert(
-          err.error?.message ??
-          'Error al reactivar la asignación'
-        );
+        alert(err.error?.message ?? 'Error al reactivar la asignación');
       }
     });
-}
+  }
 }

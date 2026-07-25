@@ -7,6 +7,15 @@
   gap: 10px;
   margin-bottom: 20px;
 }
+.contenedor{
+
+    width:100%;
+
+    margin:0;
+
+    padding:0;
+
+}
 
 .filtros input,
 .filtros select {

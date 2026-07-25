@@ -76,27 +76,135 @@
   </aside>
 
   <main class="contenido">
+      
 
-    <header class="topbar">
+   <header class="encabezado">
+  <div class="barra-superior">
 
       <div>
+      </div>
 
-        <strong>{{ usuario }}</strong>
+  <button
+      class="btn-salir"
+      (click)="cerrarSesion()">
 
-        <span> - {{ rol }}</span>
+      🚪 Cerrar sesión
+
+  </button>
+
+</div>
+
+       <div class="encabezado-superior">
+
+    <div class="titulo-sistema">
+      🎓 Sistema de Gestión de Asistencia
+    </div>
+
+    <div class="usuario-panel">
+
+      <div
+        class="usuario-icono"
+        (click)="toggleMenu()">
+
+        👤
 
       </div>
 
-      <button
-        class="btn-salir"
-        (click)="cerrarSesion()">
+      <div
+        class="menu-usuario"
+        *ngIf="mostrarMenuUsuario">
 
-        🚪 Cerrar sesión
+        <div class="menu-info">
 
-      </button>
+          <strong>{{ usuario }}</strong>
 
-    </header>
+          <small>{{ rol }}</small>
 
+        </div>
+
+        <hr>
+
+        <button (click)="abrirCambioClave()">
+          🔒 Cambiar contraseña
+        </button>
+
+        <button (click)="cerrarSesion()">
+          🚪 Cerrar sesión
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+  <div class="subtitulo">
+
+    Instituto Superior de Formación Docente y Técnica
+    "Dr. J. A. Ferreira"
+
+  </div>
+
+</header>
+      <div
+  *ngIf="mostrarCambioClave"
+  class="formulario-docente">
+
+  <h3>Cambiar contraseña</h3>
+
+  <label>Contraseña actual</label>
+
+  <input
+    type="password"
+    [(ngModel)]="passwordActual">
+
+  <label>Nueva contraseña</label>
+
+  <input
+    type="password"
+    [(ngModel)]="passwordNueva">
+
+  <label>Confirmar nueva contraseña</label>
+
+  <input
+    type="password"
+    [(ngModel)]="confirmarPassword">
+
+  <br><br>
+
+  <button (click)="cambiarPassword()">
+
+    Guardar
+
+  </button>
+
+  <button
+    class="btn-eliminar"
+    (click)="cancelarCambioClave()">
+
+    Cancelar
+
+  </button>
+
+</div>
+
+<section class="panel-bienvenida">
+
+  <img
+    src="/img/logo-ifd.png"
+    class="logo-ifd">
+
+  <div class="datos-usuario">
+
+    <h2>Bienvenido</h2>
+
+    <p><strong>Usuario:</strong> {{ usuario }}</p>
+
+    <p><strong>Rol:</strong> {{ rol }}</p>
+
+  </div>
+
+</section>
     <section class="pagina">
 
       <router-outlet></router-outlet>

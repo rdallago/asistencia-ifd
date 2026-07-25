@@ -1,176 +1,127 @@
+        <div class="contenedor">
 
+         
+          <section class="panel-docentes">
 
+            <h2>Docentes registrados</h2>
 
+            <div class="barra-acciones">
 
+              <div *ngIf="mostrarFormulario" class="formulario-docente">
 
-<div class="contenedor">
+                <h3>{{ modoEdicion ? 'Editar Docente' : 'Nuevo Docente' }}</h3>
 
-  <header class="encabezado">
+                <!-- CAMPOS IGUALES (los dejo igual porque ya funcionan) -->
 
-    <div class="encabezado-superior">
+                <label>Apellido</label>
+    <input
+        type="text"
+        [(ngModel)]="nuevoDocente.apellido">
 
-      <div class="titulo-sistema">
-        🎓 Sistema de Gestión de Asistencia
-      </div>
+    <label>Nombre</label>
+    <input
+        type="text"
+        [(ngModel)]="nuevoDocente.nombre">
 
-      <!-- USUARIO A LA DERECHA -->
-      <div class="usuario-panel">
+    <label>DNI</label>
+    <input
+        type="text"
+        [(ngModel)]="nuevoDocente.dni">
 
-        <div class="usuario-icono" (click)="toggleMenu()">
-          👤
+    <label>Dirección</label>
+    <input
+        type="text"
+        [(ngModel)]="nuevoDocente.direccion">
+
+    <label>Cargo</label>
+    <input
+        type="text"
+        [(ngModel)]="nuevoDocente.cargo">
+
+    <label>Correo</label>
+    <input
+        type="email"
+        [(ngModel)]="nuevoDocente.correo">
+
+    <label>Teléfono</label>
+    <input
+        type="text"
+        [(ngModel)]="nuevoDocente.telefono">
+
+    <label>Fecha de nacimiento</label>
+    <input
+        type="date"
+        [(ngModel)]="nuevoDocente.fechaNacimiento">
+
+    <br><br>
+
+    <button
+        class="btn-guardar"
+        (click)="guardarDocente()">
+
+        💾 Guardar
+
+    </button>
+
+    <button
+        class="btn-eliminar"
+        (click)="cancelarFormulario()">
+
+        Cancelar
+
+    </button>
+
+              </div>
+
+              <button class="btn-nuevo"
+                      (click)="abrirFormulario()"
+                      [disabled]="!botonNuevoHabilitado">
+
+                + Nuevo Docente
+
+              </button>
+
+            </div>
+
+            <input type="text"
+                   placeholder="Buscar por DNI, nombre o apellido"
+                   [(ngModel)]="filtroBusqueda"
+                   (input)="filtrarDocentes()">
+
+            <table>
+
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Apellido</th>
+                  <th>Nombre</th>
+                  <th>DNI</th>
+                  <th>Cargo</th>
+                  <th>Acciones</th>
+                </tr>
+              </thead>
+
+              <tbody>
+
+                <tr *ngFor="let docente of docentesFiltrados">
+
+                  <td>{{ docente.id }}</td>
+                  <td>{{ docente.apellido }}</td>
+                  <td>{{ docente.nombre }}</td>
+                  <td>{{ docente.dni }}</td>
+                  <td>{{ docente.cargo }}</td>
+
+                  <td>
+                    <button class="btn-editar" (click)="editarDocente(docente)">✏️</button>
+                    <button class="btn-eliminar" (click)="eliminarDocente(docente)">🗑</button>
+                  </td>
+
+                </tr>
+
+              </tbody>
+
+            </table>
+
+          </section>
+
         </div>
-
-        <div class="menu-usuario" *ngIf="mostrarMenuUsuario">
-
-          <div class="menu-info">
-            <strong>{{ usuario }}</strong>
-            <small>{{ rol }}</small>
-          </div>
-
-          <hr>
-
-          <button (click)="abrirCambioClave()">
-            🔒 Cambiar contraseña
-          </button>
-
-          <button (click)="cerrarSesion()">
-            🚪 Cerrar sesión
-          </button>
-
-        </div>
-
-      </div>
-
-    </div>
-
-    <div class="subtitulo">
-      Instituto Superior de Formación Docente y Técnica "Dr. J. A. Ferreira"
-    </div>
-
-  </header>
-    
-    <div
-  *ngIf="mostrarCambioClave"
-  class="formulario-docente">
-
-  <h3>Cambiar contraseña</h3>
-
-  <label>Contraseña actual</label>
-
-  <input
-    type="password"
-    [(ngModel)]="passwordActual">
-
-  <label>Nueva contraseña</label>
-
-  <input
-    type="password"
-    [(ngModel)]="passwordNueva">
-
-  <label>Confirmar nueva contraseña</label>
-
-  <input
-    type="password"
-    [(ngModel)]="confirmarPassword">
-
-  <br><br>
-
-  <button (click)="cambiarPassword()">
-    Guardar
-  </button>
-
-  <button
-    class="btn-eliminar"
-    (click)="cancelarCambioClave()">
-
-    Cancelar
-
-  </button>
-
-</div>
-
-  <!-- BIENVENIDA (SIN DUPLICAR HEADER) -->
-  <section class="panel-bienvenida">
-
-    <img src="/img/logo-ifd.png" class="logo">
-
-    <div class="datos-usuario">
-
-      <h2>Bienvenido</h2>
-
-      <p><strong>Usuario:</strong> {{ usuario }}</p>
-      <p><strong>Rol:</strong> {{ rol }}</p>
-
-    </div>
-
-  </section>
-
-  <!-- RESTO IGUAL -->
-  <section class="panel-docentes">
-
-    <h2>Docentes registrados</h2>
-
-    <div class="barra-acciones">
-
-      <div *ngIf="mostrarFormulario" class="formulario-docente">
-
-        <h3>{{ modoEdicion ? 'Editar Docente' : 'Nuevo Docente' }}</h3>
-
-        <!-- CAMPOS IGUALES (los dejo igual porque ya funcionan) -->
-
-        <!-- ... TODO TU FORMULARIO ... -->
-
-      </div>
-
-      <button class="btn-nuevo"
-              (click)="abrirFormulario()"
-              [disabled]="!botonNuevoHabilitado">
-
-        + Nuevo Docente
-
-      </button>
-
-    </div>
-
-    <input type="text"
-           placeholder="Buscar por DNI, nombre o apellido"
-           [(ngModel)]="filtroBusqueda"
-           (input)="filtrarDocentes()">
-
-    <table>
-
-      <thead>
-        <tr>
-          <th>ID</th>
-          <th>Apellido</th>
-          <th>Nombre</th>
-          <th>DNI</th>
-          <th>Cargo</th>
-          <th>Acciones</th>
-        </tr>
-      </thead>
-
-      <tbody>
-
-        <tr *ngFor="let docente of docentesFiltrados">
-
-          <td>{{ docente.id }}</td>
-          <td>{{ docente.apellido }}</td>
-          <td>{{ docente.nombre }}</td>
-          <td>{{ docente.dni }}</td>
-          <td>{{ docente.cargo }}</td>
-
-          <td>
-            <button class="btn-editar" (click)="editarDocente(docente)">✏️</button>
-            <button class="btn-eliminar" (click)="eliminarDocente(docente)">🗑</button>
-          </td>
-
-        </tr>
-
-      </tbody>
-
-    </table>
-
-  </section>
-
-</div>

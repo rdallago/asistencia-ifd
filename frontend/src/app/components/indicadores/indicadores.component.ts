@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 
 import { CommonModule } from '@angular/common';
 
+import { EstadisticasTurno } from '../../modelos/estadisticas-turno';
+
 import { ResumenEjecutivo } from '../../modelos/resumen-ejecutivo';
 
 import { EstadoGeneralJornada } from '../../modelos/estado-general-jornada';
@@ -18,6 +20,8 @@ import { Estadisticas } from '../../modelos/estadisticas';
 
 import { IndicadoresInstitucionales } from '../../modelos/indicadores-institucionales';
 
+import { ComparacionHistorica } from '../../modelos/comparacion-historica';
+
 import {AfterViewInit,ViewChild,ElementRef} from '@angular/core';
 
 import {Chart,registerables} from 'chart.js';
@@ -33,7 +37,27 @@ import {Chart,registerables} from 'chart.js';
   styleUrls: ['./indicadores.component.css']
 })
 export class IndicadoresComponent implements OnInit, AfterViewInit {
+
+turnoSeleccionado = 2;
+
+turnos = [
+  { id: 1, nombre: 'Turno Tarde' },
+  { id: 2, nombre: 'Turno Noche' },
+  { id: 3, nombre: 'Turno Mañana' }
+];
+
 evolucion: EvolucionAsistencia[] = [];
+comparacionHistorica: ComparacionHistorica = {
+
+  promedioHistorico: 0,
+
+  valorActual: 0,
+
+  diferencia: 0,
+
+  tendencia: ''
+
+};
 estadoGeneral: EstadoGeneralJornada = {
 
   puntaje: 0,
@@ -97,6 +121,22 @@ fecha='';
     turnosConfigurados: 0,
     asignacionesVigentes: 0
   };
+  
+  estadisticasTurno: EstadisticasTurno = {
+
+    turno: '',
+
+    docentesAsignados: 0,
+
+    presentes: 0,
+
+    sinEgreso: 0,
+
+    sinFirmaTotal: 0,
+
+    porcentajeAsistencia: 0
+
+};
 
   indicadores: IndicadoresInstitucionales = {
     docentesRegistrados: 0,
@@ -138,6 +178,10 @@ private graficoInstitucional!: Chart;
 
   cargarIndicadores(): void {
 
+  //====================================
+  // Indicadores institucionales (actual)
+  //====================================
+
   this.asistenciaService
     .obtenerEstadisticas(this.fecha)
     .subscribe(data => {
@@ -165,6 +209,21 @@ private graficoInstitucional!: Chart;
         this.cdr.detectChanges();
 
       });
+
+    });
+
+  //====================================
+  // Indicadores por turno (nuevo)
+  //====================================
+
+  this.asistenciaService
+    .obtenerEstadisticasTurno(
+        this.fecha,
+        this.turnoSeleccionado
+    )
+    .subscribe(res => {
+
+      this.estadisticasTurno = res;
 
     });
 
@@ -220,6 +279,8 @@ actualizarDashboard(): void {
   this.cargarResumenEjecutivo();
 
   this.cargarEstadoGeneral();
+  
+  this.cargarComparacionHistorica();
 
 }
 
@@ -602,6 +663,53 @@ obtenerClaseEstado(): string {
       return '';
 
   }
+
+}
+cargarComparacionHistorica(): void {
+
+  this.asistenciaService
+    .obtenerComparacionHistorica(this.fecha)
+    .subscribe({
+
+      next: res => {
+
+        this.comparacionHistorica = {
+          ...res
+        };
+
+      },
+
+      error: err => console.error(err)
+
+    });
+
+}
+exportarReportePdf(): void {
+
+  this.asistenciaService
+      .exportarReporteEjecutivo(this.fecha)
+      .subscribe({
+
+        next: (pdf: Blob) => {
+
+          const url = window.URL.createObjectURL(pdf);
+
+          const a = document.createElement('a');
+
+          a.href = url;
+
+          a.download =
+              `Reporte_Ejecutivo_${this.fecha}.pdf`;
+
+          a.click();
+
+          window.URL.revokeObjectURL(url);
+
+        },
+
+        error: err => console.error(err)
+
+      });
 
 }
 }

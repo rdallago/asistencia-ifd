@@ -1,70 +1,220 @@
+/* ==========================================
+   ESTRUCTURA GENERAL DEL LAYOUT
+   ========================================== */
 .layout {
-  display: flex;
-  height: 100vh;
+    display: flex;
+    height: 100vh;
+    width: 100vw;
+    overflow: hidden;
+    background-color: #f0f2f5; /* Fondo gris claro general */
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
+/* ==========================================
+   SIDEBAR (MENÚ AZUL IZQUIERDO)
+   ========================================== */
 .sidebar {
-  width: 260px;
-  background: #0d47a1;
-  color: white;
-  display: flex;
-  flex-direction: column;
+    width: 250px;
+    background-color: #0c53a7;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 0;
 }
 
-.logo {
-  padding: 25px;
-  font-size: 22px;
-  font-weight: bold;
-  border-bottom: 1px solid rgba(255,255,255,.2);
+.sidebar-header {
+    background-color: #083c7a;
+    padding: 18px 20px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    gap: 10px;
 }
 
 .sidebar nav {
-  display: flex;
-  flex-direction: column;
+    display: flex;
+    flex-direction: column;
 }
 
 .sidebar nav a {
-  padding: 16px 25px;
-  color: white;
-  text-decoration: none;
-  transition: .2s;
+    padding: 12px 20px;
+    color: #e1e9f5;
+    text-decoration: none;
+    font-size: 0.88rem;
+    transition: background 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 10px;
 }
 
 .sidebar nav a:hover {
-  background: rgba(255,255,255,.15);
+    background: rgba(255, 255, 255, 0.15);
 }
 
-.sidebar nav a.activo {
-  background: #1976d2;
+.sidebar nav a.activo, 
+.sidebar nav a.active {
+    background-color: #1263c8;
+    color: white;
+    font-weight: bold;
 }
 
-.contenido {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  background: #f4f6f9;
+/* ==========================================
+   ÁREA CONTENEDORA DERECHA
+   ========================================== */
+.contenido{
+    flex:1;
+    display:flex;
+    flex-direction:column;
+    overflow:hidden;
+    padding:10px;
+}
+/* BARRA DELGADA DE USUARIO Y LOGOUT (Arriba a la derecha) */
+.barra-superior {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+    padding: 0 5px;
 }
 
-.topbar {
-  height: 70px;
-  background: white;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0 30px;
-  box-shadow: 0 2px 6px rgba(0,0,0,.1);
-}
-
-.pagina {
-  padding: 20px;
-  overflow-y: auto;
+.usuario-simple {
+    color: #222;
+    font-size: 0.88rem;
 }
 
 .btn-salir {
-  background: #d32f2f;
-  color: white;
-  border: none;
-  padding: 10px 16px;
-  border-radius: 6px;
-  cursor: pointer;
+    background-color: #dc3545;
+    color: white;
+    border: none;
+    padding: 6px 14px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 0.85rem;
+    font-weight: bold;
+}
+
+.btn-salir:hover {
+    background-color: #bd2130;
+}
+
+/* ==========================================
+   ENCABEZADO AZUL (COMPACTO Y CON BORDES REDONDEADOS)
+   ========================================== */
+.encabezado{
+
+    background:#0c53a7;
+
+    color:white;
+
+    padding:10px 20px;
+
+    border-radius:10px;
+
+    margin-bottom:18px;
+
+    box-shadow:0 3px 8px rgba(0,0,0,.18);
+}
+
+.encabezado-superior {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.titulo-sistema{
+
+    font-size:24px;
+
+    font-weight:bold;
+}
+.subtitulo{
+
+    text-align:center;
+
+    margin-top:5px;
+
+    font-size:13px;
+}
+.usuario-icono{
+
+    background:white;
+
+    color:#0c53a7;
+
+    width:46px;
+
+    height:46px;
+
+    border-radius:50%;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    font-size:22px;
+
+    cursor:pointer;
+}
+/* ==========================================
+   CONTENEDOR HIJO (PÁGINA)
+   ========================================== */
+.pagina{
+    flex:1;
+    overflow-y:auto;
+    padding:0;
+    margin:0;
+    width:100%;
+}
+
+.panel-bienvenida{
+
+    display:flex;
+    align-items:center;
+
+    gap:25px;
+
+    padding:12px 18px;
+
+    margin-bottom:15px;
+
+    background:white;
+
+    border-radius:10px;
+
+    box-shadow:0 2px 6px rgba(0,0,0,.15);
+
+}
+
+.logo-ifd{
+
+    width: 350px;
+    height: auto;
+    display: block;
+    filter: drop-shadow(
+        0px 4px 8px rgba(0,0,0,0.25)
+    );
+}
+
+.datos-usuario{
+
+    flex:1;
+}
+
+.datos-usuario h2{
+    color:#0c53a7;
+   
+    font-size:14px;
+    
+    margin:3px 0;
+    
+}
+.datos-usuario p{
+
+    margin:2px 0;
+
+    font-size:14px;
+
 }

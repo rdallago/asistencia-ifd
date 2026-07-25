@@ -27,6 +27,18 @@
       </option>
 
     </select>
+    
+    <select
+    [(ngModel)]="estadoSeleccionado"
+    (change)="filtrarAsignaciones()">
+
+    <option value="ACTIVAS">Activas</option>
+
+    <option value="INACTIVAS">Inactivas</option>
+
+    <option value="TODAS">Todas</option>
+
+</select>
 
   </div>
 

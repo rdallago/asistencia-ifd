@@ -33,8 +33,7 @@ private Institucion institucion;
     private Boolean cierreAutomatico = true;
     public Turno() {
     }
-@ManyToMany(mappedBy = "turnos")
-private List<Docente> docentes;
+
     public Long getId() {
         return id;
     }

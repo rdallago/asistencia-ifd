@@ -1,6 +1,18 @@
 <div class="contenedor">
     
     <div class="encabezado">
+        
+        <div class="acciones-dashboard">
+
+    <button
+        class="btn-pdf"
+        (click)="exportarReportePdf()">
+
+        📄 Exportar Reporte Ejecutivo PDF
+
+    </button>
+
+</div>
 
         <h2>Indicadores Institucionales</h2>
 
@@ -15,6 +27,90 @@
     <div class="estado-general-card"
      [ngClass]="obtenerClaseEstado()">
 
+    <div class="comparacion-card">
+
+    <div class="comparacion-titulo">
+
+        Comparación con el promedio histórico
+
+    </div>
+
+    <div class="comparacion-valores">
+
+        <div>
+
+            <span class="etiqueta">
+                Calidad actual
+            </span>
+
+            <strong>
+
+                {{ comparacionHistorica.valorActual | number:'1.0-1' }}%
+
+            </strong>
+
+        </div>
+
+        <div>
+
+            <span class="etiqueta">
+                Promedio (30 días)
+            </span>
+
+            <strong>
+
+                {{ comparacionHistorica.promedioHistorico | number:'1.0-1' }}%
+
+            </strong>
+
+        </div>
+
+    </div>
+
+    <div
+        class="comparacion-resultado"
+
+        [ngClass]="{
+
+          'sube': comparacionHistorica.tendencia==='SUBE',
+
+          'baja': comparacionHistorica.tendencia==='BAJA',
+
+          'estable': comparacionHistorica.tendencia==='ESTABLE'
+
+        }">
+
+        <ng-container [ngSwitch]="comparacionHistorica.tendencia">
+
+            <span *ngSwitchCase="'SUBE'">
+
+                📈 {{ comparacionHistorica.diferencia | number:'1.0-1' }}%
+
+                por encima del promedio
+
+            </span>
+
+            <span *ngSwitchCase="'BAJA'">
+
+                📉 {{ comparacionHistorica.diferencia | number:'1.0-1' }}%
+
+                por debajo del promedio
+
+            </span>
+
+            <span *ngSwitchDefault>
+
+                ➖ Comportamiento similar al promedio
+
+            </span>
+
+        </ng-container>
+
+    </div>
+
+</div>    
+        
+        
   <div class="estado-titulo">
     Calidad del Registro Diario
   </div>
@@ -39,25 +135,6 @@
 
 </div>
 
-<div class="estado-resumen">
-
-    <div class="estado-cantidad">
-
-        {{ estadoGeneral.registrosCompletos }}
-
-        <span class="separador">de</span>
-
-        {{ estadoGeneral.registrosIniciados }}
-
-    </div>
-
-    <div class="estado-detalle">
-
-        registros iniciados fueron completados correctamente
-
-    </div>
-
-</div>
 
 <div class="estado-puntaje">
 
@@ -88,93 +165,118 @@
             [(ngModel)]="fecha"
             (ngModelChange)="actualizarDashboard()">
 
+        <label>Turno para analizar</label>
+
+<select
+    [(ngModel)]="turnoSeleccionado"
+    (change)="actualizarDashboard()">
+
+    <option
+        *ngFor="let t of turnos"
+        [value]="t.id">
+
+        {{t.nombre}}
+
+    </option>
+
+</select>
     </div>
 
+    
     <h4>Indicadores de Asistencia Docente</h4>
-    <div class="card actividad">
+    
+    <div class="turno-seleccionado">
+
+    <strong>Turno seleccionado:</strong>
+
+    {{estadisticasTurno.turno}}
+
+</div>
+
+<div class="card actividad">
 
     <div class="numero">
 
-        {{estadisticas.actividadRegistrada}}
+        {{estadisticasTurno.docentesAsignados}}
 
     </div>
 
     <div class="texto">
 
-        Actividad registrada
+        Docentes asignados
 
     </div>
 
 </div>
 
-    <div class="cards">
+<div class="cards">
 
-        <div class="card presente">
+    <div class="card presente">
 
-            <div class="numero">
+        <div class="numero">
 
-                {{estadisticas.presentes}}
-
-            </div>
-
-            <div class="texto">
-
-                Presentes
-
-            </div>
+            {{estadisticasTurno.presentes}}
 
         </div>
 
-        <div class="card egreso">
+        <div class="texto">
 
-            <div class="numero">
-
-                {{estadisticas.sinEgreso}}
-
-            </div>
-
-            <div class="texto">
-
-                Sin egreso
-
-            </div>
-
-        </div>
-
-        <div class="card firma">
-
-            <div class="numero">
-
-                {{estadisticas.sinFirmaTotal}}
-
-            </div>
-
-            <div class="texto">
-
-                Sin firma total
-
-            </div>
-
-        </div>
-
-        <div class="card porcentaje">
-
-            <div class="numero">
-
-                {{estadisticas.porcentajeAsistencia}}%
-
-            </div>
-
-            <div class="texto">
-
-                % Asistencia
-
-            </div>
+            Presentes
 
         </div>
 
     </div>
 
+    <div class="card egreso">
+
+        <div class="numero">
+
+            {{estadisticasTurno.sinEgreso}}
+
+        </div>
+
+        <div class="texto">
+
+            Sin egreso
+
+        </div>
+
+    </div>
+
+    <div class="card firma">
+
+        <div class="numero">
+
+            {{estadisticasTurno.sinFirmaTotal}}
+
+        </div>
+
+        <div class="texto">
+
+            Sin firma total
+
+        </div>
+
+    </div>
+
+    <div class="card porcentaje">
+
+        <div class="numero">
+
+            {{estadisticasTurno.porcentajeAsistencia | number:'1.0-1'}}%
+
+        </div>
+
+        <div class="texto">
+
+            % Asistencia del turno
+
+        </div>
+
+    </div>
+
+</div>
+    
     <h4>Indicadores Institucionales</h4>
 
     <div class="cards">
@@ -360,18 +462,9 @@
 
 <div class="resumen-bi">
 
-    <h6>Resumen Ejecutivo</h6>
+    <h6>Análisis Ejecutivo</h6>
 
-    <!-- Estado General -->
-
-    <div class="bloque-bi">
-
-        <h5>🟢 Estado General</h5>
-
-        <p>{{ resumenEjecutivo.estadoGeneral }}</p>
-
-    </div>
-
+    
     <!-- Tendencias -->
 
     <div

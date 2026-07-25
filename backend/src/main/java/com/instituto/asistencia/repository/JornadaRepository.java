@@ -31,4 +31,12 @@ public interface JornadaRepository
     List<Jornada> findByTurno_Id(Long turnoId);
     boolean existsByTurno_Id(Long turnoId);
     long countByCerradaFalse();
+
+Optional<Jornada> findFirstByFechaAndHabilitadaTrue(
+        LocalDate fecha
+);
+
+Optional<Jornada> findFirstByFecha(LocalDate fecha);
+
+
 }
