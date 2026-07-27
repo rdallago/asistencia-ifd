@@ -26,6 +26,7 @@ import {AfterViewInit,ViewChild,ElementRef} from '@angular/core';
 
 import {Chart,registerables} from 'chart.js';
 
+
 @Component({
   selector: 'app-indicadores',
   standalone: true,

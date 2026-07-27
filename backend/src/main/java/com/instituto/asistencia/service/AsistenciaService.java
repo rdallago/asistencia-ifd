@@ -1187,15 +1187,32 @@ public ResumenEjecutivoDTO obtenerResumenEjecutivo(LocalDate fecha) {
     EstadisticasDTO est = obtenerEstadisticas(fecha);
     long actividad = est.getActividadRegistrada();
 
-    if (actividad == 0) {
+if (actividad == 0) {
 
-        conclusiones.add(
-                "No existe actividad registrada para la fecha seleccionada.");
+    dto.setEstadoGeneral(
+            "⚪ Sin actividad registrada para la fecha seleccionada."
+    );
 
-        dto.setConclusiones(conclusiones);
+    dto.getTendencias().add(
+            "No es posible determinar una tendencia de asistencia debido a la ausencia de actividad."
+    );
 
-        return dto;
-    }
+    dto.getObservaciones().add(
+            "No existen registros de asistencia para la fecha seleccionada."
+    );
+
+    dto.getRecomendaciones().add(
+            "Verificar si la ausencia de registros corresponde a una jornada sin actividad."
+    );
+
+    conclusiones.add(
+            "No existe actividad registrada para la fecha seleccionada."
+    );
+
+    dto.setConclusiones(conclusiones);
+
+    return dto;
+}
 
     // ==========================================
     // Evolución histórica (últimos 30 días)
@@ -1453,17 +1470,22 @@ public ComparacionHistoricaDTO obtenerComparacionHistorica(LocalDate fecha) {
     // Tendencia
     // ==============================
 
-    if (diferencia > 3) {
+if (iniciados == 0) {
 
-        dto.setTendencia("SUBE");
+    dto.setTendencia("SIN ACTIVIDAD");
 
-    } else if (diferencia < -3) {
+} else if (diferencia > 3) {
 
-        dto.setTendencia("BAJA");
+    dto.setTendencia("SUBE");
 
-    } else {
+} else if (diferencia < -3) {
 
-        dto.setTendencia("ESTABLE");
+    dto.setTendencia("BAJA");
+
+} else {
+
+    dto.setTendencia("ESTABLE");
+
 
     }
 
