@@ -231,16 +231,30 @@ public ResponseEntity<IndicadoresInstitucionalesDTO> obtenerIndicadores() {
 
 }
 @GetMapping("/evolucion")
+public ResponseEntity<List<EvolucionAsistenciaDTO>> obtenerEvolucion(
+        @RequestParam String fecha) {
+
+    LocalDate hasta = LocalDate.parse(fecha);
+    LocalDate desde = hasta.minusDays(29);
+
+    return ResponseEntity.ok(
+            asistenciaService.obtenerEvolucion(desde, hasta)
+    );
+}
+
+/*@GetMapping("/evolucion")
 public ResponseEntity<List<EvolucionAsistenciaDTO>> obtenerEvolucion() {
+
     LocalDate hasta = LocalDate.now();
     LocalDate desde = hasta.minusDays(29);
+
     return ResponseEntity.ok(
-
-            asistenciaService.obtenerEvolucion(desde,hasta)
-
+            asistenciaService.obtenerEvolucion(desde, hasta)
     );
-
 }
+*/
+
+
 @GetMapping("/resumen-ejecutivo")
 public ResponseEntity<ResumenEjecutivoDTO> obtenerResumenEjecutivo(
 

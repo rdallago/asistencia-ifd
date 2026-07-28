@@ -218,15 +218,24 @@ obtenerIndicadoresInstitucionales()
     );
 
 }
-obtenerEvolucion(): Observable<EvolucionAsistencia[]> {
+obtenerEvolucion(
+  fecha: string
+): Observable<EvolucionAsistencia[]> {
 
   return this.http.get<EvolucionAsistencia[]>(
-
-    `${this.api}/evolucion`
-
+    `${this.api}/evolucion?fecha=${fecha}`
   );
 
 }
+/*obtenerEvolucion(): Observable<EvolucionAsistencia[]> {
+
+  return this.http.get<EvolucionAsistencia[]>(
+    `${this.api}/evolucion`
+  );
+
+}*/
+
+
 obtenerResumenEjecutivo(
   fecha: string
 ): Observable<ResumenEjecutivo> {

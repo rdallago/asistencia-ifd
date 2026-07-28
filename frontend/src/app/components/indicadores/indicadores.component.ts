@@ -480,13 +480,14 @@ private crearGraficoInstitucional(): void {
 
 }
 cargarEvolucion(): void {
-
+console.log('FECHA QUE SE ENVÍA A EVOLUCIÓN:', this.fecha);
   this.asistenciaService
-      .obtenerEvolucion()
+      .obtenerEvolucion(this.fecha)
       .subscribe({
 
           next: data => {
-
+console.log('EVOLUCIÓN RECIBIDA:', data);
+console.log('GRÁFICO:', this.graficoInstitucional);
               // ==========================================
 // Resumen automático
 // ==========================================
@@ -534,34 +535,80 @@ for (const dia of data) {
 
               this.evolucion = data;
               
-              const mayorPresente = data.reduce((a, b) =>
+             if (data.length > 0) {
+
+  const mayorPresente = data.reduce((a, b) =>
     a.presentes >= b.presentes ? a : b
-);
+  );
 
-this.maxPresentes = mayorPresente.presentes;
-this.fechaMaxPresentes = mayorPresente.fecha;
+  this.maxPresentes = mayorPresente.presentes;
+  this.fechaMaxPresentes = mayorPresente.fecha;
 
-const mayorSinEgreso = data.reduce((a, b) =>
+  const mayorSinEgreso = data.reduce((a, b) =>
     a.sinEgreso >= b.sinEgreso ? a : b
-);
+  );
 
-this.maxSinEgreso = mayorSinEgreso.sinEgreso;
-this.fechaMaxSinEgreso = mayorSinEgreso.fecha;
+  this.maxSinEgreso = mayorSinEgreso.sinEgreso;
+  this.fechaMaxSinEgreso = mayorSinEgreso.fecha;
 
-const mayorSinFirma = data.reduce((a, b) =>
+  const mayorSinFirma = data.reduce((a, b) =>
     a.sinFirmaTotal >= b.sinFirmaTotal ? a : b
-);
+  );
 
-this.maxSinFirma = mayorSinFirma.sinFirmaTotal;
-this.fechaMaxSinFirma = mayorSinFirma.fecha;
+  this.maxSinFirma = mayorSinFirma.sinFirmaTotal;
+  this.fechaMaxSinFirma = mayorSinFirma.fecha;
 
-              if (!this.graficoInstitucional) {
-                  return;
-              }
+} else {
 
-              this.graficoInstitucional.data.labels =
-                  data.map(d => d.fecha.substring(5));
+  this.maxPresentes = 0;
+  this.fechaMaxPresentes = '';
 
+  this.maxSinEgreso = 0;
+  this.fechaMaxSinEgreso = '';
+
+  this.maxSinFirma = 0;
+  this.fechaMaxSinFirma = '';
+
+}
+             if (!this.graficoInstitucional) {
+    return;
+}
+
+this.graficoInstitucional.data.labels =
+    data.map(d => d.fecha.substring(5));
+
+this.graficoInstitucional.data.datasets = [
+
+    {
+        label: 'Presentes',
+        data: data.map(d => d.presentes),
+        borderColor: '#198754',
+        backgroundColor: 'rgba(25,135,84,0.15)',
+        tension: 0.3,
+        fill: true
+    },
+
+    {
+        label: 'Sin egreso',
+        data: data.map(d => d.sinEgreso),
+        borderColor: '#ffc107',
+        backgroundColor: 'rgba(255,193,7,0.15)',
+        tension: 0.3,
+        fill: true
+    },
+
+    {
+        label: 'Sin firma total',
+        data: data.map(d => d.sinFirmaTotal),
+        borderColor: '#dc3545',
+        backgroundColor: 'rgba(220,53,69,0.15)',
+        tension: 0.3,
+        fill: true
+    }
+
+];
+
+this.graficoInstitucional.update();
               this.graficoInstitucional.data.datasets = [
 
                   {
