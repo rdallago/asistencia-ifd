@@ -1492,6 +1492,10 @@ if (iniciados == 0) {
     return dto;
 
 }
+public List<Asistencia> obtenerAsistenciasParaReporte(LocalDate fecha) {
 
+    return asistenciaRepository.findByFecha(fecha);
+
+}
 
 }
