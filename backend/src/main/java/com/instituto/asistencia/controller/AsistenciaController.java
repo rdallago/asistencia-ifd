@@ -242,17 +242,7 @@ public ResponseEntity<List<EvolucionAsistenciaDTO>> obtenerEvolucion(
     );
 }
 
-/*@GetMapping("/evolucion")
-public ResponseEntity<List<EvolucionAsistenciaDTO>> obtenerEvolucion() {
 
-    LocalDate hasta = LocalDate.now();
-    LocalDate desde = hasta.minusDays(29);
-
-    return ResponseEntity.ok(
-            asistenciaService.obtenerEvolucion(desde, hasta)
-    );
-}
-*/
 
 
 @GetMapping("/resumen-ejecutivo")

@@ -227,13 +227,6 @@ obtenerEvolucion(
   );
 
 }
-/*obtenerEvolucion(): Observable<EvolucionAsistencia[]> {
-
-  return this.http.get<EvolucionAsistencia[]>(
-    `${this.api}/evolucion`
-  );
-
-}*/
 
 
 obtenerResumenEjecutivo(

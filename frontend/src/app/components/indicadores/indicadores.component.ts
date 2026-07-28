@@ -715,19 +715,33 @@ obtenerClaseEstado(): string {
 }
 cargarComparacionHistorica(): void {
 
+
+
   this.asistenciaService
     .obtenerComparacionHistorica(this.fecha)
     .subscribe({
 
       next: res => {
 
-        this.comparacionHistorica = {
-          ...res
-        };
+   
+
+        this.zone.run(() => {
+
+          this.comparacionHistorica = {
+            ...res
+          };
+
+          this.cdr.detectChanges();
+
+        });
 
       },
 
-      error: err => console.error(err)
+      error: err =>
+        console.error(
+          'ERROR COMPARACIÓN HISTÓRICA:',
+          err
+        )
 
     });
 
