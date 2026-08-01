@@ -20,7 +20,7 @@ import { JornadasComponent} from './pages/jornadas/jornadas';
 
 import { UsuariosComponent} from './pages/usuarios/usuarios';
 
-import { Respaldos} from './pages/respaldos/respaldos';
+import { RespaldosComponent} from './pages/respaldos/respaldos';
 
 import { Ayuda } from './pages/ayuda/ayuda';
 
@@ -89,7 +89,7 @@ path: 'marcador/:jornadaId',
 
       {
         path: 'respaldos',
-        component: Respaldos
+        component: RespaldosComponent
       },
 
       {

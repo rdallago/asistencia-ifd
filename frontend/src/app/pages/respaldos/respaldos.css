@@ -1,4 +1,340 @@
-.construccion {
-  text-align: center;
-  margin-top: 100px;
+/* =======================================
+   CONTENEDOR GENERAL
+======================================= */
+
+.container-fluid{
+    max-width:1500px;
+}
+
+/* =======================================
+   TARJETAS
+======================================= */
+
+.card{
+    border:none;
+    border-radius:12px;
+    overflow:hidden;
+    box-shadow:0 4px 14px rgba(0,0,0,.08);
+}
+
+.card-header{
+    font-weight:600;
+}
+
+.card-body{
+    background:#fff;
+}
+
+/* =======================================
+   CABECERA AUDITORÍA
+======================================= */
+
+.auditoria-header{
+
+    background:linear-gradient(135deg,#2b78c6,#4b94dd);
+
+    color:white;
+
+}
+
+.auditoria-header small{
+
+    opacity:.9;
+
+    font-size:.85rem;
+
+}
+
+/* =======================================
+   BOTONES GENERALES
+======================================= */
+
+.btn{
+
+    border-radius:8px;
+
+    font-weight:600;
+
+    min-width:180px;
+
+}
+
+/* =======================================
+   BOTÓN GENERAR RESPALDO
+======================================= */
+
+.btn-sistema{
+
+    background:#2b78c6;
+    color:#fff;
+    border:none;
+    border-radius:8px;
+    padding:10px 18px;
+    font-weight:600;
+    transition:.25s;
+
+}
+
+.btn-sistema:hover{
+
+    background:#1f62a8;
+
+}
+
+/* =======================================
+   BOTÓN RESTAURAR
+======================================= */
+
+.btn-restaurar{
+
+    background:#d9534f;
+    color:#fff;
+    border:none;
+    border-radius:8px;
+    padding:10px 18px;
+    font-weight:600;
+    transition:.25s;
+
+}
+
+.btn-restaurar:hover:not(:disabled){
+
+    background:#b52b27;
+
+}
+
+.btn-restaurar:disabled{
+
+    background:#d6d6d6 !important;
+    color:#7a7a7a !important;
+    cursor:not-allowed;
+    opacity:.65;
+
+}
+
+/* =======================================
+   INPUT FILE
+======================================= */
+
+input[type=file]{
+
+    display:block;
+    width:100%;
+    padding:10px;
+    margin-bottom:20px;
+
+    border:1px solid #ced4da;
+    border-radius:8px;
+
+    background:#f8f9fa;
+
+}
+
+/* =======================================
+   ALERTAS
+======================================= */
+
+.alert{
+
+    border-radius:10px;
+    font-size:.95rem;
+
+}
+
+/* =======================================
+   BUSCADOR
+======================================= */
+
+.buscador-auditoria{
+
+    box-shadow:0 2px 8px rgba(0,0,0,.08);
+
+    border-radius:8px;
+
+    overflow:hidden;
+
+    margin-bottom:20px;
+
+}
+
+.buscador-auditoria .input-group-text{
+
+    background:#2b78c6;
+
+    color:white;
+
+    border:none;
+
+}
+
+.buscador-auditoria input{
+
+    border-left:none;
+
+    box-shadow:none;
+
+}
+
+.buscador-auditoria input:focus{
+
+    border-color:#2b78c6;
+
+    box-shadow:none;
+
+}
+
+/* =======================================
+   TABLA
+======================================= */
+
+.table-responsive{
+
+    border-radius:10px;
+
+}
+
+.tabla-auditoria{
+
+    width:100%;
+
+    border-collapse:collapse;
+
+    font-size:.94rem;
+
+    background:white;
+
+}
+
+.tabla-auditoria thead{
+
+    background:#2b78c6;
+
+}
+
+.tabla-auditoria thead th{
+
+    color:white;
+
+    font-weight:600;
+
+    padding:14px;
+
+    text-align:left;
+
+    border:1px solid #d8d8d8;
+
+    white-space:nowrap;
+
+}
+
+.tabla-auditoria tbody td{
+
+    padding:12px;
+
+    border:1px solid #d8d8d8;
+
+    vertical-align:middle;
+
+    height:48px;
+
+    background:white;
+
+}
+
+.tabla-auditoria tbody tr{
+
+    transition:.20s;
+
+}
+
+.tabla-auditoria tbody tr:hover td{
+
+    background:#eef5ff;
+
+}
+
+/* =======================================
+   BADGES
+======================================= */
+
+.badge{
+
+    padding:7px 14px;
+
+    border-radius:20px;
+
+    font-size:.82rem;
+
+    font-weight:600;
+
+}
+
+.badge-estado{
+
+    display:inline-block;
+
+    min-width:95px;
+
+    text-align:center;
+
+}
+
+.badge-ok{
+
+    background:#28a745;
+
+    color:white;
+
+}
+
+.badge-error{
+
+    background:#dc3545;
+
+    color:white;
+
+}
+
+/* =======================================
+   DETALLE
+======================================= */
+
+.detalle{
+
+    max-width:420px;
+
+    overflow:hidden;
+
+    white-space:nowrap;
+
+    text-overflow:ellipsis;
+
+}
+
+/* =======================================
+   TEXTO
+======================================= */
+
+p{
+
+    color:#6c757d;
+
+    font-weight:600;
+
+}
+
+/* =======================================
+   RESPONSIVE
+======================================= */
+
+@media(max-width:992px){
+
+    .btn{
+
+        width:100%;
+
+        margin-top:10px;
+
+    }
+
 }

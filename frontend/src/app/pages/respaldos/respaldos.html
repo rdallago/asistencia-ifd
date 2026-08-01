@@ -1,7 +1,223 @@
-<div class="construccion">
+<div class="container-fluid p-4">
 
-  <h1>🚧 Módulo en construcción</h1>
+    <div class="card shadow-sm mb-4">
 
-  <p>Disponible en próximos sprints.</p>
+        <div class="card-header auditoria-header">
+
+            <h4 class="mb-0">
+                <i class="bi bi-database-fill-lock"></i>
+                Gestión de respaldos de la base de datos
+            </h4>
+
+        </div>
+
+        <div class="card-body">
+
+            <p class="text-muted mb-4">
+
+                Este módulo permite generar y restaurar respaldos completos
+                de la base de datos institucional.
+
+                Todas las operaciones quedan registradas en la auditoría.
+
+            </p>
+
+          <button
+    class="btn btn-sistema"
+    type="button"
+    (click)="generar()">
+
+    <i class="bi bi-download"></i>
+
+    Generar respaldo
+
+</button>
+
+        </div>
+
+    </div>
+
+
+    <div class="card shadow-sm mb-4">
+
+        <div class="card-header bg-warning">
+
+            <h5 class="mb-0">
+
+                <i class="bi bi-arrow-repeat"></i>
+
+                Restaurar respaldo
+
+            </h5>
+
+        </div>
+
+        <div class="card-body">
+
+            <div class="alert alert-danger">
+
+                <strong>Atención</strong>
+
+                <br>
+
+                La restauración reemplazará completamente la base de datos
+                actual.
+
+                Esta operación únicamente puede realizarla un administrador.
+
+            </div>
+
+            <input
+            type="file"
+            accept=".sql"
+            (change)="onArchivoSeleccionado($event)">
+
+            <p>
+
+                
+   <button
+    class="btn btn-restaurar"
+    type="button"
+    (click)="restaurar()"
+    [disabled]="!puedeRestaurar">
+
+    <i class="bi bi-upload"></i>
+
+    Restaurar respaldo
+
+</button>
+        </div>
+
+    </div>
+
+
+    <div class="card shadow-sm">
+
+        <div class="card-header auditoria-header">
+
+    <div class="d-flex justify-content-between align-items-center">
+
+        <div>
+
+            <h5 class="mb-0">
+                <i class="bi bi-clock-history me-2"></i>
+                Auditoría de respaldos
+            </h5>
+
+            <small>
+                Historial completo de generación y restauración de la base de datos
+            </small>
+
+        </div>
+
+        <div class="text-end">
+
+            <span class="badge bg-light text-dark fs-6">
+
+                {{auditoriasFiltradas.length}}
+
+                registros
+
+            </span>
+
+        </div>
+
+    </div>
+
+</div>
+        <div class="card-body">
+
+            <div class="row mb-4">
+
+    <div class="col-lg-5">
+
+        <div class="input-group buscador-auditoria">
+
+            <span class="input-group-text">
+
+                <i class="bi bi-search"></i>
+
+            </span>
+
+            <input
+                type="text"
+                class="form-control"
+                placeholder="Buscar por usuario, operación o archivo..."
+                [(ngModel)]="filtro"
+                (input)="filtrar()">
+
+        </div>
+
+    </div>
+
+</div>
+            <p>
+Cantidad registros:
+{{auditoriasFiltradas.length}}
+</p>
+
+            <div class="table-responsive">
+
+              <table class="table tabla-auditoria">
+                   <thead>
+
+<tr>
+
+   <th class="text-center">Fecha y hora</th>
+<th>Usuario</th>
+<th class="text-center">Operación</th>
+<th class="text-center">Resultado</th>
+<th>Archivo</th>
+<th>Detalle</th>
+</tr>
+
+</thead>
+
+                    <tbody>
+
+<tr *ngFor="let a of auditoriasFiltradas; trackBy: trackById">
+
+    <td class="text-center">
+        {{a.fechaHora | date:'dd/MM/yyyy HH:mm:ss'}}
+    </td>
+
+    <td>
+        {{a.usuario}}
+    </td>
+
+    <td class="text-center">
+        {{a.operacion}}
+    </td>
+
+    <td class="text-center">
+
+       <span
+    class="badge-estado"
+    [class.badge-ok]="a.resultado==='EXITOSO'"
+    [class.badge-error]="a.resultado==='ERROR'">
+
+    {{a.resultado}}
+
+</span>
+    </td>
+
+    <td>
+        {{a.archivo}}
+    </td>
+
+    <td class="detalle">
+        {{a.detalle}}
+    </td>
+
+</tr>
+
+</tbody>
+                </table>
+
+            </div>
+
+        </div>
+
+    </div>
 
 </div>
