@@ -136,11 +136,13 @@ public CorsConfigurationSource corsConfigurationSource() {
             ));
 
     configuration.setAllowedHeaders(
-            List.of("*"));
+        List.of("*"));
 
-    configuration.setAllowCredentials(
-            true);
+configuration.setExposedHeaders(
+        List.of("Content-Disposition"));
 
+configuration.setAllowCredentials(
+        true);
     UrlBasedCorsConfigurationSource source =
             new UrlBasedCorsConfigurationSource();
 

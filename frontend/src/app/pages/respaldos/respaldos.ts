@@ -101,51 +101,70 @@ get puedeRestaurar(): boolean {
         );
 
 }
-  generar(): void {
+generar(): void {
 
-   
+  this.respaldoService
+    .generarBackup()
+    .subscribe({
 
-    this.respaldoService.generarBackup()
-      .subscribe({
+      next: response => {
+          console.log("HEADERS:");
+    console.log(response.headers.keys());
+    console.log(response.headers.get('Content-Disposition'));
+    console.log(response.headers);
 
-     next: blob => {
+        const blob = response.body!;
 
-    const url =
-      window.URL.createObjectURL(blob);
+        let nombreArchivo = 'backup.sql';
 
-    const a =
-      document.createElement('a');
+        const disposition =
+          response.headers.get('Content-Disposition');
 
-    a.href = url;
+        if (disposition) {
 
-    a.download =
-      'backup_asistencia_ifd.sql';
+          const resultado =
+            /filename\*?=(?:UTF-8''|")?([^"]+)/.exec(disposition);
 
-    a.click();
+          if (resultado && resultado[1]) {
 
-    window.URL.revokeObjectURL(url);
+            nombreArchivo =
+              decodeURIComponent(resultado[1].replace(/"/g, ''));
 
-
-    setTimeout(() => {
-
-        this.cargarAuditoria();
-
-    },500);
-
-},
-        error: () => {
-
-            alert('No fue posible generar el respaldo.');
-
-        },
-
-        complete: () => {
-
-          
+          }
 
         }
 
-      });
+        const url =
+          window.URL.createObjectURL(blob);
+
+        const a =
+          document.createElement('a');
+
+        a.href = url;
+
+        a.download = nombreArchivo;
+
+        a.click();
+
+        window.URL.revokeObjectURL(url);
+
+        setTimeout(() => {
+
+          this.cargarAuditoria();
+
+        }, 500);
+
+      },
+
+      error: (err) => {
+
+        console.error(err);
+
+        alert('No fue posible generar el respaldo.');
+
+      }
+
+    });
 
 }
   seleccionarArchivo(event: any): void {

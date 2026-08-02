@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { HttpResponse } from '@angular/common/http';
 
 export interface AuditoriaRespaldo {
 
@@ -29,14 +30,15 @@ export class RespaldoService {
 
   constructor(private http: HttpClient) {}
 
-  generarBackup(): Observable<Blob> {
+  generarBackup(): Observable<HttpResponse<Blob>> {
 
     return this.http.post(
-      `${this.api}/generar`,
-      {},
-      {
-        responseType: 'blob'
-      }
+        `${this.api}/generar`,
+        {},
+        {
+            responseType: 'blob',
+            observe: 'response'
+        }
     );
 
 }
