@@ -1,0 +1,70 @@
+    <div class="contenedor">
+
+    <h2>Auditoría General</h2>
+
+    <div class="barra">
+
+    <input
+    type="text"
+    placeholder="Buscar..."
+    [(ngModel)]="filtro"
+    (input)="filtrar()">
+
+    </div>
+
+    <table class="tabla-auditoria">
+
+    <thead>
+
+    <tr>
+
+    <th>Fecha</th>
+    <th>Usuario</th>
+    <th>Módulo</th>
+    <th>Acción</th>
+    <th>Resultado</th>
+    <th>Detalle</th>
+
+    </tr>
+
+    </thead>
+
+    <tbody>
+
+    <tr
+    *ngFor="let a of auditoriasFiltradas">
+
+    <td>{{a.fechaHora}}</td>
+
+    <td>{{a.usuario}}</td>
+
+    <td>{{a.modulo}}</td>
+
+    <td>{{a.accion}}</td>
+
+    <td class="text-center">
+
+    <span
+        class="badge-estado"
+        [class.badge-ok]="a.resultado === 'OK' || a.resultado === 'EXITOSO'"
+        [class.badge-error]="a.resultado === 'ERROR'">
+
+        {{a.resultado}}
+
+    </span>
+
+</td>
+
+    <td class="detalle">
+
+    {{a.detalle}}
+
+</td>
+
+    </tr>
+
+    </tbody>
+
+    </table>
+
+    </div>

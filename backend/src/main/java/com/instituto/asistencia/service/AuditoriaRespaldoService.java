@@ -19,35 +19,50 @@ public class AuditoriaRespaldoService {
     }
 
     public AuditoriaRespaldo registrar(
-            String usuario,
-            String operacion,
-            String resultado,
-            String archivo,
-            String detalle) {
+        String usuario,
+        String modulo,
+        String accion,
+        String resultado,
+        String archivo,
+        String detalle) {
 
-        AuditoriaRespaldo auditoria =
-                new AuditoriaRespaldo();
+    AuditoriaRespaldo auditoria =
+            new AuditoriaRespaldo();
 
-        auditoria.setUsuario(usuario);
+    auditoria.setUsuario(usuario);
 
-        auditoria.setFechaHora(
-                LocalDateTime.now()
-        );
+    auditoria.setFechaHora(
+            LocalDateTime.now()
+    );
 
-        auditoria.setOperacion(operacion);
+    auditoria.setModulo(modulo);
 
-        auditoria.setResultado(resultado);
+    auditoria.setAccion(accion);
+    
 
-        auditoria.setArchivo(archivo);
+    auditoria.setResultado(resultado);
 
-        auditoria.setDetalle(detalle);
+    auditoria.setArchivo(archivo);
 
-        return auditoriaRepository.save(auditoria);
-    }
+    auditoria.setDetalle(detalle);
+
+    return auditoriaRepository.save(auditoria);
+}
 
     public List<AuditoriaRespaldo> listar() {
 
         return auditoriaRepository
                 .findAllByOrderByFechaHoraDesc();
     }
+    
+public List<AuditoriaRespaldo> listarPorModulo(String modulo) {
+
+    if ("RESPALDOS".equals(modulo)) {
+
+        return auditoriaRepository.findAllByOrderByFechaHoraDesc();
+
+    }
+
+    return auditoriaRepository.findByModuloOrderByFechaHoraDesc(modulo);
+}
 }

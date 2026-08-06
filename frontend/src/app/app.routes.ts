@@ -22,6 +22,8 @@ import { UsuariosComponent} from './pages/usuarios/usuarios';
 
 import { RespaldosComponent} from './pages/respaldos/respaldos';
 
+import { AuditoriaComponent }from './pages/auditoria/auditoria';
+
 import { Ayuda } from './pages/ayuda/ayuda';
 
 export const routes: Routes = [
@@ -91,6 +93,11 @@ path: 'marcador/:jornadaId',
         path: 'respaldos',
         component: RespaldosComponent
       },
+      
+      {
+    path: 'auditoria',
+    component: AuditoriaComponent
+},
 
       {
         path: 'ayuda',

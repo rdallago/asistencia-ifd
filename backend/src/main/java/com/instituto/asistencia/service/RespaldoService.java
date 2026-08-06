@@ -63,22 +63,25 @@ public RespaldoService(
     }
 private void registrarAuditoria(
         String usuario,
-        String operacion,
+        String modulo,
+        String accion,
         String resultado,
         String archivo,
         String detalle) {
 
-    AuditoriaRespaldo auditoria =
-            new AuditoriaRespaldo();
+    AuditoriaRespaldo auditoria = new AuditoriaRespaldo();
 
     auditoria.setUsuario(usuario);
     auditoria.setFechaHora(LocalDateTime.now());
-    auditoria.setOperacion(operacion);
+
+    auditoria.setModulo(modulo);
+    auditoria.setAccion(accion);
+
     auditoria.setResultado(resultado);
     auditoria.setArchivo(archivo);
     auditoria.setDetalle(detalle);
 
-    auditoriaRepository.saveAndFlush(auditoria);
+    auditoriaRepository.save(auditoria);
 }
     public Path generarBackup(String usuario) {
 
@@ -99,29 +102,28 @@ private void registrarAuditoria(
 
         archivoBackup = directorio.resolve(nombreArchivo);
 
-       ProcessBuilder processBuilder =
-        new ProcessBuilder(
-                mysqldumpPath,
-                "-u",
-                username,
-                "--password=",
+        ProcessBuilder processBuilder =
+                new ProcessBuilder(
+                        mysqldumpPath,
+                        "-u",
+                        username,
+                        "--password=",
+                        baseDatos,
+                        "instituciones",
+                        "turnos",
+                        "docentes",
+                        "usuarios",
+                        "docente_turnos",
+                        "jornadas",
+                        "asistencias"
+                );
 
-                baseDatos,
+        System.out.println("COMANDO RESPALDO:");
 
-                "instituciones",
-                "turnos",
-                "docentes",
-                "usuarios",
-                "docente_turnos",
-                "jornadas",
-                "asistencias"
-        );
-       System.out.println("COMANDO RESTAURAR:");
+        for (String s : processBuilder.command()) {
+            System.out.println("[" + s + "]");
+        }
 
-for (String s : processBuilder.command()) {
-    System.out.println("[" + s + "]");
-}
-       
         Process proceso = processBuilder.start();
 
         // Escribir directamente el SQL al archivo
@@ -129,12 +131,10 @@ for (String s : processBuilder.command()) {
                 InputStream is = proceso.getInputStream();
                 OutputStream os = Files.newOutputStream(archivoBackup)
         ) {
-
             is.transferTo(os);
-
         }
 
-        // Leer errores (NO se mezclan con el SQL)
+        // Leer mensajes de error (Warning incluido)
         String errores;
 
         try (
@@ -146,18 +146,18 @@ for (String s : processBuilder.command()) {
                                 )
                         )
         ) {
-
             errores = err.lines()
                     .collect(Collectors.joining(System.lineSeparator()));
-
         }
 
         int codigo = proceso.waitFor();
 
+        // Si realmente falló el respaldo
         if (codigo != 0) {
 
             registrarAuditoria(
                     usuario,
+                    "RESPALDOS",
                     "GENERAR",
                     "ERROR",
                     archivoBackup.toString(),
@@ -169,11 +169,12 @@ for (String s : processBuilder.command()) {
             throw new RuntimeException(
                     "Error al generar respaldo:\n" + errores
             );
-
         }
 
+        // Si llegó aquí, el respaldo fue correcto.
         registrarAuditoria(
                 usuario,
+                "RESPALDOS",
                 "GENERAR",
                 "EXITOSO",
                 archivoBackup.toString(),
@@ -187,9 +188,7 @@ for (String s : processBuilder.command()) {
         try {
 
             if (archivoBackup != null) {
-
                 Files.deleteIfExists(archivoBackup);
-
             }
 
         } catch (Exception ignored) {
@@ -197,6 +196,7 @@ for (String s : processBuilder.command()) {
 
         registrarAuditoria(
                 usuario,
+                "RESPALDOS",
                 "GENERAR",
                 "ERROR",
                 archivoBackup != null
@@ -209,9 +209,7 @@ for (String s : processBuilder.command()) {
                 "No fue posible generar el respaldo.",
                 e
         );
-
     }
-
 }
  public void restaurarBackup(
         MultipartFile archivo,
@@ -390,27 +388,27 @@ for (String s : processBuilder.command()) {
 
 
         registrarAuditoria(
-                usuario,
-                "RESTAURAR",
-                "EXITOSO",
-                nombre,
-                "Respaldo restaurado correctamente."
-        );
-
+        usuario,
+        "RESPALDOS",
+        "RESTAURAR",
+        "EXITOSO",
+        nombre,
+        "Respaldo restaurado correctamente."
+);
 
     } catch (Exception e) {
 
 
         registrarAuditoria(
-                usuario,
-                "RESTAURAR",
-                "ERROR",
-                archivo != null
-                        ? archivo.getOriginalFilename()
-                        : null,
-                e.getMessage()
-        );
-
+        usuario,
+        "RESPALDOS",
+        "RESTAURAR",
+        "ERROR",
+        archivo != null
+                ? archivo.getOriginalFilename()
+                : null,
+        e.getMessage()
+);
 
         throw new RuntimeException(
                 "No fue posible restaurar el respaldo.",

@@ -8,6 +8,8 @@ import com.instituto.asistencia.entity.Asistencia;
 import com.instituto.asistencia.dto.EstadoGeneralJornadaDTO;
 import com.instituto.asistencia.dto.EstadisticasTurnoDTO;
 import java.util.Optional;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 
 
@@ -56,17 +58,20 @@ public class AsistenciaService {
     private final TurnoRepository turnoRepository;
     private final JornadaRepository jornadaRepository;
     private final DocenteTurnoRepository docenteTurnoRepository;
+    private final AuditoriaRespaldoService auditoriaRespaldoService;
     public AsistenciaService(
             AsistenciaRepository asistenciaRepository,
             DocenteRepository docenteRepository,
             TurnoRepository turnoRepository,
-            JornadaRepository jornadaRepository,DocenteTurnoRepository docenteTurnoRepository) {
+            JornadaRepository jornadaRepository,DocenteTurnoRepository docenteTurnoRepository,
+            AuditoriaRespaldoService auditoriaRespaldoService) {
 
         this.asistenciaRepository = asistenciaRepository;
         this.docenteRepository = docenteRepository;
         this.turnoRepository = turnoRepository;
         this.jornadaRepository = jornadaRepository;
         this.docenteTurnoRepository = docenteTurnoRepository;
+        this.auditoriaRespaldoService=auditoriaRespaldoService;
     }
 
     // =====================================================
@@ -160,7 +165,28 @@ if (!asignado) {
     asistencia.setFechaCreacion(
             LocalDateTime.now());
 
-    asistenciaRepository.save(asistencia);
+    Asistencia guardada =
+        asistenciaRepository.save(asistencia);
+    Authentication authentication =
+        SecurityContextHolder
+                .getContext()
+                .getAuthentication();
+
+String usuario = authentication.getName();
+
+auditoriaRespaldoService.registrar(
+        usuario,
+        "ASISTENCIAS",
+        "INGRESO",
+        "EXITOSO",
+        null,
+        "Ingreso registrado para "
+                + guardada.getDocente().getApellido()
+                + ", "
+                + guardada.getDocente().getNombre()
+                + " - Turno "
+                + guardada.getTurno().getNombre()
+);
 
     return "Entrada registrada correctamente";
 }
@@ -238,7 +264,28 @@ if (!asignado) {
     asistencia.setFechaModificacion(
             LocalDateTime.now());
 
-    asistenciaRepository.save(asistencia);
+    Asistencia guardada =
+        asistenciaRepository.save(asistencia);
+    Authentication authentication =
+        SecurityContextHolder
+                .getContext()
+                .getAuthentication();
+
+String usuario = authentication.getName();
+
+auditoriaRespaldoService.registrar(
+        usuario,
+        "ASISTENCIAS",
+        "EGRESO",
+        "EXITOSO",
+        null,
+        "Egreso registrado para "
+                + guardada.getDocente().getApellido()
+                + ", "
+                + guardada.getDocente().getNombre()
+                + " - Turno "
+                + guardada.getTurno().getNombre()
+);
 
     return "Salida registrada correctamente";
 }
@@ -301,10 +348,24 @@ public String procesarCierreJornada(Long turnoId) {
             asistencia.setFechaCreacion(
                     LocalDateTime.now());
 
-            asistenciaRepository.save(
-                    asistencia);
+            Asistencia guardada =
+        asistenciaRepository.save(asistencia);
 
-            continue;
+auditoriaRespaldoService.registrar(
+        "SISTEMA",
+        "ASISTENCIAS",
+        "SIN_FIRMA_TOTAL",
+        "EXITOSO",
+        null,
+        "Se registró SIN FIRMA TOTAL para "
+                + guardada.getDocente().getApellido()
+                + ", "
+                + guardada.getDocente().getNombre()
+                + " - Turno "
+                + guardada.getTurno().getNombre()
+);
+
+continue;
         }
 
         // =====================================
@@ -320,10 +381,24 @@ public String procesarCierreJornada(Long turnoId) {
             asistencia.setFechaModificacion(
                     LocalDateTime.now());
 
-            asistenciaRepository.save(
-                    asistencia);
+            Asistencia guardada =
+        asistenciaRepository.save(asistencia);
 
-            continue;
+auditoriaRespaldoService.registrar(
+        "SISTEMA",
+        "ASISTENCIAS",
+        "SIN_EGRESO",
+        "EXITOSO",
+        null,
+        "Se cerró automáticamente la asistencia de "
+                + guardada.getDocente().getApellido()
+                + ", "
+                + guardada.getDocente().getNombre()
+                + " por falta de egreso - Turno "
+                + guardada.getTurno().getNombre()
+);
+
+continue;
         }
 
         // =====================================

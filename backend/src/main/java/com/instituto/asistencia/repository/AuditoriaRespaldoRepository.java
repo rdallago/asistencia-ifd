@@ -13,4 +13,6 @@ public interface AuditoriaRespaldoRepository
     List<AuditoriaRespaldo> findByUsuarioOrderByFechaHoraDesc(
             String usuario
     );
+    List<AuditoriaRespaldo> findByModuloOrderByFechaHoraDesc(
+        String modulo);
 }

@@ -31,33 +31,73 @@
           : 'Nuevo Usuario' }}
 
     </h3>
+<div class="campo-formulario">
 
-    <input
+  <label>Usuario <span class="text-danger">*</span></label>
+
+  <input
       type="text"
-      placeholder="Usuario"
+      class="form-control"
+      placeholder="Ej.: admin"
       [(ngModel)]="usuarioActual.username">
 
-    <input
+</div>
+
+<div class="campo-formulario">
+
+  <label>Nombre <span class="text-danger">*</span></label>
+
+  <input
       type="text"
-      placeholder="Nombre"
+      class="form-control"
+      placeholder="Ej.: Ricardo"
       [(ngModel)]="usuarioActual.nombre">
 
-    <input
+</div>
+
+<div class="campo-formulario">
+
+  <label>Apellido <span class="text-danger">*</span></label>
+
+  <input
       type="text"
-      placeholder="Apellido"
+      class="form-control"
+      placeholder="Ej.: Dal Lago"
       [(ngModel)]="usuarioActual.apellido">
 
-    <input
+</div>
+
+<div class="campo-formulario">
+
+  <label>Correo electrónico <span class="text-danger">*</span></label>
+
+  <input
       type="email"
-      placeholder="Correo electrónico"
+       autocomplete="off"
+      class="form-control"
+      placeholder="Ej.: usuario@ifd.edu.ar"
       [(ngModel)]="usuarioActual.email">
 
-    <input
-      type="password"
-      placeholder="Contraseña"
-      [(ngModel)]="usuarioActual.password">
+</div>
 
-    <select
+<div class="campo-formulario">
+
+  <label>Contraseña <span class="text-danger">*</span></label>
+
+  <input
+    type="password"
+    autocomplete="new-password"
+    class="form-control"
+    placeholder="Ingrese la contraseña"
+    [(ngModel)]="usuarioActual.password">
+</div>
+
+<div class="campo-formulario">
+
+  <label>Rol <span class="text-danger">*</span></label>
+
+  <select
+      class="form-select"
       [(ngModel)]="usuarioActual.rol">
 
       <option value="ADMIN">
@@ -68,7 +108,9 @@
         Secretario
       </option>
 
-    </select>
+  </select>
+
+</div>
 
     <div class="acciones-formulario">
 

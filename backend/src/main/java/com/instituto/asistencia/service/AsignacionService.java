@@ -10,6 +10,8 @@ import java.time.LocalDate;
 import com.instituto.asistencia.dto.AsignacionRequest;
 import java.util.List;
 import org.springframework.stereotype.Service;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 @Service
 public class AsignacionService {
@@ -17,16 +19,19 @@ public class AsignacionService {
     private final DocenteTurnoRepository docenteTurnoRepository;
     private final DocenteRepository docenteRepository;
     private final TurnoRepository turnoRepository;
+    private final AuditoriaRespaldoService auditoriaRespaldoService;
 
     public AsignacionService(
-            DocenteTurnoRepository docenteTurnoRepository,
-            DocenteRepository docenteRepository,
-            TurnoRepository turnoRepository) {
+        DocenteTurnoRepository docenteTurnoRepository,
+        DocenteRepository docenteRepository,
+        TurnoRepository turnoRepository,
+        AuditoriaRespaldoService auditoriaRespaldoService) {
 
-        this.docenteTurnoRepository = docenteTurnoRepository;
-        this.docenteRepository = docenteRepository;
-        this.turnoRepository = turnoRepository;
-    }
+    this.docenteTurnoRepository = docenteTurnoRepository;
+    this.docenteRepository = docenteRepository;
+    this.turnoRepository = turnoRepository;
+    this.auditoriaRespaldoService = auditoriaRespaldoService;
+}
 
     public List<DocenteTurno> listar() {
 
@@ -69,7 +74,32 @@ public class AsignacionService {
     asignacion.setFechaDesde(request.getFechaDesde());
     asignacion.setActivo(true);
 
-    return docenteTurnoRepository.save(asignacion);
+    DocenteTurno guardada =
+        docenteTurnoRepository.save(asignacion);
+
+Authentication authentication =
+        SecurityContextHolder
+                .getContext()
+                .getAuthentication();
+
+String usuarioActual =
+        authentication.getName();
+
+auditoriaRespaldoService.registrar(
+        usuarioActual,
+        "ASIGNACIONES",
+        "ALTA",
+        "EXITOSO",
+        null,
+        "Se asignó "
+                + docente.getApellido()
+                + ", "
+                + docente.getNombre()
+                + " al turno "
+                + turno.getNombre()
+);
+
+return guardada;
 }
 
     public void desasignar(Long id) {
@@ -83,7 +113,30 @@ public class AsignacionService {
         asignacion.setActivo(false);
         asignacion.setFechaHasta(LocalDate.now());
 
+        DocenteTurno guardada =
         docenteTurnoRepository.save(asignacion);
+
+Authentication authentication =
+        SecurityContextHolder
+                .getContext()
+                .getAuthentication();
+
+String usuarioActual =
+        authentication.getName();
+
+auditoriaRespaldoService.registrar(
+        usuarioActual,
+        "ASIGNACIONES",
+        "BAJA",
+        "EXITOSO",
+        null,
+        "Se quitó la asignación de "
+                + guardada.getDocente().getApellido()
+                + ", "
+                + guardada.getDocente().getNombre()
+                + " del turno "
+                + guardada.getTurno().getNombre()
+);
     }
     public void reactivar(Long id) {
 
@@ -107,6 +160,29 @@ public class AsignacionService {
     asignacion.setActivo(true);
     asignacion.setFechaHasta(null);
 
-    docenteTurnoRepository.save(asignacion);
+    DocenteTurno guardada =
+        docenteTurnoRepository.save(asignacion);
+
+Authentication authentication =
+        SecurityContextHolder
+                .getContext()
+                .getAuthentication();
+
+String usuarioActual =
+        authentication.getName();
+
+auditoriaRespaldoService.registrar(
+        usuarioActual,
+        "ASIGNACIONES",
+        "REACTIVACION",
+        "EXITOSO",
+        null,
+        "Se reactivó la asignación de "
+                + guardada.getDocente().getApellido()
+                + ", "
+                + guardada.getDocente().getNombre()
+                + " al turno "
+                + guardada.getTurno().getNombre()
+);
 }
 }

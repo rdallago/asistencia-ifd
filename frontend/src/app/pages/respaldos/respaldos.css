@@ -270,13 +270,21 @@ input[type=file]{
 }
 
 .badge-estado{
+    padding: 4px 10px;
+    border-radius: 12px;
+    color: white;
+    font-weight: bold;
+    display: inline-block;
+    min-width: 70px;
+    text-align: center;
+}
 
-    display:inline-block;
+.badge-ok{
+    background-color: #198754;   /* Verde Bootstrap */
+}
 
-    min-width:95px;
-
-    text-align:center;
-
+.badge-error{
+    background-color: #dc3545;   /* Rojo Bootstrap */
 }
 
 .badge-ok{

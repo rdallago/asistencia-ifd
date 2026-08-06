@@ -126,6 +126,9 @@ implements OnInit {
 
       docenteId: null
     };
+     console.log(this.usuarioActual);
+
+  this.mostrarFormulario = true;
 
     this.mostrarFormulario = true;
   }

@@ -19,8 +19,7 @@ public class AuditoriaRespaldo {
     @Column(name = "fecha_hora", nullable = false)
     private LocalDateTime fechaHora;
 
-    @Column(nullable = false, length = 30)
-    private String operacion;
+ 
 
     @Column(nullable = false, length = 20)
     private String resultado;
@@ -30,6 +29,30 @@ public class AuditoriaRespaldo {
 
     @Column(columnDefinition = "TEXT")
     private String detalle;
+    
+    @Column(length = 50)
+    private String modulo;
+    
+    @Column(length = 50)
+    private String accion;
+    
+        public String getModulo() {
+        return modulo;
+    }
+
+    public void setModulo(String modulo) {
+        this.modulo = modulo;
+    }
+
+    public String getAccion() {
+        return accion;
+    }
+
+    public void setAccion(String accion) {
+        this.accion = accion;
+    }
+
+    
 
     public AuditoriaRespaldo() {
     }
@@ -58,13 +81,7 @@ public class AuditoriaRespaldo {
         this.fechaHora = fechaHora;
     }
 
-    public String getOperacion() {
-        return operacion;
-    }
-
-    public void setOperacion(String operacion) {
-        this.operacion = operacion;
-    }
+   
 
     public String getResultado() {
         return resultado;

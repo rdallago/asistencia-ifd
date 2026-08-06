@@ -11,7 +11,9 @@ export interface AuditoriaRespaldo {
 
   fechaHora: string;
 
-  operacion: string;
+  modulo: string;
+
+  accion: string;
 
   resultado: string;
 
@@ -64,6 +66,13 @@ obtenerAuditoria(): Observable<AuditoriaRespaldo[]> {
     return this.http.get<AuditoriaRespaldo[]>(
       `${this.api}/auditoria`
     );
+
+}
+listarAuditoriaRespaldos(): Observable<AuditoriaRespaldo[]> {
+
+  return this.http.get<AuditoriaRespaldo[]>(
+    'http://localhost:8080/api/auditoria/respaldos'
+  );
 
 }
 }

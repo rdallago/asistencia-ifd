@@ -8,6 +8,8 @@ import com.instituto.asistencia.repository.DocenteRepository;
 import com.instituto.asistencia.repository.UsuarioRepository;
 import com.instituto.asistencia.dto.UsuarioResponse;
 import java.util.List;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -17,15 +19,18 @@ public class UsuarioService {
     private final UsuarioRepository usuarioRepo;
     private final DocenteRepository docenteRepo;
     private final PasswordEncoder passwordEncoder;
+    private final AuditoriaRespaldoService auditoriaRespaldoService;
 
     public UsuarioService(
             UsuarioRepository usuarioRepo,
             DocenteRepository docenteRepo,
-            PasswordEncoder passwordEncoder) {
+            PasswordEncoder passwordEncoder,
+            AuditoriaRespaldoService auditoriaRespaldoService) {
 
         this.usuarioRepo = usuarioRepo;
         this.docenteRepo = docenteRepo;
         this.passwordEncoder = passwordEncoder;
+        this.auditoriaRespaldoService = auditoriaRespaldoService;
     }
 
     public UsuarioResponse crear(
@@ -88,8 +93,26 @@ public class UsuarioService {
             usuario.setDocente(docente);
         }
 
-        return convertirAResponse(
-        usuarioRepo.save(usuario));
+        Usuario guardado = usuarioRepo.save(usuario);
+
+        Authentication authentication =
+        SecurityContextHolder
+                .getContext()
+                .getAuthentication();
+
+        String usuarioActual = authentication.getName();
+
+        auditoriaRespaldoService.registrar(
+        usuarioActual,
+        "USUARIOS",
+        "ALTA",
+        "EXITOSO",
+        null,
+        "Se creó el usuario: "
+                + guardado.getUsername()
+);
+
+return convertirAResponse(guardado);
     }
     
     public List<UsuarioResponse> listar() {
@@ -181,12 +204,29 @@ public class UsuarioService {
         usuario.setDocente(null);
     }
 
-    return convertirAResponse(
-            usuarioRepo.save(usuario));
+    Usuario guardado = usuarioRepo.save(usuario);
+
+Authentication authentication =
+        SecurityContextHolder
+                .getContext()
+                .getAuthentication();
+
+String usuarioActual = authentication.getName();
+
+auditoriaRespaldoService.registrar(
+        usuarioActual,
+        "USUARIOS",
+        "MODIFICACION",
+        "EXITOSO",
+        null,
+        "Se modificó el usuario: "
+                + guardado.getUsername()
+);
+
+return convertirAResponse(guardado);
 }
     
-    public void desactivar(
-        Long id) {
+   public void desactivar(Long id) {
 
     Usuario usuario = usuarioRepo.findById(id)
             .orElseThrow(() ->
@@ -195,7 +235,24 @@ public class UsuarioService {
 
     usuario.setActivo(false);
 
-    usuarioRepo.save(usuario);
+    Usuario guardado = usuarioRepo.save(usuario);
+
+    Authentication authentication =
+            SecurityContextHolder
+                    .getContext()
+                    .getAuthentication();
+
+    String usuarioActual = authentication.getName();
+
+    auditoriaRespaldoService.registrar(
+            usuarioActual,
+            "USUARIOS",
+            "BAJA",
+            "EXITOSO",
+            null,
+            "Se desactivó el usuario: "
+                    + guardado.getUsername()
+    );
 }
     
     
@@ -247,7 +304,24 @@ public class UsuarioService {
 
     usuario.setActivo(true);
 
-    usuarioRepo.save(usuario);
+    Usuario guardado = usuarioRepo.save(usuario);
+
+    Authentication authentication =
+            SecurityContextHolder
+                    .getContext()
+                    .getAuthentication();
+
+    String usuarioActual = authentication.getName();
+
+    auditoriaRespaldoService.registrar(
+            usuarioActual,
+            "USUARIOS",
+            "REACTIVACION",
+            "EXITOSO",
+            null,
+            "Se reactivó el usuario: "
+                    + guardado.getUsername()
+    );
 }
-    
+ 
 }

@@ -47,16 +47,18 @@ get puedeRestaurar(): boolean {
   }
 
 
-  cargarAuditoria(): void {
+ cargarAuditoria(): void {
 
-  this.respaldoService.obtenerAuditoria()
+  this.respaldoService.listarAuditoriaRespaldos()
     .subscribe({
 
       next: data => {
 
-        this.auditorias = [...data];
+        this.auditorias =
+          data.filter(a => a.modulo === 'RESPALDOS');
 
-        this.auditoriasFiltradas = [...data];
+        this.auditoriasFiltradas =
+          [...this.auditorias];
 
         this.cd.detectChanges();
 
@@ -77,29 +79,49 @@ get puedeRestaurar(): boolean {
 
  filtrar(): void {
 
-    const texto = this.filtro
-        .toLowerCase()
-        .trim();
+  const texto = this.filtro
+      .toLowerCase()
+      .trim();
 
+  if (!texto) {
 
-    if (!texto) {
+    this.auditoriasFiltradas = [...this.auditorias];
+    return;
 
-        this.auditoriasFiltradas =
-            [...this.auditorias];
+  }
 
-        return;
-    }
+  this.auditoriasFiltradas =
+      this.auditorias.filter(a =>
 
-
-    this.auditoriasFiltradas =
-        this.auditorias.filter(a =>
-
-            (a.usuario ?? '')
+        (a.usuario ?? "")
             .toLowerCase()
             .includes(texto)
 
-        );
+        ||
 
+        (a.accion ?? "")
+            .toLowerCase()
+            .includes(texto)
+
+        ||
+
+        (a.resultado ?? "")
+            .toLowerCase()
+            .includes(texto)
+
+        ||
+
+        (a.archivo ?? "")
+            .toLowerCase()
+            .includes(texto)
+
+        ||
+
+        (a.detalle ?? "")
+            .toLowerCase()
+            .includes(texto)
+
+      );
 }
 generar(): void {
 

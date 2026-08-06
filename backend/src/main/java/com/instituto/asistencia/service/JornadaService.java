@@ -20,18 +20,21 @@ public class JornadaService {
     private final UsuarioRepository usuarioRepository;
     private final TurnoRepository turnoRepository;
     private final AsistenciaService asistenciaService;
+    private final AuditoriaRespaldoService auditoriaRespaldoService;
  
     public JornadaService(
-            JornadaRepository jornadaRepository,
-            UsuarioRepository usuarioRepository,
-            TurnoRepository turnoRepository,
-            AsistenciaService asistenciaService) {
+        JornadaRepository jornadaRepository,
+        UsuarioRepository usuarioRepository,
+        TurnoRepository turnoRepository,
+        AsistenciaService asistenciaService,
+        AuditoriaRespaldoService auditoriaRespaldoService) {
 
-        this.jornadaRepository = jornadaRepository;
-        this.usuarioRepository = usuarioRepository;
-        this.turnoRepository = turnoRepository;
-        this.asistenciaService=asistenciaService;
-    }
+    this.jornadaRepository = jornadaRepository;
+    this.usuarioRepository = usuarioRepository;
+    this.turnoRepository = turnoRepository;
+    this.asistenciaService = asistenciaService;
+    this.auditoriaRespaldoService = auditoriaRespaldoService;
+}
 
     // =====================================================
     // ABRIR JORNADA
@@ -81,8 +84,22 @@ public class JornadaService {
         jornada.setObservaciones(
                 observaciones);
 
-        return jornadaRepository.save(
-                jornada);
+        Jornada guardada =
+        jornadaRepository.save(jornada);
+
+auditoriaRespaldoService.registrar(
+        usuario.getUsername(),
+        "JORNADAS",
+        "APERTURA",
+        "EXITOSO",
+        null,
+        "Se abrió la jornada del "
+                + guardada.getFecha()
+                + " - Turno "
+                + turno.getNombre()
+);
+
+return guardada;
     }
 
     // =====================================================
@@ -151,8 +168,22 @@ public class JornadaService {
             observaciones);
     jornada.setCierreAutomatico(false);
 
-    return jornadaRepository.save(
-            jornada);
+Jornada guardada =
+        jornadaRepository.save(jornada);
+
+auditoriaRespaldoService.registrar(
+        usuario.getUsername(),
+        "JORNADAS",
+        "CIERRE",
+        "EXITOSO",
+        null,
+        "Se cerró la jornada del "
+                + guardada.getFecha()
+                + " - Turno "
+                + turno.getNombre()
+);
+
+return guardada;
 }
     
     
@@ -217,7 +248,20 @@ public class JornadaService {
                     LocalDateTime.now());
 
             jornada.setCierreAutomatico(true);
-            jornadaRepository.save(jornada);
+            Jornada guardada =
+        jornadaRepository.save(jornada);
+
+auditoriaRespaldoService.registrar(
+        "SISTEMA",
+        "JORNADAS",
+        "CIERRE_AUTOMATICO",
+        "EXITOSO",
+        null,
+        "Se cerró automáticamente la jornada del "
+                + guardada.getFecha()
+                + " - Turno "
+                + guardada.getTurno().getNombre()
+);
         }
     }
 }
@@ -236,5 +280,6 @@ public class JornadaService {
     return jornadaRepository
             .findByHabilitadaTrueAndCerradaFalse();
 }
+ 
    
     }

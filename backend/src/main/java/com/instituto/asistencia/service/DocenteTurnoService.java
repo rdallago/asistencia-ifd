@@ -7,7 +7,8 @@ import com.instituto.asistencia.entity.Turno;
 import com.instituto.asistencia.repository.DocenteRepository;
 import com.instituto.asistencia.repository.DocenteTurnoRepository;
 import com.instituto.asistencia.repository.TurnoRepository;
-
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -19,16 +20,18 @@ public class DocenteTurnoService {
     private final DocenteTurnoRepository docenteTurnoRepository;
     private final DocenteRepository docenteRepository;
     private final TurnoRepository turnoRepository;
-
+    private final AuditoriaRespaldoService auditoriaRespaldoService;
     public DocenteTurnoService(
-            DocenteTurnoRepository docenteTurnoRepository,
-            DocenteRepository docenteRepository,
-            TurnoRepository turnoRepository) {
+        DocenteTurnoRepository docenteTurnoRepository,
+        DocenteRepository docenteRepository,
+        TurnoRepository turnoRepository,
+        AuditoriaRespaldoService auditoriaRespaldoService) {
 
-        this.docenteTurnoRepository = docenteTurnoRepository;
-        this.docenteRepository = docenteRepository;
-        this.turnoRepository = turnoRepository;
-    }
+    this.docenteTurnoRepository = docenteTurnoRepository;
+    this.docenteRepository = docenteRepository;
+    this.turnoRepository = turnoRepository;
+    this.auditoriaRespaldoService = auditoriaRespaldoService;
+}
 
     public List<DocenteTurno> listar() {
         return docenteTurnoRepository.findAll();
@@ -65,7 +68,32 @@ public class DocenteTurnoService {
                         ? request.getFechaDesde()
                         : LocalDate.now());
 
-        return docenteTurnoRepository.save(asignacion);
+        DocenteTurno guardada =
+        docenteTurnoRepository.save(asignacion);
+
+Authentication authentication =
+        SecurityContextHolder
+                .getContext()
+                .getAuthentication();
+
+String usuarioActual =
+        authentication.getName();
+System.out.println(">>> AUDITORIA ASIGNACION");
+auditoriaRespaldoService.registrar(
+        usuarioActual,
+        "ASIGNACIONES",
+        "ALTA",
+        "EXITOSO",
+        null,
+        "Se asignó "
+                + docente.getApellido()
+                + ", "
+                + docente.getNombre()
+                + " al turno "
+                + turno.getNombre()
+);
+System.out.println(">>> AUDITORIA REGISTRADA");
+return guardada;
     }
 
     public void finalizar(Long id) {

@@ -6,6 +6,8 @@ import com.instituto.asistencia.repository.DocenteRepository;
 import java.util.List;
 import org.springframework.stereotype.Service;
 import java.util.Optional;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import java.time.Period;
 import java.util.Map;
 
@@ -14,10 +16,15 @@ import java.util.HashMap;
 public class DocenteService {
 
     private final DocenteRepository docenteRepository;
+private final AuditoriaRespaldoService auditoriaRespaldoService;
 
-    public DocenteService(DocenteRepository docenteRepository) {
-        this.docenteRepository = docenteRepository;
-    }
+public DocenteService(
+        DocenteRepository docenteRepository,
+        AuditoriaRespaldoService auditoriaRespaldoService) {
+
+    this.docenteRepository = docenteRepository;
+    this.auditoriaRespaldoService = auditoriaRespaldoService;
+}
 
     // ============================
     // LISTAR
@@ -66,58 +73,119 @@ public Map<String, Object> guardar(Docente docente) {
 
         Docente guardado =
                 docenteRepository.save(existente);
+        Authentication authentication =
+        SecurityContextHolder
+                .getContext()
+                .getAuthentication();
+
+String usuario = authentication.getName();
+        auditoriaRespaldoService.registrar(
+        usuario,
+        "DOCENTES",
+        "REACTIVACION",
+        "EXITOSO",
+        null,
+        "Se reactivó el docente: "
+                + guardado.getApellido()
+                + ", "
+                + guardado.getNombre()
+);
 
         respuesta.put("docente", guardado);
         respuesta.put("mensaje",
                 "Docente reactivado correctamente");
 
         return respuesta;
+
+
     }
 
     docente.setFechaAlta(LocalDate.now());
     docente.setActivo(true);
 
     Docente guardado = docenteRepository.save(docente);
+    Authentication authentication =
+        SecurityContextHolder
+                .getContext()
+                .getAuthentication();
+
+String usuario = authentication.getName();
+    auditoriaRespaldoService.registrar(
+        usuario,
+        "DOCENTES",
+        "ALTA",
+        "EXITOSO",
+        null,
+        "Se creó el docente: "
+                + guardado.getApellido()
+                + ", "
+                + guardado.getNombre()
+);
 
     respuesta.put("docente", guardado);
     respuesta.put("mensaje",
             "Docente creado correctamente");
 
     return respuesta;
+
 }   
     // ============================
     // MODIFICAR
     // ============================
 
     public Docente actualizar(
-            Long id,
-            Docente docenteActualizado) {
+        Long id,
+        Docente docenteActualizado) {
 
-        Docente docente = buscarPorId(id);
+    Docente docente = buscarPorId(id);
 
-        validar(docenteActualizado);
+    validar(docenteActualizado);
 
-        if (!docente.getDni().equals(docenteActualizado.getDni())) {
+    if (!docente.getDni().equals(docenteActualizado.getDni())) {
 
-            if (docenteRepository
-                    .existsByDni(docenteActualizado.getDni())) {
+        if (docenteRepository.existsByDni(docenteActualizado.getDni())) {
 
-                throw new RuntimeException(
-                        "Ya existe un docente con ese DNI");
-            }
+            throw new RuntimeException(
+                    "Ya existe un docente con ese DNI");
         }
-
-        docente.setNombre(docenteActualizado.getNombre());
-        docente.setApellido(docenteActualizado.getApellido());
-        docente.setDni(docenteActualizado.getDni());
-        docente.setCargo(docenteActualizado.getCargo());
-        docente.setDireccion(docenteActualizado.getDireccion());
-        docente.setTelefono(docenteActualizado.getTelefono());
-        docente.setCorreo(docenteActualizado.getCorreo());
-        docente.setFechaNacimiento(docenteActualizado.getFechaNacimiento());
-        docente.setActivo(docenteActualizado.getActivo());
-        return docenteRepository.save(docente);
     }
+
+    docente.setNombre(docenteActualizado.getNombre());
+    docente.setApellido(docenteActualizado.getApellido());
+    docente.setDni(docenteActualizado.getDni());
+    docente.setCargo(docenteActualizado.getCargo());
+    docente.setDireccion(docenteActualizado.getDireccion());
+    docente.setTelefono(docenteActualizado.getTelefono());
+    docente.setCorreo(docenteActualizado.getCorreo());
+    docente.setFechaNacimiento(docenteActualizado.getFechaNacimiento());
+    docente.setActivo(docenteActualizado.getActivo());
+
+    // Primero guardar
+    Docente guardado = docenteRepository.save(docente);
+
+    // Obtener usuario logueado
+    Authentication authentication =
+            SecurityContextHolder
+                    .getContext()
+                    .getAuthentication();
+
+    String usuario = authentication.getName();
+
+    // Registrar auditoría
+    auditoriaRespaldoService.registrar(
+            usuario,
+            "DOCENTES",
+            "MODIFICACION",
+            "EXITOSO",
+            null,
+            "Se modificó el docente: "
+                    + guardado.getApellido()
+                    + ", "
+                    + guardado.getNombre()
+    );
+
+    return guardado;
+}
 
     // ============================
     // ELIMINAR
@@ -128,7 +196,26 @@ public void eliminar(Long id) {
 
     docente.setActivo(false);
 
-    docenteRepository.save(docente);
+    Docente guardado = docenteRepository.save(docente);
+
+    Authentication authentication =
+            SecurityContextHolder
+                    .getContext()
+                    .getAuthentication();
+
+    String usuario = authentication.getName();
+
+    auditoriaRespaldoService.registrar(
+            usuario,
+            "DOCENTES",
+            "BAJA",
+            "EXITOSO",
+            null,
+            "Se desactivó el docente: "
+                    + guardado.getApellido()
+                    + ", "
+                    + guardado.getNombre()
+    );
 }
 
     // ============================
@@ -216,5 +303,13 @@ public void eliminar(Long id) {
     public List<Docente> listar() {
     return docenteRepository.findAll();
 }
+   /* auditoriaRespaldoService.registrar(
+        usuario,
+        "DOCENTES",
+        "ALTA",
+        "EXITOSO",
+        null,
+        "Se creó el docente Juan Pérez"
+);*/
   
 }

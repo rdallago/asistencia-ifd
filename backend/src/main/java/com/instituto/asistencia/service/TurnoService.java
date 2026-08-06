@@ -6,7 +6,8 @@ import com.instituto.asistencia.entity.Turno;
 import com.instituto.asistencia.repository.InstitucionRepository;
 import com.instituto.asistencia.repository.JornadaRepository;
 import com.instituto.asistencia.repository.TurnoRepository;
-
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -17,16 +18,19 @@ public class TurnoService {
     private final TurnoRepository turnoRepository;
     private final JornadaRepository jornadaRepository;
     private final InstitucionRepository institucionRepository;
+    private final AuditoriaRespaldoService auditoriaRespaldoService;
 
-    public TurnoService(
-            TurnoRepository turnoRepository,
-            JornadaRepository jornadaRepository,
-            InstitucionRepository institucionRepository) {
+public TurnoService(
+        TurnoRepository turnoRepository,
+        JornadaRepository jornadaRepository,
+        InstitucionRepository institucionRepository,
+        AuditoriaRespaldoService auditoriaRespaldoService) {
 
-        this.turnoRepository = turnoRepository;
-        this.jornadaRepository = jornadaRepository;
-        this.institucionRepository = institucionRepository;
-    }
+    this.turnoRepository = turnoRepository;
+    this.jornadaRepository = jornadaRepository;
+    this.institucionRepository = institucionRepository;
+    this.auditoriaRespaldoService = auditoriaRespaldoService;
+}
 
     // LISTAR TODOS
     public List<Turno> listar() {
@@ -46,7 +50,26 @@ public class TurnoService {
 
         turno.setInstitucion(institucion);
 
-        return turnoRepository.save(turno);
+        Turno guardado = turnoRepository.save(turno);
+
+Authentication authentication =
+        SecurityContextHolder
+                .getContext()
+                .getAuthentication();
+
+String usuario = authentication.getName();
+
+auditoriaRespaldoService.registrar(
+        usuario,
+        "TURNOS",
+        "ALTA",
+        "EXITOSO",
+        null,
+        "Se creó el turno: "
+                + guardado.getNombre()
+);
+
+return guardado;
     }
 
     // ACTUALIZAR
@@ -69,7 +92,26 @@ public class TurnoService {
 
         validarTurno(turno);
 
-        return turnoRepository.save(turno);
+       Turno guardado = turnoRepository.save(turno);
+
+Authentication authentication =
+        SecurityContextHolder
+                .getContext()
+                .getAuthentication();
+
+String usuario = authentication.getName();
+
+auditoriaRespaldoService.registrar(
+        usuario,
+        "TURNOS",
+        "MODIFICACION",
+        "EXITOSO",
+        null,
+        "Se modificó el turno: "
+                + guardado.getNombre()
+);
+
+return guardado;
     }
 
     // VALIDACIONES
@@ -120,7 +162,22 @@ public class TurnoService {
 
         turno.setActivo(false);
 
-        turnoRepository.save(turno);
+        Authentication authentication =
+        SecurityContextHolder
+                .getContext()
+                .getAuthentication();
+
+String usuario = authentication.getName();
+
+auditoriaRespaldoService.registrar(
+        usuario,
+        "TURNOS",
+        "BAJA",
+        "EXITOSO",
+        null,
+        "Se desactivó el turno: "
+                + turno.getNombre()
+);
     }
 
     // ACTIVAR
@@ -132,7 +189,22 @@ public class TurnoService {
 
         turno.setActivo(true);
 
-        turnoRepository.save(turno);
+        Authentication authentication =
+        SecurityContextHolder
+                .getContext()
+                .getAuthentication();
+
+String usuario = authentication.getName();
+
+auditoriaRespaldoService.registrar(
+        usuario,
+        "TURNOS",
+        "REACTIVACION",
+        "EXITOSO",
+        null,
+        "Se reactivó el turno: "
+                + turno.getNombre()
+);
     }
 
 }

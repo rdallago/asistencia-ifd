@@ -95,6 +95,13 @@ public SecurityFilterChain securityFilterChain(
                         "ADMIN",
                         "SECRETARIO"
                 )
+                
+                .requestMatchers(
+        "/api/auditoria/**"
+).hasAnyRole(
+        "ADMIN",
+        "SECRETARIO"
+)
 
                 .anyRequest()
                 .authenticated()

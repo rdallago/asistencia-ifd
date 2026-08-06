@@ -186,20 +186,21 @@ Cantidad registros:
     </td>
 
     <td class="text-center">
-        {{a.operacion}}
+        {{a.accion}}
     </td>
 
-    <td class="text-center">
+   <td class="text-center">
 
-       <span
+  <span
     class="badge-estado"
-    [class.badge-ok]="a.resultado==='EXITOSO'"
-    [class.badge-error]="a.resultado==='ERROR'">
+    [class.badge-ok]="a.resultado === 'EXITOSO'"
+    [class.badge-error]="a.resultado === 'ERROR'">
 
-    {{a.resultado}}
+    {{ a.resultado }}
 
-</span>
-    </td>
+  </span>
+
+</td>
 
     <td>
         {{a.archivo}}
