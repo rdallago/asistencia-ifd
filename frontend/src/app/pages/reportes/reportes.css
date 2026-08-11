@@ -1,0 +1,146 @@
+/* =========================================
+PÁGINA REPORTES
+========================================= */
+
+.container-fluid {
+max-width: 1400px;
+}
+
+/* Título principal */
+
+.container-fluid > h2 {
+font-weight: 600;
+margin-bottom: 1.5rem;
+}
+
+/* =========================================
+PESTAÑAS
+========================================= */
+
+.nav-tabs {
+border-bottom: 2px solid #dee2e6;
+gap: 4px;
+}
+
+.nav-tabs .nav-link {
+color: #495057;
+font-weight: 500;
+border: none;
+border-radius: 6px 6px 0 0;
+padding: 10px 18px;
+transition: all 0.2s ease;
+}
+
+.nav-tabs .nav-link:hover {
+background-color: #f1f3f5;
+color: #212529;
+}
+
+.nav-tabs .nav-link.active {
+color: #ffffff;
+background-color: #0d6efd;
+border: none;
+}
+
+/* =========================================
+TARJETAS DE REPORTES
+========================================= */
+
+.card {
+border: none;
+border-radius: 10px;
+overflow: hidden;
+}
+
+.card-header.auditoria-header {
+padding: 14px 20px;
+}
+
+.card-body {
+padding: 24px;
+}
+
+/* =========================================
+FORMULARIOS
+========================================= */
+
+.form-label {
+font-weight: 500;
+}
+
+.form-control,
+.form-select {
+border-radius: 6px;
+}
+
+.form-control:focus,
+.form-select:focus {
+box-shadow: 0 0 0 0.15rem rgba(13, 110, 253, 0.15);
+}
+
+/* =========================================
+BOTONES
+========================================= */
+
+.btn-sistema {
+min-height: 38px;
+padding: 8px 18px;
+font-weight: 500;
+}
+
+/* =========================================
+SECCIÓN DE REPORTES
+========================================= */
+
+.reporte-diario,
+.reporte-docentes,
+.reporte-turnos,
+.reporte-indicadores {
+width: 100%;
+}
+
+/* Títulos internos */
+
+.reporte-diario h2,
+.reporte-docentes h2,
+.reporte-turnos h2,
+.reporte-indicadores h2 {
+font-size: 1.25rem;
+font-weight: 600;
+margin-bottom: 1.25rem;
+}
+
+/* =========================================
+MENSAJE PRÓXIMAMENTE
+========================================= */
+
+.seccion-proximamente {
+margin-top: 30px;
+padding: 20px;
+text-align: center;
+color: #6c757d;
+background-color: #f8f9fa;
+border-radius: 8px;
+}
+
+/* =========================================
+RESPONSIVE
+========================================= */
+
+@media (max-width: 768px) {
+
+
+.nav-tabs {
+    flex-wrap: wrap;
+}
+
+.nav-tabs .nav-link {
+    padding: 8px 12px;
+    font-size: 0.9rem;
+}
+
+.card-body {
+    padding: 18px;
+}
+
+}

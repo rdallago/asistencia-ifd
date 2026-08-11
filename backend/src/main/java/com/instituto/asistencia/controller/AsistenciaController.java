@@ -116,6 +116,21 @@ String nombreCompleto =
         + ", "
         + usuario.getNombre();
 
+System.out.println("=================================");
+    System.out.println(
+            "FECHA RECIBIDA CONTROLLER: " + fecha
+    );
+    System.out.println(
+            "TURNO RECIBIDO: " + turnoId
+    );
+    System.out.println(
+            "DOCENTE RECIBIDO: " + docenteId
+    );
+    System.out.println(
+            "ESTADO RECIBIDO: " + estado
+    );
+    System.out.println("=================================");
+
     byte[] pdf = asistenciaService.generarPdf(
 
             LocalDate.parse(fecha),

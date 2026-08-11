@@ -78,6 +78,12 @@ path: 'marcador/:jornadaId',
   path: 'asistencia/:jornadaId',
   component: AsistenciaComponent
 },
+{
+    path: 'reportes',
+    loadComponent: () =>
+        import('./pages/reportes/reportes')
+            .then(m => m.ReportesComponent)
+},
 
   {
     path: 'indicadores',

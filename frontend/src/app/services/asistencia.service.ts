@@ -292,5 +292,32 @@ obtenerEstadisticasTurno(
       });
 
 }
+obtenerDocentesParaReporte(): Observable<any[]> {
+
+  return this.http.get<any[]>(
+    'http://localhost:8080/api/reportes/docentes'
+  );
+
+}
+exportarReporteDocentes(): Observable<Blob> {
+
+  return this.http.get(
+    'http://localhost:8080/api/reportes/docentes',
+    {
+      responseType: 'blob'
+    }
+  );
+
+}
+exportarReporteTurnos(): Observable<Blob> {
+
+  return this.http.get(
+    'http://localhost:8080/api/reportes/turnos/pdf',
+    {
+      responseType: 'blob'
+    }
+  );
+
+}
 
 }

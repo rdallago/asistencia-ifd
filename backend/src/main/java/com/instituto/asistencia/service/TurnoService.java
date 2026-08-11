@@ -36,6 +36,10 @@ public TurnoService(
     public List<Turno> listar() {
         return turnoRepository.findAll();
     }
+        // LISTAR TURNOS ACTIVOS PARA REPORTE
+public List<Turno> listarParaReporte() {
+    return turnoRepository.findByActivoTrue();
+}
 
     // CREAR
     public Turno crear(Turno turno) {
@@ -206,5 +210,6 @@ auditoriaRespaldoService.registrar(
                 + turno.getNombre()
 );
     }
+
 
 }

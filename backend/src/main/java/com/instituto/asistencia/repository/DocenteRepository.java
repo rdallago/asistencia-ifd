@@ -10,5 +10,6 @@ public interface DocenteRepository extends JpaRepository<Docente, Long> {
     boolean existsByDni(String dni);
     List<Docente> findByActivoTrue();
     long countByActivoTrue();
+    List<Docente> findAllByOrderByApellidoAscNombreAsc();
     
 }

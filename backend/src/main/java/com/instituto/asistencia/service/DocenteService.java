@@ -303,13 +303,11 @@ public void eliminar(Long id) {
     public List<Docente> listar() {
     return docenteRepository.findAll();
 }
-   /* auditoriaRespaldoService.registrar(
-        usuario,
-        "DOCENTES",
-        "ALTA",
-        "EXITOSO",
-        null,
-        "Se creó el docente Juan Pérez"
-);*/
+   public List<Docente> listarParaReporte() {
+
+    return docenteRepository
+            .findAllByOrderByApellidoAscNombreAsc();
+}
+   
   
 }

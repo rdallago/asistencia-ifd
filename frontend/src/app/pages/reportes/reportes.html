@@ -1,0 +1,319 @@
+<!-- ===================================================== -->
+<!-- TÍTULO -->
+<!-- ===================================================== -->
+
+<h2 class="mb-4">
+    <i class="bi bi-bar-chart-fill me-2"></i>
+    Reportes
+</h2>
+
+
+<!-- ===================================================== -->
+<!-- PESTAÑAS -->
+<!-- ===================================================== -->
+
+<ul class="nav nav-tabs mb-4">
+
+    <!-- REPORTE DIARIO -->
+    <li class="nav-item">
+
+        <button
+            class="nav-link"
+            [class.active]="pestania === 'diario'"
+            (click)="pestania = 'diario'">
+
+            Reporte diario
+
+        </button>
+
+    </li>
+
+
+    <!-- DOCENTES -->
+    <li class="nav-item">
+
+        <button
+            class="nav-link"
+            [class.active]="pestania === 'docentes'"
+            (click)="pestania = 'docentes'">
+
+            Docentes
+
+        </button>
+
+    </li>
+
+
+    <!-- TURNOS -->
+    <li class="nav-item">
+
+        <button
+            class="nav-link"
+            [class.active]="pestania === 'turnos'"
+            (click)="pestania = 'turnos'">
+
+            Turnos
+
+        </button>
+
+    </li>
+
+
+    <!-- INDICADORES -->
+    <li class="nav-item">
+
+        <button
+            class="nav-link"
+            [class.active]="pestania === 'estadisticas'"
+            (click)="pestania = 'estadisticas'">
+
+            Indicadores
+
+        </button>
+
+    </li>
+
+</ul>
+
+
+<!-- ===================================================== -->
+<!-- PESTAÑA: REPORTE DIARIO -->
+<!-- ===================================================== -->
+
+<div *ngIf="pestania === 'diario'">
+
+    <div class="card shadow-sm">
+
+        <div class="card-header auditoria-header">
+
+            <h5 class="mb-0">
+                Reporte diario de asistencia
+            </h5>
+
+        </div>
+
+
+        <div class="card-body">
+
+            <div class="row g-3 align-items-end">
+
+                <div class="col-md-3">
+
+                    <label
+                        for="fechaReporte"
+                        class="form-label">
+
+                        Fecha
+
+                    </label>
+
+                    <input
+                        id="fechaReporte"
+                        type="date"
+                        class="form-control"
+                        [(ngModel)]="fecha">
+
+                </div>
+
+
+                <div class="col-md-3">
+
+                    <button
+                        class="btn btn-sistema"
+                        type="button"
+                        (click)="generarReporteDiario()">
+
+                        <i class="bi bi-file-earmark-pdf me-2"></i>
+
+                        Generar PDF
+
+                    </button>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- ===================================================== -->
+<!-- PESTAÑA: DOCENTES -->
+<!-- ===================================================== -->
+
+<div *ngIf="pestania === 'docentes'">
+
+    <div class="card shadow-sm">
+
+        <div class="card-header auditoria-header">
+
+            <h5 class="mb-0">
+                Listado de docentes
+            </h5>
+
+        </div>
+
+
+        <div class="card-body">
+
+            <p>
+                Genera un listado completo de los docentes
+                registrados en la institución.
+            </p>
+
+
+            <button
+                type="button"
+                class="btn btn-sistema"
+                (click)="generarReporteDocentes()">
+
+                <i class="bi bi-file-earmark-pdf me-2"></i>
+
+                Generar listado de docentes
+
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- ===================================================== -->
+<!-- PESTAÑA: TURNOS -->
+<!-- ===================================================== -->
+
+<div *ngIf="pestania === 'turnos'">
+
+    <div class="card shadow-sm">
+
+        <div class="card-header auditoria-header">
+
+            <h5 class="mb-0">
+                Listado de turnos
+            </h5>
+
+        </div>
+
+
+        <div class="card-body">
+
+            <p>
+                Genera un listado de los turnos configurados
+                en la institución, incluyendo sus horarios
+                y estado.
+            </p>
+
+
+            <button
+                type="button"
+                class="btn btn-sistema"
+                (click)="generarReporteTurnos()">
+
+                <i class="bi bi-file-earmark-pdf me-2"></i>
+
+                Generar listado de turnos
+
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- ===================================================== -->
+<!-- PESTAÑA: INDICADORES -->
+<!-- ===================================================== -->
+
+<div *ngIf="pestania === 'estadisticas'">
+
+    <div class="card shadow-sm">
+
+        <div class="card-header auditoria-header">
+
+            <h5 class="mb-0">
+                Reporte ejecutivo institucional
+            </h5>
+
+        </div>
+
+
+        <div class="card-body">
+
+            <p>
+                Genera el informe ejecutivo institucional
+                en formato PDF, incluyendo indicadores,
+                evolución, estado general, tendencias
+                y recomendaciones.
+            </p>
+
+
+            <!-- ================================ -->
+            <!-- FECHA DEL REPORTE EJECUTIVO -->
+            <!-- ================================ -->
+
+            <div class="row g-3 align-items-end">
+
+                <div class="col-md-3">
+
+                    <label
+                        for="fechaReporteEjecutivo"
+                        class="form-label">
+
+                        Fecha del reporte
+
+                    </label>
+
+                    <input
+                        id="fechaReporteEjecutivo"
+                        type="date"
+                        class="form-control"
+                        [(ngModel)]="fecha">
+
+                </div>
+
+
+                <div class="col-md-4">
+
+                    <button
+                        type="button"
+                        class="btn btn-sistema"
+                        (click)="generarReporteEjecutivo()">
+
+                        <i class="bi bi-file-earmark-pdf me-2"></i>
+
+                        Generar Reporte Ejecutivo
+
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            <!-- ================================ -->
+            <!-- ACLARACIÓN -->
+            <!-- ================================ -->
+
+            <div class="mt-3 text-muted">
+
+                <small>
+                    El reporte se generará utilizando la fecha seleccionada
+                    e incluirá los indicadores institucionales,
+                    la evolución de asistencia, la comparación histórica
+                    y el resumen ejecutivo.
+                </small>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
