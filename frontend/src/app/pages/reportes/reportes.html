@@ -3,8 +3,11 @@
 <!-- ===================================================== -->
 
 <h2 class="mb-4">
+
     <i class="bi bi-bar-chart-fill me-2"></i>
+
     Reportes
+
 </h2>
 
 
@@ -18,6 +21,7 @@
     <li class="nav-item">
 
         <button
+            type="button"
             class="nav-link"
             [class.active]="pestania === 'diario'"
             (click)="pestania = 'diario'">
@@ -33,6 +37,7 @@
     <li class="nav-item">
 
         <button
+            type="button"
             class="nav-link"
             [class.active]="pestania === 'docentes'"
             (click)="pestania = 'docentes'">
@@ -48,6 +53,7 @@
     <li class="nav-item">
 
         <button
+            type="button"
             class="nav-link"
             [class.active]="pestania === 'turnos'"
             (click)="pestania = 'turnos'">
@@ -63,6 +69,7 @@
     <li class="nav-item">
 
         <button
+            type="button"
             class="nav-link"
             [class.active]="pestania === 'estadisticas'"
             (click)="pestania = 'estadisticas'">
@@ -73,7 +80,24 @@
 
     </li>
 
+
+    <!-- RANKING -->
+    <li class="nav-item">
+
+        <button
+            type="button"
+            class="nav-link"
+            [class.active]="pestania === 'ranking'"
+            (click)="pestania = 'ranking'">
+
+            Ranking de ausencias
+
+        </button>
+
+    </li>
+
 </ul>
+
 
 
 <!-- ===================================================== -->
@@ -119,8 +143,8 @@
                 <div class="col-md-3">
 
                     <button
-                        class="btn btn-sistema"
                         type="button"
+                        class="btn btn-sistema"
                         (click)="generarReporteDiario()">
 
                         <i class="bi bi-file-earmark-pdf me-2"></i>
@@ -138,6 +162,7 @@
     </div>
 
 </div>
+
 
 
 <!-- ===================================================== -->
@@ -181,6 +206,7 @@
     </div>
 
 </div>
+
 
 
 <!-- ===================================================== -->
@@ -227,6 +253,7 @@
 </div>
 
 
+
 <!-- ===================================================== -->
 <!-- PESTAÑA: INDICADORES -->
 <!-- ===================================================== -->
@@ -253,10 +280,6 @@
                 y recomendaciones.
             </p>
 
-
-            <!-- ================================ -->
-            <!-- FECHA DEL REPORTE EJECUTIVO -->
-            <!-- ================================ -->
 
             <div class="row g-3 align-items-end">
 
@@ -297,20 +320,416 @@
             </div>
 
 
-            <!-- ================================ -->
-            <!-- ACLARACIÓN -->
-            <!-- ================================ -->
-
             <div class="mt-3 text-muted">
 
                 <small>
+
                     El reporte se generará utilizando la fecha seleccionada
                     e incluirá los indicadores institucionales,
                     la evolución de asistencia, la comparación histórica
                     y el resumen ejecutivo.
+
                 </small>
 
             </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+
+<!-- ===================================================== -->
+<!-- PESTAÑA: RANKING DE AUSENCIAS -->
+<!-- ===================================================== -->
+
+<div *ngIf="pestania === 'ranking'">
+
+    <div class="card shadow-sm">
+
+        <div class="card-header auditoria-header">
+
+            <h5 class="mb-0">
+
+                <i class="bi bi-bar-chart-fill me-2"></i>
+
+                Ranking de docentes con más ausencias
+
+            </h5>
+
+        </div>
+
+
+        <div class="card-body">
+
+            <p class="text-muted">
+
+                Muestra los docentes ordenados de mayor a menor
+                cantidad de ausencias registradas durante
+                el período seleccionado.
+
+            </p>
+
+
+            <!-- ================================================= -->
+            <!-- FILTROS DEL RANKING -->
+            <!-- ================================================= -->
+
+            <div class="row g-3 align-items-end mb-4">
+
+
+                <!-- ================================================= -->
+                <!-- TIPO DE PERÍODO -->
+                <!-- ================================================= -->
+
+                <div class="col-md-4">
+
+                    <label
+                        for="periodoRanking"
+                        class="form-label">
+
+                        Período
+
+                    </label>
+
+
+                    <select
+                        id="periodoRanking"
+                        class="form-select"
+                        [(ngModel)]="periodoRanking"
+                        (change)="cambiarPeriodoRanking()">
+
+                        <option value="personalizado">
+                            Personalizado
+                        </option>
+
+                        <option value="mes">
+                            Este mes
+                        </option>
+
+                        <option value="anio">
+                            Este año
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <!-- ================================================= -->
+                <!-- DESDE -->
+                <!-- ================================================= -->
+
+                <div
+                    class="col-md-3"
+                    *ngIf="periodoRanking === 'personalizado'">
+
+                    <label
+                        for="desdeRanking"
+                        class="form-label">
+
+                        Desde
+
+                    </label>
+
+
+                    <input
+                        id="desdeRanking"
+                        type="date"
+                        class="form-control"
+                        [(ngModel)]="desdeRanking">
+
+                </div>
+
+
+                <!-- ================================================= -->
+                <!-- HASTA -->
+                <!-- ================================================= -->
+
+                <div
+                    class="col-md-3"
+                    *ngIf="periodoRanking === 'personalizado'">
+
+                    <label
+                        for="hastaRanking"
+                        class="form-label">
+
+                        Hasta
+
+                    </label>
+
+
+                    <input
+                        id="hastaRanking"
+                        type="date"
+                        class="form-control"
+                        [(ngModel)]="hastaRanking">
+
+                </div>
+
+
+                <!-- ================================================= -->
+                <!-- INFORMACIÓN DEL PERÍODO AUTOMÁTICO -->
+                <!-- ================================================= -->
+
+                <div
+                    class="col-md-4"
+                    *ngIf="periodoRanking !== 'personalizado'">
+
+                    <div
+                        class="alert alert-light border mb-0">
+
+                        <i class="bi bi-calendar3 me-2"></i>
+
+                        <strong>
+                            Período seleccionado:
+                        </strong>
+
+                        {{ desdeRanking | date:'dd/MM/yyyy' }}
+
+                        -
+
+                        {{ hastaRanking | date:'dd/MM/yyyy' }}
+
+                    </div>
+
+                </div>
+
+
+                <!-- ================================================= -->
+                <!-- BOTÓN CONSULTAR -->
+                <!-- ================================================= -->
+
+                <div class="col-md-3">
+
+                    <button
+                        type="button"
+                        class="btn btn-sistema"
+                        [disabled]="cargandoRanking"
+                        (click)="obtenerRankingAusencias()">
+
+
+                        <!-- SPINNER DEL BOTÓN -->
+
+                        <span
+                            *ngIf="cargandoRanking"
+                            class="spinner-border spinner-border-sm me-2"
+                            role="status">
+                        </span>
+
+
+                        <!-- ICONO NORMAL -->
+
+                        <i
+                            *ngIf="!cargandoRanking"
+                            class="bi bi-search me-2">
+                        </i>
+
+
+                        <!-- TEXTO -->
+
+                        {{
+                            cargandoRanking
+                                ? 'Calculando...'
+                                : 'Consultar ranking'
+                        }}
+
+                    </button>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- ================================================= -->
+            <!-- CARGANDO -->
+            <!-- ================================================= -->
+
+            <div
+                *ngIf="cargandoRanking"
+                class="text-center p-4">
+
+                <div
+                    class="spinner-border text-primary"
+                    role="status">
+
+                    <span class="visually-hidden">
+                        Calculando ranking...
+                    </span>
+
+                </div>
+
+
+                <p class="mt-2 text-muted mb-0">
+
+                    Calculando ranking...
+
+                </p>
+
+            </div>
+
+
+
+            <!-- ================================================= -->
+            <!-- RESULTADOS -->
+            <!-- ================================================= -->
+
+            <div
+                *ngIf="
+                    !cargandoRanking &&
+                    rankingAusencias.length > 0
+                "
+                class="table-responsive">
+
+                <table
+                    class="table table-hover align-middle">
+
+
+                    <thead>
+
+                        <tr>
+
+                            <th>
+                                Pos.
+                            </th>
+
+                            <th>
+                                Docente
+                            </th>
+
+                            <th class="text-center">
+                                Ausencias
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody>
+
+                        <tr
+                            *ngFor="
+                                let item of rankingAusencias;
+                                let i = index
+                            ">
+
+
+                            <!-- ================================================= -->
+                            <!-- POSICIÓN -->
+                            <!-- ================================================= -->
+
+                            <td>
+
+                                <!-- PRIMER PUESTO -->
+
+                                <span
+                                    *ngIf="i === 0"
+                                    class="fs-4">
+
+                                    🥇
+
+                                </span>
+
+
+                                <!-- SEGUNDO PUESTO -->
+
+                                <span
+                                    *ngIf="i === 1"
+                                    class="fs-4">
+
+                                    🥈
+
+                                </span>
+
+
+                                <!-- TERCER PUESTO -->
+
+                                <span
+                                    *ngIf="i === 2"
+                                    class="fs-4">
+
+                                    🥉
+
+                                </span>
+
+
+                                <!-- RESTO -->
+
+                                <span
+                                    *ngIf="i > 2">
+
+                                    {{ i + 1 }}
+
+                                </span>
+
+                            </td>
+
+
+                            <!-- ================================================= -->
+                            <!-- DOCENTE -->
+                            <!-- ================================================= -->
+
+                            <td>
+
+                                <strong>
+
+                                    {{ item.nombre }}
+                                    {{ item.apellido }}
+
+                                </strong>
+
+                            </td>
+
+
+                            <!-- ================================================= -->
+                            <!-- AUSENCIAS -->
+                            <!-- ================================================= -->
+
+                            <td class="text-center">
+
+                                <span
+                                    class="badge bg-danger">
+
+                                    {{ item.cantidadAusencias }}
+
+                                </span>
+
+                            </td>
+
+                        </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+
+
+            <!-- ================================================= -->
+            <!-- SIN RESULTADOS -->
+            <!-- ================================================= -->
+
+            <div
+                *ngIf="
+                    !cargandoRanking &&
+                    rankingAusencias.length === 0 &&
+                    desdeRanking &&
+                    hastaRanking
+                "
+                class="alert alert-info">
+
+                <i class="bi bi-info-circle me-2"></i>
+
+                No se encontraron ausencias para el período
+                seleccionado.
+
+            </div>
+
 
         </div>
 

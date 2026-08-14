@@ -5,6 +5,7 @@ import { ResumenEjecutivo } from '../modelos/resumen-ejecutivo';
 import { ComparacionHistorica } from '../modelos/comparacion-historica';
 import { EstadoGeneralJornada } from '../modelos/estado-general-jornada';
 import { EstadisticasTurno } from '../modelos/estadisticas-turno';
+import { RankingAusencias } from '../modelos/ranking-ausencias';
 import {
   HttpClient
 } from '@angular/common/http';
@@ -315,6 +316,22 @@ exportarReporteTurnos(): Observable<Blob> {
     'http://localhost:8080/api/reportes/turnos/pdf',
     {
       responseType: 'blob'
+    }
+  );
+
+}
+obtenerRankingAusencias(
+  desde: string,
+  hasta: string
+): Observable<RankingAusencias[]> {
+
+  return this.http.get<RankingAusencias[]>(
+    `${this.api}/ranking-ausencias`,
+    {
+      params: {
+        desde,
+        hasta
+      }
     }
   );
 
