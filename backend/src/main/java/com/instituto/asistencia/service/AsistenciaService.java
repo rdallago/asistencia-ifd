@@ -10,7 +10,7 @@ import com.instituto.asistencia.dto.EstadisticasTurnoDTO;
 import java.util.Optional;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-
+import com.instituto.asistencia.dto.RankingAusenciasDTO;
 
 
 import java.util.ArrayList;
@@ -1571,6 +1571,24 @@ public List<Asistencia> obtenerAsistenciasParaReporte(LocalDate fecha) {
 
     return asistenciaRepository.findByFecha(fecha);
 
+}
+public List<RankingAusenciasDTO> obtenerRankingAusencias(
+        LocalDate desde,
+        LocalDate hasta) {
+
+    if (desde == null || hasta == null) {
+        throw new IllegalArgumentException(
+                "Las fechas desde y hasta son obligatorias");
+    }
+
+    if (desde.isAfter(hasta)) {
+        throw new IllegalArgumentException(
+                "La fecha desde no puede ser posterior a la fecha hasta");
+    }
+
+    return asistenciaRepository.obtenerRankingAusencias(
+            desde,
+            hasta);
 }
 
 }

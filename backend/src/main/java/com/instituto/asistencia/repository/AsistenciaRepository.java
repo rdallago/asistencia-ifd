@@ -4,7 +4,7 @@ import com.instituto.asistencia.entity.Asistencia;
 import com.instituto.asistencia.entity.enums.EstadoAsistencia;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.jpa.repository.JpaRepository;
-
+import com.instituto.asistencia.dto.RankingAusenciasDTO;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
@@ -76,5 +76,20 @@ List<Asistencia> findByTurnoIdAndFecha(
         Long turnoId,
         LocalDate fecha);
 
-
+@Query("""
+    SELECT new com.instituto.asistencia.dto.RankingAusenciasDTO(
+        a.docente.id,
+        a.docente.nombre,
+        a.docente.apellido,
+        COUNT(a.id)
+    )
+    FROM Asistencia a
+    WHERE a.fecha BETWEEN :desde AND :hasta
+      AND a.estado = com.instituto.asistencia.entity.enums.EstadoAsistencia.SIN_FIRMA_TOTAL
+    GROUP BY a.docente.id, a.docente.nombre, a.docente.apellido
+    ORDER BY COUNT(a.id) DESC
+""")
+List<RankingAusenciasDTO> obtenerRankingAusencias(
+        LocalDate desde,
+        LocalDate hasta);
 }

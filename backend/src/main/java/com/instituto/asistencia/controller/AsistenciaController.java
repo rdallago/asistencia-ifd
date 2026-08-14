@@ -4,6 +4,7 @@ import org.springframework.security.core.Authentication;
 import com.instituto.asistencia.exportador.ExcelExporter;
 import com.instituto.asistencia.dto.ReporteAsistenciaDTO;
 import java.util.List;
+import com.instituto.asistencia.dto.RankingAusenciasDTO;
 import com.instituto.asistencia.dto.ComparacionHistoricaDTO;
 import com.instituto.asistencia.dto.EstadoGeneralJornadaDTO;
 import com.instituto.asistencia.dto.ResumenEjecutivoDTO;
@@ -304,5 +305,17 @@ public ResponseEntity<EstadisticasTurnoDTO> estadisticasPorTurno(
 
                     turnoId));
 
+}
+@GetMapping("/ranking-ausencias")
+public ResponseEntity<List<RankingAusenciasDTO>> rankingAusencias(
+        @RequestParam String desde,
+        @RequestParam String hasta) {
+
+    return ResponseEntity.ok(
+            asistenciaService.obtenerRankingAusencias(
+                    LocalDate.parse(desde),
+                    LocalDate.parse(hasta)
+            )
+    );
 }
 }
