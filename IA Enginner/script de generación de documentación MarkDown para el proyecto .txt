@@ -1,0 +1,572 @@
+¡Sí, Ricardo! Te refresco lo que habíamos usado para correr los tests unitarios de tu backend Spring Boot con Maven y JUnit.
+
+1. El comando que ejecutábamos
+
+El comando general era:
+
+.\mvnw.cmd test
+
+Lo corríamos desde la consola de Windows, ubicado en la carpeta raíz del backend, donde está el archivo mvnw.cmd.
+
+Para ejecutar un test puntual, por ejemplo:
+
+.\mvnw.cmd -Dtest=DocenteServiceTest test
+
+Y para ejecutar todos los tests unitarios, nuevamente:
+
+.\mvnw.cmd test
+
+Usábamos Maven Wrapper, así que no necesitabas instalar Maven globalmente en Windows para ejecutar las pruebas.
+
+2. Cómo lo teníamos preparado en el backend
+
+El proyecto tenía que contar con estos elementos:
+
+mvnw.cmd: el ejecutable del Wrapper para Windows.
+
+mvnw: el script para otros sistemas.
+
+.mvn/wrapper/: los archivos de configuración del Wrapper.
+
+pom.xml: las dependencias y configuración del proyecto.
+
+Además, teníamos configurado spring-boot-starter-test, que incluye las herramientas de testing de Spring y JUnit.
+
+3. Cómo correrlo desde Windows
+
+Abrí CMD o PowerShell.
+
+Entrá a la carpeta raíz de tu backend. Por ejemplo, si estuviera en D:\Downloads\proyectos\asistencia, ejecutarías:
+
+cd D:\Downloads\proyectos\asistencia
+
+3. Comprobá que esté el archivo:
+
+dir mvnw.cmd
+
+4. Ejecutá:
+
+.\mvnw.cmd test
+
+Si usás CMD en lugar de PowerShell, también podés ejecutar:
+
+mvnw.cmd test
+4. ¿Y la instalación de Maven?
+
+En nuestro caso, la clave fue usar el Maven Wrapper, que descarga y utiliza la versión de Maven configurada para el proyecto. No hacía falta agregar Maven al PATH de Windows ni instalarlo por separado.
+
+Comando que conviene recordar
+.\mvnw.cmd test
+
+Ejecuta todos los tests del backend desde la raíz del proyecto.
+
+Habíamos avanzado bastante: los tests unitarios de servicios estaban pasando, incluidos los de DocenteServiceTest, TurnoServiceTest, JornadaServiceTest y AsistenciaServiceTest, entre otros.
+
+Cuando quieras, retomamos exactamente donde quedamos: la Prueba 1 de integración de Jornada, con GET http://localhost:8080/api/jornadas en Postman.
+
+hoy 7:59
+# MISION: EXTRACCION Y ESTRUCTURACION DE PROYECTO PARA AI ENGINEERING 
+ 
+Actuá como un Senior AI Engineer y Software Architect. Necesito consolidar y extraer TODA la información, requerimientos, arquitecturas, decisiones de diseño y código que desarrollamos juntos en este chat entre el **7 de junio de 2026** y el **30 de septiembre de 2026** sobre nuestro proyecto del Instituto en Java.  
+ 
+El objetivo es extraer este conocimiento "que vale oro" para armar la documentación del proyecto y alimentar a agentes de desarrollo (como Cline/Claude Dev) mediante la estructura de /docs (reglas e historia) y AGENT.md (instrucciones para el agente). 
+ 
+Generá una respuesta estructurada dividida estrictamente en las siguientes 2 carpetas conceptuales: 
+ 
+--- 
+ 
+## CARPETA 1: /docs (Documentación del Sistema y Dominio) 
+ 
+Generá los archivos Markdown necesarios con el contenido completo extraído de nuestro chat: 
+ 
+### 1. /docs/01-reglas-negocio.md 
+- Resumen ejecutivo del proyecto. 
+- Módulos principales identificados en la charla. 
+- Todas las reglas de negocio, validaciones y casos de uso detallados entre junio y septiembre de 2026. 
+ 
+### 2. /docs/02-arquitectura-tecnica.md 
+- Stack tecnológico definido (Java, framework, BD, librerías). 
+- Estructura de paquetes y capas utilizadas en el proyecto. 
+- Endpoints, DTOs y modelos de datos definidos durante las conversaciones. 
+- Estrategias de persistencia y migraciones acordadas. 
+ 
+### 3. /docs/03-historial-decisiones.md 
+- Cronología y registro de decisiones de diseño tomadas durante el desarrollo. 
+- Problemas o bugs complejos que resolvimos en el chat y sus soluciones. 
+- Deuda técnica o features pendientes detectadas. 
+ 
+--- 
+ 
+## CARPETA 2: /AGENT.md (Contexto para Agentes de IA / AI Engineering) 
+ 
+Escribí el archivo AGENT.md completo listo para que lo lea un agente como Cline o Claude Dev en la raíz del proyecto: 
+ 
+### Estructura obligatoria de AGENT.md: 
+1. **# ROL:** Definición del rol experto para el proyecto (Java / Spring Boot / AI Assisted Engineering). 
+2. **# REGLA DE ORO:** Instrucción explícita de leer /docs/01-reglas-negocio.md antes de escribir código, y cómo manejar commits y comentarios. 
+3. **# STACK:** Especificación detallada de Java, build tools, dependencias y BD. 
+4. **# ESTRUCTURA OBLIGATORIA:** Mapa de carpetas y paquetes obligatorios del proyecto. 
+5. **# CRITERIOS DE CALIDAD Y ESTILO:** Reglas de formateo, manejo de excepciones, logs y tests. 
+ 
+--- 
+ 
+Por favor, no omitas detalles técnicos ni reglas de negocio acordadas durante estos meses. Sé exhaustivo para que no se pierda ningún requerimiento.
+Se ha pausado el análisis
+
+Preparé los 4 archivos Markdown para el proyecto, organizados según las dos carpetas conceptuales que pediste.
+
+Carpeta 1: /docs
+
+01-reglas-negocio.md
+— módulos, reglas de negocio, validaciones y casos de uso.
+
+02-arquitectura-tecnica.md
+— stack, paquetes, endpoints, DTOs, entidades y persistencia.
+
+03-historial-decisiones.md
+— cronología disponible, bugs resueltos, estado de pruebas y pendientes.
+
+Carpeta 2: raíz del proyecto
+
+4.
+AGENT.md
+— rol, regla de oro, stack, estructura y criterios de calidad para Cline o Claude Dev.
+
+Importante: estos archivos consolidan la información que pude recuperar del contexto disponible, pero no equivalen a una extracción literal y completa de todo el historial entre junio y septiembre. Marqué como pendientes o por verificar los detalles que no están suficientemente respaldados, especialmente campos completos de DTOs, versiones de algunas dependencias y migraciones. Antes de darlos por documentación definitiva, conviene contrastarlos con el código actual del repositorio.
+
+Se ha pegado el markdown.md
+Archivo
+¿y este contenido de qué sería? el que te adjunto
+
+Ricardo, el archivo que adjuntaste es un script de generación de documentación Markdown para tu proyecto. No es documentación adicional del sistema en sí: es el código Python que usamos para crear los cuatro archivos que te preparé.
+
+En concreto, contiene:
+
+01-reglas-negocio.md: reglas, módulos y validaciones del sistema.
+
+02-arquitectura-tecnica.md: tecnologías, paquetes, endpoints, entidades y persistencia.
+
+03-historial-decisiones.md: bugs resueltos, decisiones, pruebas y pendientes.
+
+AGENT.md: instrucciones para que un agente de IA trabaje sobre el proyecto.
+
+Al final del script aparece el código que crea los archivos en /mnt/data usando pypandoc.convert_text().
+
+¿Para qué te sirve? Si querés volver a generar esos Markdown, conservar el script te permite hacerlo sin copiar y pegar todo el contenido manualmente. Pero para que Cline o Claude Dev lean las instrucciones, lo que tenés que colocar en tu repositorio son los cuatro archivos .md, no necesariamente el script Python.
+
+Importante: el script contiene la documentación consolidada a partir del contexto recuperado, no una extracción íntegra de cada conversación. Por eso los puntos marcados como pendientes o por verificar deben contrastarse con el código real antes de tomarlos como especificación definitiva.
+
+import pypandoc, os
+
+docs = {
+"01-reglas-negocio.md": r"""# Reglas de negocio y dominio
+
+Fuente y alcance: consolidación del contexto disponible de las conversaciones del proyecto entre junio y septiembre de 2026. No se dispone aquí del historial íntegro ni de todos los archivos fuente. Los puntos marcados Por verificar no deben tratarse como requisitos confirmados.
+
+1. Resumen ejecutivo
+
+Sistema de Gestión de Asistencia para el ISFD “Dr. J. A. Ferreira”, en Esquina. Backend Java con Spring Boot y MySQL, con frontend Angular. Permite administrar docentes, usuarios, turnos, jornadas y asignaciones; registrar entradas/salidas; producir reportes (PDF/Excel), indicadores y respaldos con auditoría.
+
+2. Módulos identificados
+Autenticación y autorización mediante JWT y roles.
+Docentes: alta, consulta, modificación y baja lógica/reactivación.
+Usuarios: administración de cuentas y roles.
+Turnos: configuración horaria y estado activo.
+Jornadas: apertura/cierre por usuario y turno, habilitación y cierre forzado.
+Asignaciones: relación docente-turno con vigencia/estado.
+Asistencia: entradas, salidas, cierres y estados de registro.
+Reportes: consultas filtradas, PDF, Excel, estadísticas y análisis.
+Respaldos: generación/restauración SQL.
+Auditoría: registro de operaciones relevantes.
+Institución: entidad institucional; se indicó que solo existe un registro base y que no hay gestión completa implementada.
+3. Reglas y casos de uso
+3.1 Docentes
+El DNI identifica al docente para las operaciones de asistencia.
+No se permite crear otro docente activo con el mismo DNI. Mensaje observado: Ya existe un docente activo con ese DNI.
+Si existe un docente inactivo con ese DNI, el alta puede reactivarlo en lugar de crear otro registro.
+La baja es lógica; no se elimina físicamente el docente.
+No se puede volver a desactivar un docente ya eliminado/inactivo; se corrigió para informar el estado repetido.
+guardar() asigna fechaAlta con LocalDate.now() y ejecuta validaciones antes de persistir.
+Se registran operaciones de auditoría. Los detalles exactos de todos los campos de validación deben cotejarse con DocenteService.
+3.2 Usuarios y seguridad
+El inicio de sesión requiere nombre de usuario y contraseña.
+No se admite username nulo/vacío: El nombre de usuario es obligatorio.
+No se admite password nulo/vacío: La contraseña es obligatoria.
+No se admite username duplicado: Ya existe un usuario con ese nombre.
+La actualización exige username y, si cambia, verifica que no pertenezca a otro usuario.
+Activar/desactivar tiene control de estado: repetir la acción devuelve El usuario ya está activo o El usuario ya está desactivado.
+Las rutas protegidas requieren JWT válido.
+La auditoría de respaldos requiere rol ADMIN (@PreAuthorize("hasRole('ADMIN')")).
+Los intentos de acceso sin autenticación o con rol insuficiente a la auditoría devolvieron 403 en Postman.
+Roles admitidos deben confirmarse en el enum real; DIRECTOR fue rechazado como rol inválido en una prueba.
+Al probar login, usar No Auth y quitar cualquier header Authorization heredado: un JWT vencido enviado al login provocó 403 antes de llegar al controlador.
+3.3 Turnos
+Un turno tiene nombre, hora de inicio, hora de fin, estado activo y configuración de cierre automático.
+Nombre y horarios son obligatorios en la entidad.
+La hora de inicio no puede ser posterior a la hora de fin.
+No se admite duplicar el nombre de un turno activo.
+Desactivar un turno puede estar impedido si existen jornadas asociadas (regla implementada en el servicio; confirmar mensaje exacto).
+No se permite desactivar dos veces: El turno ya está desactivado.
+No se permite activar dos veces: El turno ya está activo.
+3.4 Jornadas
+La jornada se abre asociada a un usuario y un turno, con observaciones opcionales.
+Se consulta por fecha y turno, y se puede listar por turno o listar jornadas abiertas.
+El cierre recibe usuario, turno, observaciones opcionales y forzarCierre.
+Si se intenta cerrar una jornada ya cerrada, se informa La jornada ya fue cerrada.
+Si se intenta cerrar antes de la hora de fin y no se fuerza, el servicio señala CIERRE_ANTICIPADO; el cierre forzado permite continuar.
+Al cerrar: cerrada=true, habilitada=false, se registra fecha/hora de cierre, usuario de cierre y observaciones, y cierreAutomatico=false.
+Para estadísticas históricas, una jornada cuenta si está habilitada o cerrada; esto evita excluir jornadas cerradas por tener habilitada=false.
+3.5 Asistencia
+Entrada
+
+Validaciones observadas en este orden:
+
+La jornada debe existir (Jornada no encontrada).
+Debe estar habilitada (La jornada no está habilitada).
+No debe estar cerrada (La jornada ya fue cerrada).
+El docente debe existir (Docente no encontrado).
+El docente debe estar asignado al turno (El docente no está asignado al turno <nombre>).
+Debe haber comenzado el turno (Aún no comenzó el turno).
+No debe existir ya una entrada (La entrada ya fue registrada).
+
+Al registrar entrada, se guarda hora de ingreso y estado PRESENTE; respuesta observada: Entrada registrada correctamente.
+
+Salida
+Requiere jornada existente, habilitada y no cerrada.
+El docente debe existir y estar asignado al turno.
+Debe existir una asistencia/entrada previa (No existe ingreso registrado).
+No puede repetirse la salida (El egreso ya fue registrado).
+Respuesta observada: Salida registrada correctamente.
+Cierre y estados
+
+Al procesar cierre de jornada para los docentes asignados:
+
+Sin asistencia/entrada: SIN_FIRMA_TOTAL.
+Con entrada y sin salida: SIN_EGRESO.
+Con entrada y salida: PRESENTE.
+3.6 Reportes e indicadores
+Reportes por fecha, con filtros opcionales por turno, docente y estado.
+Parámetro correcto del filtro de docente: docenteId (no docente_id).
+PDF y Excel deben respetar los filtros.
+Estadística por turno: docentes asignados, presentes, sin egreso, sin firma total y porcentaje.
+Estadística general clasifica docentes asignados contra asistencias de las jornadas de la fecha, considerando jornadas habilitadas o cerradas.
+Estado general se calcula sobre registros iniciados: presentes / registros iniciados. Umbrales observados: >=90 EXCELENTE; >=75 BUENO; >=60 REGULAR; inferior CRÍTICO. Si no hay actividad: SIN ACTIVIDAD.
+Existen consultas de indicadores institucionales, evolución de 30 días, resumen ejecutivo, comparación histórica y ranking de ausencias.
+La definición completa de cada DTO, las fórmulas de otros indicadores y el tratamiento de casos límite deben verificarse en código.
+3.7 Respaldos y auditoría
+Generación de respaldo SQL y restauración desde archivo multipart.
+Restauración usa obligatoriamente el campo de formulario archivo de tipo File.
+Auditoría registra, al menos, usuario, fecha/hora, resultado, archivo, detalle, módulo y acción.
+Acciones observadas: GENERAR, RESTAURAR; módulo RESPALDOS; resultados EXITOSO y ERROR.
+Un SQL inválido es rechazado por MySQL; el servicio registra resultado ERROR con el diagnóstico.
+La restauración exitosa devuelve {"mensaje":"Respaldo restaurado correctamente."}.
+Por verificar: el endpoint de restauración sin archivo devolvió 403 en Postman, aunque por contrato de parámetro requerido cabría esperar un error de petición; investigar antes de cambiar código.
+Tras un intento de restauración inválida, se verificó que GET /api/docentes seguía respondiendo 200.
+4. Datos de prueba conocidos (no usar como valores permanentes)
+
+En una prueba de fecha 2026-09-15 se observaron 13 docentes registrados, 11 activos, 6 turnos, 10 asignaciones vigentes y 0 jornadas abiertas. Para Turno Noche (id 2): 4 asignados, 1 presente, 0 sin egreso, 3 sin firma y 25%. Son datos de esa instancia, no reglas ni valores fijos.
+""",
+"02-arquitectura-tecnica.md": r"""# Arquitectura técnica
+
+Fuente y alcance: datos concretos recuperados del contexto de conversación disponible. Confirmar versiones y configuración directamente en pom.xml, application.properties/application.yml, entidades y controladores antes de usar como especificación contractual.
+
+1. Stack conocido
+Java: 17.0.19 (versión observada en entorno de pruebas).
+Spring Boot: 3.5.14 (versión observada en el proyecto).
+Build: Maven, con Maven Wrapper (mvnw, mvnw.cmd, .mvn/wrapper/).
+Persistencia: MySQL; entorno de prueba reportó MySQL 5.6.25.
+ORM: Hibernate/JPA (se observaron sentencias Hibernate:).
+Testing: JUnit y Mockito mediante spring-boot-starter-test.
+Frontend: Angular.
+Entorno local mencionado: Windows y XAMPP (binario MySQL bajo C:/xampp/mysql/bin/mysql.exe).
+
+No confirmado aquí: versiones exactas de Angular, JWT library, POI/Excel, librería PDF, drivers, estrategia de migraciones (Flyway/Liquibase/SQL manual), ni configuración de producción.
+
+2. Paquetes y capas
+
+Raíz de paquetes observada: com.instituto.asistencia.
+
+Capas/módulos identificados por clases:
+
+controller: endpoints REST (por ejemplo DocenteController, TurnoController, JornadaController, AsistenciaController, RespaldoController, AuditoriaRespaldoController, UsuarioController, AsignacionController).
+service: reglas de negocio (por ejemplo DocenteService, TurnoService, JornadaService, AsistenciaService, RespaldoService, AuditoriaRespaldoService, ReportePdfService).
+repository: acceso JPA (por ejemplo DocenteRepository, JornadaRepository, AsistenciaRepository, DocenteTurnoRepository, UsuarioRepository).
+Entidades/modelos JPA y DTOs existen; sus subpaquetes exactos no están confirmados en el contexto recuperado.
+3. Endpoints confirmados por controladores
+Docentes
+
+Base /api/docentes:
+
+GET /api/docentes
+GET /api/docentes/{id}
+POST /api/docentes
+PUT /api/docentes/{id}
+DELETE /api/docentes/{id}
+Turnos
+
+Base /turnos (no /api/turnos):
+
+GET /turnos
+POST /turnos
+PUT /turnos/{id}
+PUT /turnos/{id}/desactivar
+PUT /turnos/{id}/activar
+Jornadas
+
+Base /api/jornadas:
+
+POST /api/jornadas/abrir — query params usuarioId, turnoId, opcional observaciones (default vacío).
+POST /api/jornadas/cerrar — query params usuarioId, turnoId, opcional observaciones, opcional forzarCierre (default false).
+GET /api/jornadas/abierta — fecha, turnoId.
+GET /api/jornadas/buscar — fecha, turnoId.
+GET /api/jornadas
+GET /api/jornadas/turno/{turnoId}
+GET /api/jornadas/abiertas
+Usuarios
+
+Base /api/usuarios:
+
+GET /api/usuarios
+GET /api/usuarios/{id}
+GET /api/usuarios/buscar?texto=...
+POST /api/usuarios
+PUT /api/usuarios/{id}
+DELETE /api/usuarios/{id} (desactivar)
+PUT /api/usuarios/{id}/activar
+
+DTO UsuarioRequest: username, password, nombre, apellido, email, rol, docenteId.
+
+Asignaciones
+
+Base /asignaciones:
+
+GET /asignaciones
+GET /asignaciones/activas
+POST /asignaciones con AsignacionRequest (campos exactos por verificar en clase).
+PUT /asignaciones/{id}/desasignar
+PUT /asignaciones/{id}/reactivar
+Asistencia
+
+Base /api/asistencia:
+
+POST /api/asistencia/entrada — JSON AsistenciaRequest con dni, jornadaId.
+POST /api/asistencia/salida — JSON AsistenciaRequest con dni, jornadaId.
+POST /api/asistencia/cierre — parámetro turnoId.
+GET /api/asistencia/pdf — fecha, opcionales turnoId, docenteId, estado.
+GET /api/asistencia/reporte — mismos filtros.
+GET /api/asistencia/excel — mismos filtros.
+GET /api/asistencia/estadisticas?fecha=...
+GET /api/asistencia/estado-general?fecha=...
+GET /api/asistencia/indicadores
+GET /api/asistencia/evolucion?fecha=... (ventana de 30 días).
+GET /api/asistencia/resumen-ejecutivo?fecha=...
+GET /api/asistencia/comparacion-historica?fecha=...
+GET /api/asistencia/estadisticas-turno?fecha=...&turnoId=...
+GET /api/asistencia/ranking-ausencias?desde=...&hasta=...
+
+DTO AsistenciaRequest: dni, jornadaId. DTO de reporte: ReporteAsistenciaDTO (campos exactos por verificar).
+
+Respaldos y auditoría
+
+Base /api/respaldos:
+
+GET /api/respaldos/prueba
+POST /api/respaldos/generar — sin body; usuario proviene del SecurityContext.
+POST /api/respaldos/restaurar — multipart/form-data, campo obligatorio archivo (File).
+
+Base /api/respaldos/auditoria:
+
+GET /api/respaldos/auditoria — @PreAuthorize("hasRole('ADMIN')").
+Institución
+
+Existe InstitucionController bajo /api/instituciones, pero rutas y DTOs exactos no quedaron confirmados en el contexto disponible. Se indicó que solo hay un registro base y no una gestión completa en UI.
+
+4. Entidades y relaciones conocidas
+Docente: incluye DNI, fecha de alta y estado activo/inactivo; otros campos por verificar.
+Turno: id, institucion (ManyToOne), nombre, horaInicio, horaFin, activo=true, cierreAutomatico=true.
+Jornada: fecha, turno, habilitada/cerrada, datos de apertura/cierre, usuario de apertura/cierre y observaciones (nombres exactos completos por verificar).
+Asistencia: docente, turno, jornada, hora de ingreso, hora de egreso, estado y campos de auditoría.
+DocenteTurno: relación/asignación docente-turno, estado/vigencia; más campos por verificar.
+Usuario: cuenta con username/password, datos personales/email, rol y posible relación a docente.
+AuditoriaRespaldo: id, usuario, fechaHora, resultado, archivo, detalle, modulo, accion.
+5. Persistencia, transacciones y migraciones
+Persistencia mediante repositorios Spring Data JPA/Hibernate y MySQL.
+DocenteRepository ofrece búsquedas por DNI, existencia por DNI, docentes activos, conteo de activos y orden por apellido/nombre.
+JornadaRepository y AsistenciaRepository soportan búsquedas por fecha/turno y listados usados por estadísticas y reportes.
+Se observaron sentencias SQL generadas por Hibernate en consola.
+No hay evidencia suficiente en el contexto recuperado para afirmar que se haya acordado Flyway, Liquibase o un esquema de migración formal. Verificar pom.xml, application.properties y carpeta de recursos SQL.
+No modificar esquema o relaciones sin inspeccionar entidades y datos existentes; preferir cambios pequeños y validar contra MySQL local.
+""",
+"03-historial-decisiones.md": r"""# Historial de decisiones, bugs y pendientes
+
+Nota: cronología parcial basada en el contexto recuperado; las fechas exactas de muchas decisiones no están disponibles. No atribuir fecha precisa sin revisar el historial íntegro.
+
+1. Cronología disponible
+Junio de 2026
+Se trabajó en errores SQL y correcciones del proyecto de asistencia.
+Se revisó un error HTTP 403 en Spring Boot al intentar cargar un docente.
+Se corrigió DocenteService.guardar() para asignar fechaAlta = LocalDate.now(), validar datos y controlar DNI duplicado.
+Agosto de 2026
+Se consolidaron pruebas unitarias Maven con JUnit/Mockito.
+Entorno observado: Java 17.0.19, Spring Boot 3.5.14, MySQL 5.6.25.
+DocenteServiceTest ya existía y JUnit/Mockito funcionaban; se detectó inicialmente que el contexto de seguridad era null en el test de guardar(). La solución específica final debe cotejarse con el test actual.
+Septiembre de 2026
+Se completaron pruebas unitarias de servicios principales y se avanzó con pruebas manuales en Postman.
+Se ajustaron estados repetidos de docentes, turnos y usuarios para evitar desactivaciones/activaciones duplicadas.
+Se corrigió la estadística general para considerar jornadas habilitadas o cerradas y así no perder registros históricos cerrados.
+Se verificaron reportes PDF/Excel, estadísticas, evolución, resumen ejecutivo, comparación histórica, ranking de ausencias y estadísticas por turno.
+Se probaron generación/restauración de backups y auditoría.
+Se verificó que una restauración SQL inválida genera registro de auditoría ERROR y que el backend seguía respondiendo tras el fallo.
+2. Bugs complejos y soluciones
+2.1 Login bloqueado por JWT vencido
+
+Síntoma: login devolvía 403 aunque las credenciales podían ser correctas.
+Causa observada: Postman enviaba un Authorization Bearer heredado con JWT expirado. JwtFilter intentaba extraer claims y fallaba antes de llegar al login.
+Solución operativa: poner login en No Auth y quitar el header Authorization heredado; revisar auth de colección/carpeta.
+
+2.2 Duplicación de DNI en docentes
+
+Comportamiento requerido: no duplicar docentes activos por DNI; permitir reactivación del inactivo existente.
+Solución: DocenteService.guardar() valida y reactiva el registro inactivo con el mismo DNI, y rechaza si ya hay uno activo.
+
+2.3 Estados repetidos
+Docente ya dado de baja: rechazar segundo borrado lógico.
+Turno ya desactivado: El turno ya está desactivado.
+Turno ya activo: El turno ya está activo.
+Usuario ya desactivado/activo: mensajes específicos para cada caso.
+Estas validaciones se añadieron para hacer explícitas las transiciones de estado.
+2.4 Estadísticas históricas inconsistentes
+
+Síntoma: estadísticas generales podían excluir jornadas cerradas, porque su flag habilitada era false al cerrarse.
+Solución: incluir jornadas donde habilitada=true o cerrada=true al construir el conjunto de asignaciones de la fecha.
+
+2.5 Restauración de SQL inválido
+
+Síntoma: MySQL devolvió error de sintaxis 1064 al intentar importar texto que no era un backup válido.
+Resultado: RespaldoService lanzó excepción y registró auditoría ERROR con el detalle de MySQL. Luego GET /api/docentes devolvió 200, confirmando que la aplicación seguía operativa.
+Pendiente: revisar por qué Postman mostró 403 para restauración inválida y restauración sin archivo, aunque la lógica del servicio llegó a ejecutarse en el caso inválido.
+
+2.6 Error Git de submódulo
+
+Se observó:
+fatal: no submodule mapping found in .gitmodules for path 'frontend'.
+No hay constancia suficiente aquí de la solución final. Revisar .gitmodules, índice Git y estructura real antes de intervenir.
+
+3. Estado de pruebas conocido
+Unitarias
+
+Se informó que pasan:
+
+DocenteServiceTest: 30
+TurnoServiceTest: 25
+JornadaServiceTest: 25
+AsistenciaServiceTest: 28
+ReportePdfServiceTest: 15
+RespaldoServiceTest: 11
+También se indicó que pasan AsignacionServiceTest, UsuarioServiceTest, InstitucionServiceTest, DocenteTurnoServiceTest y AuditoriaRespaldoServiceTest (conteos no recuperados).
+Integración/manuales
+Docentes: 18/18 confirmadas.
+Turnos: bloque confirmado como funcionando.
+Usuarios: 16/16 confirmadas.
+Asignaciones: 9/9 confirmadas.
+Asistencia: bloque de 27 pruebas considerado completo.
+Jornadas: confirmadas pruebas 1–18; consultas adicionales deben revisarse.
+Respaldos/auditoría: generación, restauración exitosa, auditoría admin y restricciones de acceso verificadas; anomalía 403 con archivo ausente/SQL inválido pendiente de aclaración.
+4. Deuda técnica y pendientes
+Investigar respuestas 403 de /api/respaldos/restaurar cuando falta archivo o se envía SQL inválido; contrastar Postman, filtros, excepciones y status real devuelto.
+Confirmar las consultas restantes de Jornada: GET /api/jornadas, /api/jornadas/turno/{turnoId}, /api/jornadas/abiertas y /api/jornadas/abierta.
+Confirmar si se probó PDF filtrado por turno/docente/estado; no repetir si ya consta en Postman.
+Revisar endpoints exactos de institución y decidir si el alcance implementado requiere pruebas manuales.
+Completar pruebas end-to-end de Angular (login, formularios, asistencia, jornada, reportes, backups si están expuestos).
+Revisar el problema Git de frontend como submódulo si sigue vigente.
+Confirmar stack real en archivos del repositorio, especialmente versiones, dependencias, configuración de MySQL y migraciones.
+Documentar contrato completo de DTOs y entidades leyendo el código actual; los resúmenes disponibles no contienen todos los campos.
+""",
+"AGENT.md": r"""# ROL
+
+Actuá como Senior Software Engineer y Software Architect especializado en Java 17, Spring Boot, Spring Data JPA, MySQL, seguridad JWT, testing automatizado y desarrollo asistido por IA. Trabajá sobre el Sistema de Gestión de Asistencia del ISFD “Dr. J. A. Ferreira”.
+
+REGLA DE ORO
+Antes de escribir o modificar código, leer obligatoriamente docs/01-reglas-negocio.md y docs/02-arquitectura-tecnica.md. Consultar también docs/03-historial-decisiones.md para evitar reintroducir bugs.
+Inspeccionar el código real antes de proponer cambios: no inventar métodos, rutas, DTOs, nombres de campos ni relaciones.
+Preservar el comportamiento existente y hacer cambios pequeños, localizados y verificables. No refactorizar ampliamente si el pedido es corregir un caso puntual.
+No crear commits, hacer push, borrar datos ni ejecutar operaciones destructivas sin pedido/autorización explícita. Si se solicitan commits, resumir cambios, revisar diff y usar mensajes claros y descriptivos.
+Comentar el código solo cuando explique una decisión no obvia, una regla de negocio o una limitación. Evitar comentarios redundantes que repitan literalmente la instrucción.
+Si la documentación y el código difieren, no reconciliar en silencio: informar la discrepancia y pedir/registrar cuál es la fuente de verdad. Actualizar docs cuando se confirme el cambio.
+No afirmar que una prueba pasó sin haber ejecutado el comando o recibido evidencia del usuario. Diferenciar pruebas unitarias, integración y pruebas manuales.
+STACK
+
+Configuración conocida por conversaciones (verificar en pom.xml y configuración):
+
+Java 17 (entorno observado: 17.0.19).
+Spring Boot 3.5.14 (versión observada).
+Maven con Maven Wrapper. En Windows, desde la raíz del backend: .\mvnw.cmd test.
+MySQL (entorno observado: 5.6.25); se usó XAMPP en Windows.
+Spring Data JPA/Hibernate para persistencia.
+JUnit y Mockito mediante spring-boot-starter-test.
+Frontend Angular (versión exacta por verificar).
+JWT para autenticación y autorización (librería exacta por verificar).
+PDF y Excel están implementados; librerías/versiones exactas por verificar.
+
+No instalar Maven globalmente si el Wrapper está presente. Para compilar/testear usar primero el wrapper del proyecto.
+
+ESTRUCTURA OBLIGATORIA
+
+Raíz de paquetes backend conocida: com.instituto.asistencia.
+
+Respetar la estructura existente, sin mover paquetes por iniciativa propia:
+
+controller/: endpoints REST.
+service/: reglas de negocio y coordinación de casos de uso.
+repository/: persistencia y consultas JPA.
+Paquetes de entity/model y dto: inspeccionar nombres y ubicación reales antes de agregar clases.
+src/main/java/com/instituto/asistencia/: código productivo.
+src/test/java/: pruebas automatizadas, conservando correspondencia con clases productivas.
+src/main/resources/: configuración y recursos; verificar ubicación real de SQL/migraciones.
+Frontend Angular: preservar estructura actual y verificar si frontend es carpeta normal o submódulo Git antes de cambiarla.
+Documentación: docs/01-reglas-negocio.md, docs/02-arquitectura-tecnica.md, docs/03-historial-decisiones.md.
+CRITERIOS DE CALIDAD Y ESTILO
+Diseño
+Mantener separación controller/service/repository.
+Controllers traducen HTTP y delegan reglas de negocio a services.
+Validaciones de dominio en services, no duplicadas innecesariamente en controllers.
+Mantener DTOs como contratos explícitos; no cambiar nombres JSON sin revisar frontend y pruebas.
+Mantener bajas lógicas y transiciones de estado existentes.
+No alterar orden de validaciones/mensajes sin comprobar dependencias con tests y UI.
+Errores y excepciones
+Respetar respuestas HTTP ya existentes. Algunos controllers capturan excepciones y devuelven 400 con e.getMessage(); no convertir de forma general a otro esquema sin plan.
+No ocultar errores de persistencia o importación. Los mensajes expuestos deben ser útiles, pero evitar filtrar secretos.
+Investigar específicamente el 403 observado en restauración sin archivo/SQL inválido antes de cambiarlo.
+En autenticación, el login de Postman debe ejecutarse sin Authorization heredado; no enviar JWT expirado al endpoint de login.
+Logs y auditoría
+Usar logs con contexto útil y sin contraseñas, tokens ni datos sensibles innecesarios.
+Conservar auditoría de operaciones existentes, especialmente generación/restauración de respaldos y operaciones de dominio ya auditadas.
+Registrar resultado, usuario, fecha/hora, módulo, acción y detalle según modelo existente; inspeccionar entidad antes de ampliar.
+Testing
+Ejecutar desde raíz backend en Windows:
+Todos: .\mvnw.cmd test
+Una clase: .\mvnw.cmd -Dtest=DocenteServiceTest test
+Usar JUnit/Mockito y seguir convenciones de tests existentes.
+Cubrir caminos exitosos, validaciones, estados repetidos, ausencia de entidades y errores de repositorio/servicio relevantes.
+Para tests que dependen de autenticación, preparar SecurityContextHolder explícitamente y limpiarlo en @AfterEach para evitar contaminación entre tests.
+No cambiar tests para forzar un resultado incorrecto: verificar el contrato de negocio y el comportamiento real.
+Para pruebas manuales, documentar método, URL, auth, query params/body y respuesta esperada. No omitir campos obligatorios (por ejemplo multipart archivo en restauración).
+Después de cambios, ejecutar primero test focalizado y luego suite completa.
+Flujo de trabajo del agente
+Leer docs.
+Inspeccionar clases implicadas y usos en frontend.
+Resumir causa y cambio propuesto antes de modificaciones no triviales.
+Implementar el cambio mínimo.
+Ejecutar tests focalizados y suite si corresponde.
+Informar archivos modificados, comandos, resultado real y pendientes.
+Actualizar documentación y no declarar tarea terminada si quedan verificaciones críticas.
+"""
+}
+
+os.makedirs("/mnt/data", exist_ok=True)
+for filename, content in docs.items():
+path = f"/mnt/data/{filename}"
+pypandoc.convert_text(content, "md", format="md", outputfile=path, extra_args=["--standalone"])
+print(path)
+
+Cerrar
