@@ -1,4 +1,48 @@
-.construccion {
-  text-align: center;
-  margin-top: 100px;
+:host {
+  display: block;
+  font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+  color: #233247;
+  background: #f5f7fa;
+  line-height: 1.6;
+}
+/* MENÚ DE NAVEGACIÓN DE LA AYUDA */
+
+.ayuda-navegacion {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 20px 0;
+  padding: 15px;
+  background-color: #f3f6fa;
+  border: 1px solid #dce3ec;
+  border-radius: 10px;
+}
+
+.ayuda-navegacion a {
+  display: inline-block;
+  padding: 10px 16px;
+  background-color: #1565c0;
+  color: #ffffff;
+  text-decoration: none;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  transition: background-color 0.2s ease;
+}
+
+.ayuda-navegacion a:hover {
+  background-color: #0d47a1;
+  color: #ffffff;
+}
+
+.ayuda-navegacion a:focus-visible {
+  outline: 3px solid #ffb300;
+  outline-offset: 2px;
+}
+
+@media (max-width: 600px) {
+  .ayuda-navegacion a {
+    flex: 1 1 100%;
+    text-align: center;
+  }
 }

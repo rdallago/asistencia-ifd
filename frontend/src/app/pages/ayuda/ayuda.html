@@ -1,7 +1,440 @@
-<div class="construccion">
+<div class="ayuda-container">
 
-  <h1>🚧 Módulo en construcción</h1>
+  <!-- ENCABEZADO INSTITUCIONAL -->
+  <header class="ayuda-header">
+    <h1>Ayuda del Sistema de Asistencia Docente</h1>
 
-  <p>Disponible en próximos sprints.</p>
+    <p class="institucion">
+      Instituto Superior de Formación Docente y Técnica
+      «Dr. J. A. Ferreira» · Esquina, Corrientes
+    </p>
+
+    <p class="subtitulo">
+      Guía práctica para docentes y personal autorizado
+    </p>
+  </header>
+
+  <!-- PRESENTACIÓN -->
+  <section class="ayuda-introduccion">
+    <h2>¿Para qué sirve?</h2>
+
+    <p>
+      El sistema permite registrar entradas y salidas del personal docente,
+      organizar turnos y jornadas, consultar asistencias y obtener informes
+      para la gestión institucional.
+    </p>
+
+    <p>
+      Algunas opciones aparecen solo para usuarios autorizados.
+    </p>
+  </section>
+
+  <!-- MENÚ DE NAVEGACIÓN -->
+
+  <nav class="ayuda-navegacion" aria-label="Secciones de ayuda">
+    <a href="#ingreso" onclick="document.getElementById('ingreso').scrollIntoView({behavior: 'smooth'}); return false;">Ingresar</a>
+    <a href="#docentes" onclick="document.getElementById('docentes').scrollIntoView({behavior: 'smooth'}); return false;">Docentes</a>
+    <a href="#turnos" onclick="document.getElementById('turnos').scrollIntoView({behavior: 'smooth'}); return false;">Turnos</a>
+    <a href="#jornadas" onclick="document.getElementById('jornadas').scrollIntoView({behavior: 'smooth'}); return false;">Jornadas</a>
+    <a href="#firmar" onclick="document.getElementById('firmar').scrollIntoView({behavior: 'smooth'}); return false;">Firmar asistencia</a>
+    <a href="#consultas" onclick="document.getElementById('consultas').scrollIntoView({behavior: 'smooth'}); return false;">Consultas</a>
+    <a href="#reportes" onclick="document.getElementById('reportes').scrollIntoView({behavior: 'smooth'}); return false;">Reportes</a>
+    <a href="#respaldos" onclick="document.getElementById('respaldos').scrollIntoView({behavior: 'smooth'}); return false;">Respaldos</a>
+    <a href="#problemas" onclick="document.getElementById('problemas').scrollIntoView({behavior: 'smooth'}); return false;">Problemas frecuentes</a>
+    <a href="#buenas-practicas" onclick="document.getElementById('buenas-practicas').scrollIntoView({behavior: 'smooth'}); return false;">Buenas prácticas</a>
+  </nav>
+
+  <main class="ayuda-contenido">
+
+    <!-- 1. INGRESO AL SISTEMA -->
+    <section id="ingreso" class="ayuda-seccion">
+      <h2>1. Ingreso al sistema</h2>
+
+      <ol>
+        <li>Abra la dirección web proporcionada por la institución.</li>
+        <li>Ingrese su nombre de usuario y contraseña.</li>
+        <li>Acceda a las opciones habilitadas para su función.</li>
+        <li>
+          Al terminar, cierre la sesión, especialmente si utiliza
+          una computadora compartida.
+        </li>
+      </ol>
+
+      <div class="ayuda-aviso">
+        <p>
+          Si no puede ingresar, solicite al responsable del sistema
+          que revise el estado de su cuenta.
+          <strong>No comparta su contraseña.</strong>
+        </p>
+      </div>
+    </section>
+
+    <!-- 2. GESTIÓN DE DOCENTES -->
+    <section id="docentes" class="ayuda-seccion">
+      <h2>2. Gestión de docentes</h2>
+
+      <p>
+        El personal autorizado puede registrar nuevos docentes,
+        consultar sus datos, actualizarlos y desactivarlos
+        cuando corresponda.
+      </p>
+
+      <ol>
+        <li>Abra la opción de docentes.</li>
+        <li>
+          Busque por los datos disponibles o elija agregar un docente.
+        </li>
+        <li>
+          Complete los campos obligatorios y revise especialmente el DNI.
+        </li>
+        <li>
+          Guarde los cambios y compruebe el mensaje del sistema.
+        </li>
+      </ol>
+
+      <p>
+        El sistema controla que no existan docentes activos
+        duplicados por DNI.
+      </p>
+
+      <p>
+        La baja es lógica: conserva antecedentes para consultas e informes.
+      </p>
+    </section>
+
+    <!-- 3. TURNOS Y ASIGNACIONES -->
+    <section id="turnos" class="ayuda-seccion">
+      <h2>3. Turnos y asignaciones</h2>
+
+      <p>
+        Los turnos definen los horarios institucionales.
+        Las asignaciones indican qué docente debe registrar asistencia
+        en cada turno y durante qué período.
+      </p>
+
+      <ol>
+        <li>Verifique que el turno tenga los horarios correctos.</li>
+        <li>Asigne al docente el turno correspondiente.</li>
+        <li>Revise las fechas de vigencia de la asignación.</li>
+      </ol>
+
+      <div class="ayuda-aviso">
+        <p>
+          Si un docente no puede firmar, una de las causas posibles
+          es que no tenga una asignación vigente para ese turno.
+        </p>
+      </div>
+    </section>
+
+    <!-- 4. APERTURA Y CIERRE DE JORNADAS -->
+    <section id="jornadas" class="ayuda-seccion">
+      <h2>4. Apertura y cierre de jornadas</h2>
+
+      <p>
+        Para registrar asistencias debe existir una jornada habilitada
+        para la fecha y el turno.
+      </p>
+
+      <ol>
+        <li>El responsable abre la jornada del turno.</li>
+        <li>Durante la jornada se registran ingresos y egresos.</li>
+        <li>Al finalizar, el responsable cierra la jornada.</li>
+      </ol>
+
+      <div class="ayuda-advertencia">
+        <p>
+          <strong>Atención:</strong>
+          una jornada cerrada no permite registrar un egreso
+          ordinario posterior.
+        </p>
+
+        <p>
+          El sistema también cuenta con un proceso automático
+          de cierre de jornadas pendientes.
+        </p>
+      </div>
+    </section>
+
+    <!-- 5. REGISTRO DE INGRESO Y EGRESO -->
+    <section id="firmar" class="ayuda-seccion">
+      <h2>5. Registro de ingreso y egreso</h2>
+
+      <h3>Al comenzar</h3>
+
+      <ol>
+        <li>
+          Seleccione o identifique al docente según la pantalla
+          de registro disponible.
+        </li>
+        <li>
+          Verifique el turno y registre el <strong>ingreso</strong>.
+        </li>
+        <li>
+          Compruebe que el sistema confirme la operación.
+        </li>
+      </ol>
+
+      <h3>Al retirarse</h3>
+
+      <ol>
+        <li>Regrese a la opción de registro.</li>
+        <li>
+          Registre el <strong>egreso</strong> antes de que se cierre
+          la jornada.
+        </li>
+        <li>Compruebe que la operación se haya guardado.</li>
+      </ol>
+
+      <div class="ayuda-aviso">
+        <p>
+          No es posible registrar dos veces el mismo ingreso o egreso.
+          El sistema comprueba que el docente pertenezca al turno
+          y que la jornada esté habilitada.
+        </p>
+      </div>
+    </section>
+
+    <!-- 6. CONSULTAR ASISTENCIAS -->
+    <section id="consultas" class="ayuda-seccion">
+      <h2>6. Consultar asistencias</h2>
+
+      <p>
+        Los usuarios autorizados pueden revisar los registros por fecha
+        y, según la pantalla, aplicar filtros por docente, turno o estado.
+      </p>
+
+      <p>
+        Si una persona no aparece, revise primero la fecha,
+        el turno y su asignación.
+      </p>
+
+      <div class="ayuda-tabla-contenedor">
+        <table class="ayuda-tabla">
+          <thead>
+            <tr>
+              <th scope="col">Estado</th>
+              <th scope="col">¿Qué significa?</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr>
+              <td>Presente</td>
+              <td>
+                Se registraron ingreso y egreso.
+              </td>
+            </tr>
+
+            <tr>
+              <td>Sin egreso</td>
+              <td>
+                Se registró el ingreso, pero falta la salida.
+              </td>
+            </tr>
+
+            <tr>
+              <td>Sin firma total</td>
+              <td>
+                No se registró el ingreso para una asignación esperada.
+              </td>
+            </tr>
+
+            <tr>
+              <td>Abierto</td>
+              <td>
+                Registro todavía en proceso, antes de su
+                clasificación definitiva.
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- 7. REPORTES E INDICADORES -->
+    <section id="reportes" class="ayuda-seccion">
+      <h2>7. Reportes e indicadores</h2>
+
+      <p>
+        El sistema ofrece consultas e informes en PDF y Excel,
+        según la opción y los permisos disponibles.
+      </p>
+
+      <p>
+        Incluye un <strong>Reporte Ejecutivo Institucional</strong>
+        con actividad del día, estados de asistencia,
+        indicadores y detalle nominal.
+      </p>
+
+      <h3>Cómo interpretar los porcentajes</h3>
+
+      <p>
+        <strong>Porcentaje de asistencia:</strong>
+        registros completos respecto de las asignaciones
+        consideradas para la fecha.
+      </p>
+
+      <p>
+        <strong>Calidad del registro:</strong>
+        registros completos respecto de los registros
+        que efectivamente se iniciaron.
+      </p>
+
+      <div class="ayuda-aviso">
+        <p>
+          Son indicadores distintos: una calidad de registro alta
+          no implica que todos los docentes asignados hayan asistido.
+        </p>
+      </div>
+
+      <p>
+        Las <strong>asignaciones vigentes</strong> del resumen
+        institucional pueden referirse al total actual,
+        mientras que la actividad diaria corresponde a las
+        asignaciones de la fecha consultada.
+      </p>
+    </section>
+
+    <!-- 8. COPIAS DE SEGURIDAD -->
+    <section id="respaldos" class="ayuda-seccion">
+      <h2>8. Copias de seguridad</h2>
+
+      <p>
+        El personal autorizado puede generar copias de seguridad
+        y consultar el historial de operaciones.
+      </p>
+
+      <p>
+        Restaurar una copia puede reemplazar datos existentes
+        y debe realizarse únicamente con autorización,
+        después de verificar el archivo y resguardar
+        la información actual.
+      </p>
+
+      <div class="ayuda-advertencia">
+        <p>
+          <strong>Importante:</strong>
+          no utilice archivos de respaldo de producción
+          para experimentar ni comparta respaldos
+          con personas no autorizadas.
+        </p>
+      </div>
+    </section>
+
+    <!-- 9. PREGUNTAS FRECUENTES -->
+    <section id="problemas" class="ayuda-seccion">
+      <h2>9. Preguntas frecuentes</h2>
+
+      <div class="ayuda-pregunta">
+        <h3>«La jornada no está habilitada»</h3>
+        <p>
+          Solicite al responsable que verifique si la jornada
+          del turno está abierta.
+        </p>
+      </div>
+
+      <div class="ayuda-pregunta">
+        <h3>«El docente no está asignado al turno»</h3>
+        <p>
+          Revise que la asignación sea correcta
+          y esté vigente para esa fecha.
+        </p>
+      </div>
+
+      <div class="ayuda-pregunta">
+        <h3>«Aún no comenzó el turno»</h3>
+        <p>
+          El sistema no admite el ingreso antes
+          del horario permitido.
+        </p>
+      </div>
+
+      <div class="ayuda-pregunta">
+        <h3>
+          «La entrada ya fue registrada»
+          o «El egreso ya fue registrado»
+        </h3>
+        <p>
+          La operación ya existe.
+          Consulte la asistencia antes de volver a intentar.
+        </p>
+      </div>
+
+      <div class="ayuda-pregunta">
+        <h3>«La jornada ya fue cerrada»</h3>
+        <p>
+          No podrá registrar la salida de forma ordinaria.
+          Informe la situación al responsable institucional
+          para su tratamiento.
+        </p>
+      </div>
+
+      <div class="ayuda-pregunta">
+        <h3>El reporte no coincide con lo esperado</h3>
+        <p>
+          Verifique fecha, turno, asignaciones vigentes
+          en esa fecha y diferencia entre «presente»,
+          «sin egreso» y «sin firma».
+        </p>
+      </div>
+    </section>
+
+    <!-- 10. BUENAS PRÁCTICAS -->
+    <section id="buenas-practicas" class="ayuda-seccion">
+      <h2>10. Buenas prácticas</h2>
+
+      <ul>
+        <li>
+          Registre el ingreso y el egreso en el momento correspondiente.
+        </li>
+        <li>Revise los mensajes de confirmación.</li>
+        <li>No comparta usuarios ni contraseñas.</li>
+        <li>Controle las asignaciones antes de abrir una jornada.</li>
+        <li>
+          Conserve respaldos y consulte a la administración
+          ante inconsistencias.
+        </li>
+      </ul>
+    </section>
+
+  </main>
+
+  <!-- PIE DE PÁGINA -->
+  <footer class="ayuda-footer">
+    <p>
+      <strong>Soporte institucional:</strong>
+      <a href="mailto:ricardodallago@gmail.com">
+        ricardodallago@gmail.com
+      </a>
+    </p>
+
+    <p>
+      Guía de usuario · Versión inicial 14/10/2026
+    </p>
+
+    <p>
+      
+    </p>
+  </footer>
 
 </div>
+
+<!-- Script para forzar el desplazamiento interno y evitar interferencias del enrutador del sistema -->
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const enlaces = document.querySelectorAll('.enlace-interno');
+    enlaces.forEach(enlace => {
+      enlace.addEventListener('click', (e) => {
+        e.preventDefault(); // Evita que el router principal capture la navegación
+        const targetId = enlace.getAttribute('href');
+        const seccionDestino = document.querySelector(targetId);
+        if (seccionDestino) {
+          seccionDestino.scrollIntoView({
+            behavior: 'smooth',
+            block: 'start'
+          });
+        }
+      });
+    });
+  });
+</script>
