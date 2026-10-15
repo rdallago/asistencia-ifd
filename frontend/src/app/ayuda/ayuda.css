@@ -1,0 +1,7 @@
+:host {
+  display: block;
+  font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+  color: #233247;
+  background: #f5f7fa;
+  line-height: 1.6;
+}

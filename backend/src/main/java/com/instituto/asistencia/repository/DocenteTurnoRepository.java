@@ -34,6 +34,18 @@ public interface DocenteTurnoRepository
             Long turnoId,
             LocalDate fecha
     );
+    
+    @Query("""
+    SELECT dt
+    FROM DocenteTurno dt
+    WHERE dt.turno.id = :turnoId
+    AND dt.fechaDesde <= :fecha
+    AND (dt.fechaHasta IS NULL OR dt.fechaHasta >= :fecha)
+""")
+List<DocenteTurno> findVigentesPorTurnoYFecha(
+        Long turnoId,
+        LocalDate fecha
+);
 List<DocenteTurno> findByActivoTrue();
 
 boolean existsByDocente_IdAndTurno_IdAndActivoTrue(

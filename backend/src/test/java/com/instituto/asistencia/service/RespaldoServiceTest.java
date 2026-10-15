@@ -72,7 +72,7 @@ class RespaldoServiceTest {
         ReflectionTestUtils.setField(
                 respaldoService,
                 "datasourceUrl",
-                "jdbc:mysql://localhost:3306/asistencia_ifd"
+                "jdbc:mysql://localhost:3306/asistencia_ifd_test"
         );
 
         ReflectionTestUtils.setField(
@@ -125,7 +125,7 @@ class RespaldoServiceTest {
                 respaldoService.obtenerBaseDatos();
 
         assertEquals(
-                "asistencia_ifd",
+                "asistencia_ifd_test",
                 resultado
         );
     }
@@ -140,14 +140,14 @@ class RespaldoServiceTest {
         ReflectionTestUtils.setField(
                 respaldoService,
                 "datasourceUrl",
-                "jdbc:mysql://localhost:3306/asistencia_ifd?useSSL=false&serverTimezone=UTC"
+                "jdbc:mysql://localhost:3306/asistencia_ifd_test?useSSL=false&serverTimezone=UTC"
         );
 
         String resultado =
                 respaldoService.obtenerBaseDatos();
 
         assertEquals(
-                "asistencia_ifd",
+                "asistencia_ifd_test",
                 resultado
         );
     }

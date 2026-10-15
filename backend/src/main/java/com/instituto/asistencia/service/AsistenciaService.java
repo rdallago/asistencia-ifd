@@ -5,6 +5,7 @@ import com.instituto.asistencia.entity.Docente;
 import com.instituto.asistencia.dto.EvolucionAsistenciaDTO;
 import com.instituto.asistencia.dto.ResumenEjecutivoDTO;
 import com.instituto.asistencia.entity.Asistencia;
+import org.springframework.transaction.annotation.Transactional;
 import com.instituto.asistencia.dto.EstadoGeneralJornadaDTO;
 import com.instituto.asistencia.dto.EstadisticasTurnoDTO;
 import java.util.Optional;
@@ -152,9 +153,34 @@ if (!asignado) {
 
     if (asistencia.getHoraIngreso() != null) {
 
-        throw new RuntimeException(
-                "La entrada ya fue registrada");
-    }
+    Authentication authentication =
+            SecurityContextHolder
+                    .getContext()
+                    .getAuthentication();
+
+    String usuario = authentication != null
+            ? authentication.getName()
+            : "SISTEMA";
+
+    auditoriaRespaldoService.registrar(
+            usuario,
+            "ASISTENCIAS",
+            "INGRESO",
+            "RECHAZADO",
+            null,
+            "Intento de ingreso duplicado para "
+                    + docente.getApellido()
+                    + ", "
+                    + docente.getNombre()
+                    + " - DNI: "
+                    + docente.getDni()
+                    + " - Turno "
+                    + turno.getNombre()
+    );
+
+    throw new RuntimeException(
+            "La entrada ya fue registrada");
+}
 
     asistencia.setHoraIngreso(
             LocalTime.now());
@@ -249,11 +275,36 @@ if (!asignado) {
                             new RuntimeException(
                                     "No existe ingreso registrado"));
 
-    if (asistencia.getHoraEgreso() != null) {
+   if (asistencia.getHoraEgreso() != null) {
 
-        throw new RuntimeException(
-                "El egreso ya fue registrado");
-    }
+    Authentication authentication =
+            SecurityContextHolder
+                    .getContext()
+                    .getAuthentication();
+
+    String usuario = authentication != null
+            ? authentication.getName()
+            : "SISTEMA";
+
+    auditoriaRespaldoService.registrar(
+            usuario,
+            "ASISTENCIAS",
+            "EGRESO",
+            "RECHAZADO",
+            null,
+            "Intento de egreso duplicado para "
+                    + docente.getApellido()
+                    + ", "
+                    + docente.getNombre()
+                    + " - DNI: "
+                    + docente.getDni()
+                    + " - Turno "
+                    + turno.getNombre()
+    );
+
+    throw new RuntimeException(
+            "El egreso ya fue registrado");
+}
 
     asistencia.setHoraEgreso(
             LocalTime.now());
@@ -294,38 +345,28 @@ auditoriaRespaldoService.registrar(
     // =====================================================
     // CIERRE DE JORNADA
     // =====================================================
+   @Transactional
+   public String procesarCierreJornada(Jornada jornada) {
 
-public String procesarCierreJornada(Long turnoId) {
-
-    LocalDate hoy = LocalDate.now();
-
-    Jornada jornada =
-            jornadaRepository
-                    .findByFechaAndTurno_Id(
-                            hoy,
-                            turnoId)
-                    .orElseThrow(() ->
-                            new RuntimeException(
-                                    "No existe jornada habilitada"));
+    LocalDate fecha = jornada.getFecha();
 
     Turno turno = jornada.getTurno();
 
     List<DocenteTurno> asignados =
-            docenteTurnoRepository
-                    .findByTurno_Id(
-                            turno.getId());
+        docenteTurnoRepository.findVigentesPorTurnoYFecha(
+                turno.getId(),
+                fecha);
 
     for (DocenteTurno dt : asignados) {
 
-        Docente docente =
-                dt.getDocente();
+        Docente docente = dt.getDocente();
 
         Asistencia asistencia =
                 asistenciaRepository
-                     .findByDocenteIdAndTurnoIdAndJornadaId(
-    docente.getId(),
-    turno.getId(),
-    jornada.getId())
+                        .findByDocenteIdAndTurnoIdAndJornadaId(
+                                docente.getId(),
+                                turno.getId(),
+                                jornada.getId())
                         .orElse(null);
 
         // =====================================
@@ -339,8 +380,7 @@ public String procesarCierreJornada(Long turnoId) {
             asistencia.setDocente(docente);
             asistencia.setTurno(turno);
             asistencia.setJornada(jornada);
-
-            asistencia.setFecha(hoy);
+            asistencia.setFecha(fecha);
 
             asistencia.setEstado(
                     EstadoAsistencia.SIN_FIRMA_TOTAL);
@@ -349,23 +389,23 @@ public String procesarCierreJornada(Long turnoId) {
                     LocalDateTime.now());
 
             Asistencia guardada =
-        asistenciaRepository.save(asistencia);
+                    asistenciaRepository.save(asistencia);
 
-auditoriaRespaldoService.registrar(
-        "SISTEMA",
-        "ASISTENCIAS",
-        "SIN_FIRMA_TOTAL",
-        "EXITOSO",
-        null,
-        "Se registró SIN FIRMA TOTAL para "
-                + guardada.getDocente().getApellido()
-                + ", "
-                + guardada.getDocente().getNombre()
-                + " - Turno "
-                + guardada.getTurno().getNombre()
-);
+            auditoriaRespaldoService.registrarEnTransaccion(
+                    "SISTEMA",
+                    "ASISTENCIAS",
+                    "SIN_FIRMA_TOTAL",
+                    "EXITOSO",
+                    null,
+                    "Se registró SIN FIRMA TOTAL para "
+                            + guardada.getDocente().getApellido()
+                            + ", "
+                            + guardada.getDocente().getNombre()
+                            + " - Turno "
+                            + guardada.getTurno().getNombre()
+            );
 
-continue;
+            continue;
         }
 
         // =====================================
@@ -382,23 +422,23 @@ continue;
                     LocalDateTime.now());
 
             Asistencia guardada =
-        asistenciaRepository.save(asistencia);
+                    asistenciaRepository.save(asistencia);
 
-auditoriaRespaldoService.registrar(
-        "SISTEMA",
-        "ASISTENCIAS",
-        "SIN_EGRESO",
-        "EXITOSO",
-        null,
-        "Se cerró automáticamente la asistencia de "
-                + guardada.getDocente().getApellido()
-                + ", "
-                + guardada.getDocente().getNombre()
-                + " por falta de egreso - Turno "
-                + guardada.getTurno().getNombre()
-);
+            auditoriaRespaldoService.registrarEnTransaccion(
+                    "SISTEMA",
+                    "ASISTENCIAS",
+                    "SIN_EGRESO",
+                    "EXITOSO",
+                    null,
+                    "Se cerró automáticamente la asistencia de "
+                            + guardada.getDocente().getApellido()
+                            + ", "
+                            + guardada.getDocente().getNombre()
+                            + " por falta de egreso - Turno "
+                            + guardada.getTurno().getNombre()
+            );
 
-continue;
+            continue;
         }
 
         // =====================================
@@ -414,13 +454,24 @@ continue;
             asistencia.setFechaModificacion(
                     LocalDateTime.now());
 
-            asistenciaRepository.save(
-                    asistencia);
+            asistenciaRepository.save(asistencia);
         }
     }
 
-    
     return "Asistencia procesada correctamente";
+}
+@Transactional
+public String procesarCierreJornada(Long turnoId) {
+
+    LocalDate hoy = LocalDate.now();
+
+    Jornada jornada = jornadaRepository
+            .findByFechaAndTurno_Id(hoy, turnoId)
+            .orElseThrow(() ->
+                    new RuntimeException(
+                            "No existe jornada habilitada"));
+
+    return procesarCierreJornada(jornada);
 }
 // =====================================================
     // REPORTE DIARIO
@@ -897,56 +948,101 @@ return dto;
 }
 
 
-public EstadisticasDTO obtenerEstadisticas(LocalDate fecha) {
 
-  
-    List<Asistencia> lista =
-            asistenciaRepository.findByFecha(fecha);
+public EstadisticasDTO obtenerEstadisticas(LocalDate fecha) {
 
     EstadisticasDTO dto = new EstadisticasDTO();
 
     // ======================================
-// Estado REAL de los registros
-// ======================================
+    // Jornadas de la fecha
+    // ======================================
 
-long presentes =
-        lista.stream()
-                .filter(a ->
+    List<Jornada> jornadas =
+        jornadaRepository.findByFecha(fecha)
+                .stream()
+                .filter(jornada ->
+                        Boolean.TRUE.equals(jornada.getCerrada()))
+                .toList();
 
-                        a.getHoraIngreso() != null
-                        &&
+    // ======================================
+   
+    // ======================================
+    // Asistencias de jornadas cerradas
+    // ======================================
 
-                        a.getHoraEgreso() != null
+    List<Asistencia> lista =
+            obtenerAsistenciasParaReporte(fecha);
 
-                )
-                .count();
+    long docentesAsignados = 0;
+    long presentes = 0;
+    long sinEgreso = 0;
+    long sinFirmaTotal = 0;
 
-long sinEgreso =
-        lista.stream()
-                .filter(a ->
+    for (Jornada jornada : jornadas) {
 
-                        a.getHoraIngreso() != null
-                        &&
+       List<DocenteTurno> asignadosTurno =
+        docenteTurnoRepository.findVigentesPorTurnoYFecha(
+                jornada.getTurno().getId(),
+                jornada.getFecha()
+        );
 
-                        a.getHoraEgreso() == null
+        for (DocenteTurno asignacion : asignadosTurno) {
 
-                )
-                .count();
+            docentesAsignados++;
 
-long sinFirmaTotal =
-        lista.stream()
-                .filter(a ->
+            Long docenteId =
+                    asignacion.getDocente().getId();
 
-                        a.getHoraIngreso() == null
+            Long turnoId =
+                    jornada.getTurno().getId();
 
-                )
-                .count();
+            Long jornadaId =
+                    jornada.getId();
+
+            Asistencia asistenciaEncontrada = null;
+
+            for (Asistencia asistencia : lista) {
+
+                if (asistencia.getDocente() != null
+                        && asistencia.getTurno() != null
+                        && asistencia.getJornada() != null
+                        && docenteId.equals(
+                                asistencia.getDocente().getId())
+                        && turnoId.equals(
+                                asistencia.getTurno().getId())
+                        && jornadaId.equals(
+                                asistencia.getJornada().getId())) {
+
+                    asistenciaEncontrada = asistencia;
+                    break;
+                }
+            }
+            
+
+            if (asistenciaEncontrada == null
+                    || asistenciaEncontrada.getHoraIngreso() == null) {
+
+                sinFirmaTotal++;
+
+            } else if (asistenciaEncontrada.getHoraEgreso() == null) {
+
+                sinEgreso++;
+
+            } else {
+
+                presentes++;
+            }
+        }
+    }
+
+    // ======================================
+    // Estadísticas de asistencia
+    // ======================================
 
     dto.setPresentes(presentes);
-
     dto.setSinEgreso(sinEgreso);
-
     dto.setSinFirmaTotal(sinFirmaTotal);
+
 
     // ======================================
     // Institucionales
@@ -969,149 +1065,128 @@ long sinFirmaTotal =
 
     dto.setAsignacionesVigentes(
             docenteTurnoRepository.countByActivoTrue());
-    
+
     // ======================================
-// Docentes asignados al turno de la jornada
-// ======================================
+    // Porcentaje de asistencia
+    // ======================================
 
-long docentesAsignados = 0;
+    if (docentesAsignados == 0) {
 
+        dto.setPorcentajeAsistencia(0.0);
 
-Optional<Jornada> jornadaOpt =
-        jornadaRepository.findFirstByFecha(fecha);
+    } else {
 
-
-List<Jornada> jornadas =
-        jornadaRepository.findByFecha(fecha);
-
-for (Jornada jornada : jornadas) {
-
-    if (Boolean.TRUE.equals(jornada.getHabilitada())) {
-
-        long cantidad = docenteTurnoRepository
-                .findActivosPorTurnoYFecha(
-                        jornada.getTurno().getId(),
-                        fecha)
-                .size();
-
-        docentesAsignados += cantidad;
-
-        System.out.println(
-                "Turno: "
-                        + jornada.getTurno().getNombre()
-                        + " -> "
-                        + cantidad
-                        + " docentes");
+        dto.setPorcentajeAsistencia(
+                (presentes * 100.0)
+                        / docentesAsignados
+        );
     }
-}
-
-if (jornadaOpt.isPresent()) {
-
-    Jornada jornada = jornadaOpt.get();
-
-
-List<DocenteTurno> asignados =
-        docenteTurnoRepository.findActivosPorTurnoYFecha(
-                jornada.getTurno().getId(),
-                fecha);
-
-
-
-docentesAsignados = asignados.size();
-
-}
 
     // ======================================
-    // Porcentaje asistencia
+    // Actividad registrada
     // ======================================
-if (docentesAsignados == 0) {
 
-    dto.setPorcentajeAsistencia(0.0);
+    dto.setActividadRegistrada(
+            presentes
+                    + sinEgreso
+                    + sinFirmaTotal
+    );
 
-} else {
+    System.out.println("=================================");
+    System.out.println("SALGO DE OBTENER ESTADISTICAS");
+    System.out.println("Fecha: " + fecha);
+    System.out.println("Jornadas encontradas: " + jornadas.size());
+    System.out.println("Docentes asignados: " + docentesAsignados);
+    System.out.println("Presentes: " + presentes);
+    System.out.println("Sin egreso: " + sinEgreso);
+    System.out.println("Sin firma total: " + sinFirmaTotal);
+    System.out.println("Porcentaje: " + dto.getPorcentajeAsistencia());
+    System.out.println("Actividad registrada: "
+            + dto.getActividadRegistrada());
+    System.out.println("=================================");
 
-    dto.setPorcentajeAsistencia(
-
-            (presentes * 100.0)
-
-                    / docentesAsignados);
-
-}
-dto.setActividadRegistrada(
-
-        presentes
-      + sinEgreso
-      + sinFirmaTotal
-
-);
-
-
-System.out.println("=================================");
-System.out.println("SALGO DE OBTENER ESTADISTICAS");
     return dto;
-
 }
 
-public EstadoGeneralJornadaDTO obtenerEstadoGeneralJornada(LocalDate fecha) {
+
+public EstadoGeneralJornadaDTO obtenerEstadoGeneralJornada(
+        LocalDate fecha) {
 
     EstadoGeneralJornadaDTO dto =
             new EstadoGeneralJornadaDTO();
 
-    // Reutilizamos las estadísticas existentes
-    EstadisticasDTO est =
-            obtenerEstadisticas(fecha);
-
-    long actividad =
-            est.getActividadRegistrada();
-
     // ==========================================
-    // Sin actividad
+    // Verificar jornadas cerradas
     // ==========================================
 
-    if (actividad == 0) {
+    boolean tieneJornadaCerrada =
+            jornadaRepository.findByFecha(fecha)
+                    .stream()
+                    .anyMatch(j ->
+                            Boolean.TRUE.equals(j.getCerrada()));
+
+    if (!tieneJornadaCerrada) {
 
         dto.setPuntaje(0);
-        dto.setEstado("SIN ACTIVIDAD");
+        dto.setRegistrosCompletos(0);
+        dto.setRegistrosIniciados(0);
+        dto.setEstado("SIN DATOS DEFINITIVOS");
         dto.setDescripcion(
-                "No existen registros para la fecha seleccionada.");
+                "No existen jornadas cerradas para la fecha seleccionada.");
 
         return dto;
     }
 
     // ==========================================
-    // Calidad del Registro Diario
-    //
-    // Se evalúa únicamente sobre los docentes
-    // que iniciaron un registro de asistencia.
+    // Estadísticas de jornadas cerradas
     // ==========================================
 
+    EstadisticasDTO est =
+            obtenerEstadisticas(fecha);
+
     long registrosIniciados =
-            est.getPresentes()
-          + est.getSinEgreso();
-    
-    dto.setRegistrosCompletos(
-        est.getPresentes());
+            est.getPresentes() + est.getSinEgreso();
 
-    dto.setRegistrosIniciados(
-        registrosIniciados);
+    long registrosCompletos =
+            est.getPresentes();
 
-    int puntaje;
+    dto.setRegistrosCompletos(registrosCompletos);
+    dto.setRegistrosIniciados(registrosIniciados);
+
+    // ==========================================
+    // Sin registros iniciados
+    // ==========================================
 
     if (registrosIniciados == 0) {
 
-        puntaje = 0;
+        dto.setPuntaje(0);
+        dto.setEstado("SIN REGISTROS INICIADOS");
 
-    } else {
+        if (est.getSinFirmaTotal() > 0) {
 
-        puntaje = (int) Math.round(
+            dto.setDescripcion(
+                    "Existen docentes asignados sin firma de asistencia. "
+                    + "No es posible evaluar la calidad de finalización "
+                    + "porque ningún docente inició su registro.");
 
-                (est.getPresentes() * 100.0)
+        } else {
 
-                / registrosIniciados
+            dto.setDescripcion(
+                    "La jornada está cerrada, pero no existen "
+                    + "asignaciones docentes para evaluar.");
+        }
 
-        );
-
+        return dto;
     }
+
+    // ==========================================
+    // Calidad de registros iniciados
+    // ==========================================
+
+    int puntaje = (int) Math.round(
+            registrosCompletos * 100.0
+            / registrosIniciados
+    );
 
     dto.setPuntaje(puntaje);
 
@@ -1119,38 +1194,45 @@ public EstadoGeneralJornadaDTO obtenerEstadoGeneralJornada(LocalDate fecha) {
     // Clasificación
     // ==========================================
 
-    if (puntaje >= 90) {
+    if (puntaje == 100) {
 
         dto.setEstado("EXCELENTE");
-
         dto.setDescripcion(
-                "La calidad del registro diario es excelente. Todos los registros iniciados fueron completados correctamente.");
+                "Todos los registros de asistencia iniciados "
+                + "fueron completados con ingreso y egreso.");
+
+    } else if (puntaje >= 90) {
+
+        dto.setEstado("EXCELENTE");
+        dto.setDescripcion(
+                "La calidad de finalización de los registros "
+                + "iniciados es excelente, aunque existen "
+                + "algunos registros pendientes de egreso.");
 
     } else if (puntaje >= 75) {
 
         dto.setEstado("BUENO");
-
         dto.setDescripcion(
-                "La mayoría de los registros iniciados fueron completados correctamente.");
+                "La mayoría de los registros iniciados "
+                + "fueron completados correctamente.");
 
     } else if (puntaje >= 60) {
 
         dto.setEstado("REGULAR");
-
         dto.setDescripcion(
-                "Se detectan varios registros iniciados sin egreso. Se recomienda revisar la jornada.");
+                "Se identificaron registros iniciados "
+                + "que quedaron sin egreso.");
 
     } else {
 
         dto.setEstado("CRÍTICO");
-
         dto.setDescripcion(
-                "La mayoría de los registros iniciados quedaron incompletos. Se recomienda realizar seguimiento administrativo.");
-
+                "Una proporción importante de los registros "
+                + "iniciados quedó sin egreso. "
+                + "Se recomienda seguimiento administrativo.");
     }
 
     return dto;
-
 }
 
 public IndicadoresInstitucionalesDTO obtenerIndicadoresInstitucionales() {
@@ -1187,287 +1269,319 @@ public IndicadoresInstitucionalesDTO obtenerIndicadoresInstitucionales() {
     return dto;
 
 }
+
 public List<EvolucionAsistenciaDTO> obtenerEvolucion(
         LocalDate desde,
         LocalDate hasta) {
 
-    
-
-    List<Asistencia> asistencias =
-            asistenciaRepository.findByFechaBetweenOrderByFecha(
-                    desde,
-                    hasta);
-
     List<EvolucionAsistenciaDTO> resultado =
             new ArrayList<>();
 
-    for (LocalDate fecha = desde;
-         !fecha.isAfter(hasta);
-         fecha = fecha.plusDays(1)) {
+    List<Jornada> jornadasCerradas =
+            jornadaRepository.findAll()
+                    .stream()
+                    .filter(j ->
+                            Boolean.TRUE.equals(j.getCerrada())
+                            && !j.getFecha().isBefore(desde)
+                            && !j.getFecha().isAfter(hasta))
+                    .toList();
 
-        final LocalDate fechaActual = fecha;
+    List<LocalDate> fechasCerradas =
+            jornadasCerradas.stream()
+                    .map(Jornada::getFecha)
+                    .distinct()
+                    .sorted()
+                    .toList();
+
+    for (LocalDate fecha : fechasCerradas) {
+
+        EstadisticasDTO estadisticas =
+                obtenerEstadisticas(fecha);
 
         EvolucionAsistenciaDTO dto =
                 new EvolucionAsistenciaDTO();
 
-        dto.setFecha(fechaActual);
-
-        long presentes =
-                asistencias.stream()
-                        .filter(a ->
-                                a.getFecha().equals(fechaActual)
-                                &&
-                                a.getEstado() == EstadoAsistencia.PRESENTE)
-                        .count();
-
-        long sinEgreso =
-                asistencias.stream()
-                        .filter(a ->
-                                a.getFecha().equals(fechaActual)
-                                &&
-                                a.getEstado() == EstadoAsistencia.SIN_EGRESO)
-                        .count();
-
-        long sinFirma =
-                asistencias.stream()
-                        .filter(a ->
-                                a.getFecha().equals(fechaActual)
-                                &&
-                                a.getEstado() == EstadoAsistencia.SIN_FIRMA_TOTAL)
-                        .count();
-
-        dto.setPresentes(presentes);
-
-        dto.setSinEgreso(sinEgreso);
-
-        dto.setSinFirmaTotal(sinFirma);
+        dto.setFecha(fecha);
+        dto.setPresentes(estadisticas.getPresentes());
+        dto.setSinEgreso(estadisticas.getSinEgreso());
+        dto.setSinFirmaTotal(estadisticas.getSinFirmaTotal());
 
         resultado.add(dto);
-
     }
 
     return resultado;
-
 }
+
+
 public ResumenEjecutivoDTO obtenerResumenEjecutivo(LocalDate fecha) {
 
     ResumenEjecutivoDTO dto = new ResumenEjecutivoDTO();
-
     List<String> conclusiones = new ArrayList<>();
 
     // ==========================================
-    // Estadísticas del día seleccionado
+    // Verificar jornadas cerradas
+    // ==========================================
+
+    boolean tieneJornadaCerrada =
+            jornadaRepository.findByFecha(fecha)
+                    .stream()
+                    .anyMatch(j ->
+                            Boolean.TRUE.equals(j.getCerrada()));
+
+    if (!tieneJornadaCerrada) {
+
+        dto.setEstadoGeneral(
+                "Sin jornadas cerradas para la fecha seleccionada.");
+
+        dto.getTendencias().add(
+                "No es posible establecer una tendencia con datos no definitivos.");
+
+        dto.getObservaciones().add(
+                "La fecha no presenta jornadas cerradas.");
+
+        dto.getRecomendaciones().add(
+                "Consultar nuevamente cuando se hayan cerrado las jornadas.");
+
+        conclusiones.add(
+                "No existen datos definitivos de asistencia para esta fecha.");
+
+        dto.setConclusiones(conclusiones);
+        return dto;
+    }
+
+    // ==========================================
+    // Estadísticas del día
     // ==========================================
 
     EstadisticasDTO est = obtenerEstadisticas(fecha);
-    long actividad = est.getActividadRegistrada();
 
-if (actividad == 0) {
+    long total = est.getActividadRegistrada();
 
-    dto.setEstadoGeneral(
-            "⚪ Sin actividad registrada para la fecha seleccionada."
-    );
+    if (total == 0) {
 
-    dto.getTendencias().add(
-            "No es posible determinar una tendencia de asistencia debido a la ausencia de actividad."
-    );
+        dto.setEstadoGeneral(
+                "Jornada cerrada sin docentes asignados.");
 
-    dto.getObservaciones().add(
-            "No existen registros de asistencia para la fecha seleccionada."
-    );
-
-    dto.getRecomendaciones().add(
-            "Verificar si la ausencia de registros corresponde a una jornada sin actividad."
-    );
-
-    conclusiones.add(
-            "No existe actividad registrada para la fecha seleccionada."
-    );
-
-    dto.setConclusiones(conclusiones);
-
-    return dto;
-}
-
-    // ==========================================
-    // Evolución histórica (últimos 30 días)
-    // ==========================================
-
-    LocalDate desde = fecha.minusDays(29);
-
-    List<EvolucionAsistenciaDTO> evolucion =
-            obtenerEvolucion(desde, fecha);
-
-    double promedioPresentes =
-            evolucion.stream()
-                    .mapToLong(EvolucionAsistenciaDTO::getPresentes)
-                    .average()
-                    .orElse(0);
-
-    double promedioSinEgreso =
-            evolucion.stream()
-                    .mapToLong(EvolucionAsistenciaDTO::getSinEgreso)
-                    .average()
-                    .orElse(0);
-
-    double promedioSinFirma =
-            evolucion.stream()
-                    .mapToLong(EvolucionAsistenciaDTO::getSinFirmaTotal)
-                    .average()
-                    .orElse(0);
-
-    // ==========================================
-    // Indicadores porcentuales
-    // ==========================================
-
-    double completos =
-            (est.getPresentes() * 100.0) / actividad;
-
-    double pendientes =
-            (est.getSinEgreso() * 100.0) / actividad;
-
-    double sinFirma =
-            (est.getSinFirmaTotal() * 100.0) / actividad;
-
-    // ==========================================
-// Tendencias
-// ==========================================
-
-if (est.getPresentes() > promedioPresentes + 0.5) {
-
-    dto.getTendencias().add(
-            "📈 La asistencia fue superior al promedio de los últimos 30 días.");
-
-} else if (est.getPresentes() < promedioPresentes - 0.5) {
-
-    dto.getTendencias().add(
-            "📉 La asistencia fue inferior al promedio de los últimos 30 días.");
-
-} else {
-
-    dto.getTendencias().add(
-            "➖ La asistencia se mantuvo dentro del comportamiento habitual.");
-}
-
-// ==========================================
-// Observaciones
-// ==========================================
-
-if (est.getSinEgreso() > promedioSinEgreso + 0.5) {
-
-    dto.getObservaciones().add(
-            "⚠ La cantidad de pendientes de egreso supera el comportamiento habitual.");
-
-} else if (est.getSinEgreso() == 0) {
-
-    dto.getObservaciones().add(
-            "✔ No existen pendientes de egreso.");
-}    
-
-
-    // ==========================================
-// Observaciones
-// ==========================================
-
-if (est.getSinFirmaTotal() > promedioSinFirma + 0.5) {
-
-    dto.getObservaciones().add(
-            "🔴 La cantidad de registros sin firma supera el comportamiento habitual.");
-
-} else if (est.getSinFirmaTotal() == 0) {
-
-    dto.getObservaciones().add(
-            "✔ No existen registros sin firma.");
-}
-
-    // ==========================================
-    // Análisis porcentual de la jornada
-    // ==========================================
-
-    if (completos >= 90) {
+        dto.getObservaciones().add(
+                "No se identificaron asignaciones docentes vigentes para la jornada.");
 
         conclusiones.add(
-                "La jornada presenta un excelente nivel de registros completos.");
+                "No es posible calcular indicadores de asistencia sin docentes asignados.");
 
-    } else if (completos >= 70) {
+        dto.setConclusiones(conclusiones);
+        return dto;
+    }
 
-        conclusiones.add(
-                "La mayoría de los docentes registró correctamente ingreso y egreso.");
+    double porcentajeAsistencia =
+            est.getPorcentajeAsistencia();
+
+    double porcentajeSinEgreso =
+            est.getSinEgreso() * 100.0 / total;
+
+    double porcentajeSinFirma =
+            est.getSinFirmaTotal() * 100.0 / total;
+
+    // ==========================================
+    // Comparación histórica
+    // ==========================================
+
+    ComparacionHistoricaDTO comparacion =
+            obtenerComparacionHistorica(fecha);
+
+    String tendencia = comparacion.getTendencia();
+
+    if ("SUBE".equals(tendencia)) {
+
+        dto.getTendencias().add(
+                "La asistencia institucional supera el promedio histórico en "
+                + comparacion.getDiferencia()
+                + " puntos porcentuales.");
+
+    } else if ("BAJA".equals(tendencia)) {
+
+        dto.getTendencias().add(
+                "La asistencia institucional se encuentra por debajo del promedio histórico en "
+                + Math.abs(comparacion.getDiferencia())
+                + " puntos porcentuales.");
+
+    } else if ("ESTABLE".equals(tendencia)) {
+
+        dto.getTendencias().add(
+                "La asistencia institucional se mantiene próxima al promedio histórico.");
 
     } else {
 
-        conclusiones.add(
-                "Se observa una disminución en los registros completos de la jornada.");
+        dto.getTendencias().add(
+                "No existen datos suficientes para establecer una tendencia.");
     }
 
-   // ============================================
-// Recomendaciones
-// ============================================
+    // ==========================================
+    // Observaciones
+    // ==========================================
 
-if (pendientes > 30) {
+    if (est.getSinEgreso() > 0) {
 
-    dto.getRecomendaciones().add(
-            "Revisar el cierre de la jornada y solicitar el registro de egresos pendientes.");
+        dto.getObservaciones().add(
+                "Se identificaron "
+                + est.getSinEgreso()
+                + " registros con ingreso, pero sin egreso.");
 
-} else if (pendientes > 0) {
+    } else {
 
-    dto.getRecomendaciones().add(
-            "Controlar los registros de egreso antes del cierre de la jornada.");
+        dto.getObservaciones().add(
+                "No se identificaron registros pendientes de egreso.");
+    }
 
-}
+    if (est.getSinFirmaTotal() > 0) {
 
-   // ============================================
-// Recomendaciones
-// ============================================
+        dto.getObservaciones().add(
+                "Se identificaron "
+                + est.getSinFirmaTotal()
+                + " asignaciones docentes sin firma de asistencia.");
 
-if (sinFirma > 20) {
+    } else {
 
-    dto.getRecomendaciones().add(
-            "Verificar los docentes que aún no registraron asistencia y realizar el seguimiento correspondiente.");
+        dto.getObservaciones().add(
+                "No se identificaron asignaciones sin firma de asistencia.");
+    }
 
-}
+    // ==========================================
+    // Conclusiones
+    // ==========================================
 
-   // ==========================================
-// Estado general de la jornada
-// ==========================================
+    conclusiones.add(
+            String.format(
+                    java.util.Locale.forLanguageTag("es-AR"),
+                    "La asistencia institucional de las jornadas cerradas fue del %.1f%%.",
+                    porcentajeAsistencia));
 
-if (est.getSinFirmaTotal() == 0
-        && est.getSinEgreso() == 0
-        && est.getPresentes() >= promedioPresentes) {
+    conclusiones.add(
+            "Se registraron "
+            + est.getPresentes()
+            + " asistencias completas sobre "
+            + total
+            + " asignaciones docentes consideradas.");
 
-    dto.setEstadoGeneral(
-            "🟢 Jornada con funcionamiento excelente.");
+    if (porcentajeSinFirma > 0) {
 
-} else if (est.getSinFirmaTotal() <= 1
-        && est.getSinEgreso() <= 1) {
+        conclusiones.add(
+                "La principal situación a verificar es la existencia de docentes sin firma de asistencia.");
+    }
 
-    dto.setEstadoGeneral(
-            "🟡 Jornada con observaciones menores.");
+    // ==========================================
+    // Recomendaciones
+    // ==========================================
 
-} else {
+    if (porcentajeSinEgreso > 0) {
 
-    dto.setEstadoGeneral(
-            "🔴 Jornada que requiere seguimiento administrativo.");
+        dto.getRecomendaciones().add(
+                "Revisar administrativamente los registros que quedaron sin egreso.");
+    }
 
-}
+    if (porcentajeSinFirma > 0) {
+
+        dto.getRecomendaciones().add(
+                "Realizar el seguimiento de las asignaciones docentes sin firma.");
+    }
+
+    if (porcentajeSinEgreso == 0
+            && porcentajeSinFirma == 0) {
+
+        dto.getRecomendaciones().add(
+                "Mantener los procedimientos de registro y control de asistencia.");
+    }
+
+    // ==========================================
+    // Estado general
+    // ==========================================
+
+    if (porcentajeAsistencia >= 90) {
+
+        dto.setEstadoGeneral(
+                "Jornada cerrada con alto nivel de asistencia completa.");
+
+    } else if (porcentajeAsistencia >= 70) {
+
+        dto.setEstadoGeneral(
+                "Jornada cerrada con situaciones de asistencia a revisar.");
+
+    } else {
+
+        dto.setEstadoGeneral(
+                "Jornada cerrada que requiere seguimiento administrativo.");
+    }
 
     dto.setConclusiones(conclusiones);
+
     return dto;
-    
 }
 
-public ComparacionHistoricaDTO obtenerComparacionHistorica(LocalDate fecha) {
 
-    ComparacionHistoricaDTO dto = new ComparacionHistoricaDTO();
+
+public ComparacionHistoricaDTO obtenerComparacionHistorica(
+        LocalDate fecha) {
+
+    ComparacionHistoricaDTO dto =
+            new ComparacionHistoricaDTO();
+
+    // ==========================================
+    // Período histórico:
+    // 29 días anteriores a la fecha consultada
+    // ==========================================
 
     LocalDate desde = fecha.minusDays(29);
+    LocalDate hasta = fecha.minusDays(1);
 
     List<EvolucionAsistenciaDTO> evolucion =
-            obtenerEvolucion(desde, fecha);
+            obtenerEvolucion(desde, hasta);
 
-    if (evolucion.isEmpty()) {
+    // ==========================================
+    // Excluir jornadas sin asignaciones
+    // ==========================================
 
-        dto.setPromedioHistorico(0);
+    List<EvolucionAsistenciaDTO> diasValidos =
+            evolucion.stream()
+                    .filter(e ->
+                            e.getPresentes()
+                            + e.getSinEgreso()
+                            + e.getSinFirmaTotal() > 0)
+                    .toList();
+
+    // ==========================================
+    // Promedio histórico
+    // ==========================================
+
+    double promedio = diasValidos.stream()
+            .mapToDouble(e -> {
+
+                long total =
+                        e.getPresentes()
+                        + e.getSinEgreso()
+                        + e.getSinFirmaTotal();
+
+                return e.getPresentes()
+                        * 100.0 / total;
+
+            })
+            .average()
+            .orElse(0);
+
+    dto.setPromedioHistorico(
+            Math.round(promedio * 10.0) / 10.0
+    );
+
+    // ==========================================
+    // Comprobar jornada cerrada en fecha actual
+    // ==========================================
+
+    boolean tieneJornadaCerrada =
+            jornadaRepository.findByFecha(fecha)
+                    .stream()
+                    .anyMatch(j ->
+                            Boolean.TRUE.equals(j.getCerrada()));
+
+    if (!tieneJornadaCerrada) {
+
         dto.setValorActual(0);
         dto.setDiferencia(0);
         dto.setTendencia("SIN DATOS");
@@ -1475,102 +1589,88 @@ public ComparacionHistoricaDTO obtenerComparacionHistorica(LocalDate fecha) {
         return dto;
     }
 
-    // ==============================
-    // Promedio histórico
-    // ==============================
-
-    double promedio = evolucion.stream()
-
-            .mapToDouble(e -> {
-
-                long actividad =
-                        e.getPresentes()
-                      + e.getSinEgreso()
-                      + e.getSinFirmaTotal();
-
-                long iniciados =
-                        e.getPresentes()
-                      + e.getSinEgreso();
-
-                if (actividad == 0 || iniciados == 0) {
-                    return 0;
-                }
-
-                return (e.getPresentes() * 100.0) / iniciados;
-
-            })
-
-            .average()
-
-            .orElse(0);
-
-    // ==============================
-    // Día seleccionado
-    // ==============================
+    // ==========================================
+    // Estadísticas actuales
+    // ==========================================
 
     EstadisticasDTO est =
             obtenerEstadisticas(fecha);
 
-    long iniciados =
-            est.getPresentes()
-          + est.getSinEgreso();
+    if (est.getActividadRegistrada() == 0) {
 
-    double actual = 0;
+        dto.setValorActual(0);
+        dto.setDiferencia(0);
+        dto.setTendencia("SIN DATOS");
 
-    if (iniciados > 0) {
-
-        actual =
-                (est.getPresentes() * 100.0)
-                / iniciados;
-
+        return dto;
     }
 
-    // ==============================
-    // Diferencia
-    // ==============================
-
-    double diferencia =
-            actual - promedio;
-
-    dto.setPromedioHistorico(
-            Math.round(promedio * 10.0) / 10.0);
+    double actual =
+            est.getPorcentajeAsistencia();
 
     dto.setValorActual(
-            Math.round(actual * 10.0) / 10.0);
+            Math.round(actual * 10.0) / 10.0
+    );
+
+    // ==========================================
+    // Sin antecedentes históricos
+    // ==========================================
+
+    if (diasValidos.isEmpty()) {
+
+        dto.setDiferencia(0);
+        dto.setTendencia("SIN DATOS HISTÓRICOS");
+
+        return dto;
+    }
+
+    // ==========================================
+    // Comparación real
+    // ==========================================
+
+    double diferencia = actual - promedio;
 
     dto.setDiferencia(
-            Math.round(diferencia * 10.0) / 10.0);
+            Math.round(diferencia * 10.0) / 10.0
+    );
 
-    // ==============================
-    // Tendencia
-    // ==============================
+    if (diferencia > 3) {
 
-if (iniciados == 0) {
+        dto.setTendencia("SUBE");
 
-    dto.setTendencia("SIN ACTIVIDAD");
+    } else if (diferencia < -3) {
 
-} else if (diferencia > 3) {
+        dto.setTendencia("BAJA");
 
-    dto.setTendencia("SUBE");
+    } else {
 
-} else if (diferencia < -3) {
-
-    dto.setTendencia("BAJA");
-
-} else {
-
-    dto.setTendencia("ESTABLE");
-
-
+        dto.setTendencia("ESTABLE");
     }
 
     return dto;
-
 }
+
 public List<Asistencia> obtenerAsistenciasParaReporte(LocalDate fecha) {
 
-    return asistenciaRepository.findByFecha(fecha);
+    List<Jornada> jornadasCerradas =
+            jornadaRepository.findByFecha(fecha)
+                    .stream()
+                    .filter(jornada ->
+                            Boolean.TRUE.equals(jornada.getCerrada()))
+                    .toList();
 
+    List<Long> idsJornadasCerradas =
+            jornadasCerradas.stream()
+                    .map(Jornada::getId)
+                    .toList();
+
+    return asistenciaRepository.findByFecha(fecha)
+            .stream()
+            .filter(asistencia ->
+                    asistencia.getJornada() != null
+                    && idsJornadasCerradas.contains(
+                            asistencia.getJornada().getId()))
+            .toList();
 }
 public List<RankingAusenciasDTO> obtenerRankingAusencias(
         LocalDate desde,

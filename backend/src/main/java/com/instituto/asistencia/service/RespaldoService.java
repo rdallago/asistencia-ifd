@@ -40,11 +40,14 @@ public class RespaldoService {
     private String directorioBackup;
 
     private final AuditoriaRespaldoRepository auditoriaRepository;
+            private final ProcesoFactory procesoFactory;
+
     
 public RespaldoService(
-            AuditoriaRespaldoRepository auditoriaRepository) {
+            AuditoriaRespaldoRepository auditoriaRepository,ProcesoFactory procesoFactory) {
 
         this.auditoriaRepository = auditoriaRepository;
+        this.procesoFactory = procesoFactory;
     }
 
     public String obtenerRutaMysqldump() {
@@ -124,7 +127,9 @@ private void registrarAuditoria(
             System.out.println("[" + s + "]");
         }
 
-        Process proceso = processBuilder.start();
+        //Process proceso = processBuilder.start();
+        Process proceso =
+        procesoFactory.iniciar(processBuilder);
 
         // Escribir directamente el SQL al archivo
         try (
@@ -307,8 +312,9 @@ private void registrarAuditoria(
         }
 
 
+        //Process proceso =processBuilder.start();
         Process proceso =
-                processBuilder.start();
+        procesoFactory.iniciar(processBuilder);
 
 
         System.out.println(

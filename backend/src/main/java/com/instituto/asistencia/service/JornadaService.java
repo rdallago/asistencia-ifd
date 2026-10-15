@@ -2,7 +2,7 @@ package com.instituto.asistencia.service;
 import com.instituto.asistencia.entity.Jornada;
 import com.instituto.asistencia.entity.Turno;
 import com.instituto.asistencia.entity.Usuario;
-
+import org.springframework.transaction.annotation.Transactional;
 import com.instituto.asistencia.repository.JornadaRepository;
 import com.instituto.asistencia.repository.TurnoRepository;
 import com.instituto.asistencia.repository.UsuarioRepository;
@@ -21,19 +21,22 @@ public class JornadaService {
     private final TurnoRepository turnoRepository;
     private final AsistenciaService asistenciaService;
     private final AuditoriaRespaldoService auditoriaRespaldoService;
- 
+    private final CierreJornadaIndividualService cierreJornadaIndividualService;
+    
     public JornadaService(
         JornadaRepository jornadaRepository,
         UsuarioRepository usuarioRepository,
         TurnoRepository turnoRepository,
         AsistenciaService asistenciaService,
-        AuditoriaRespaldoService auditoriaRespaldoService) {
+        AuditoriaRespaldoService auditoriaRespaldoService,
+        CierreJornadaIndividualService cierreJornadaIndividualService) {
 
     this.jornadaRepository = jornadaRepository;
     this.usuarioRepository = usuarioRepository;
     this.turnoRepository = turnoRepository;
     this.asistenciaService = asistenciaService;
     this.auditoriaRespaldoService = auditoriaRespaldoService;
+    this.cierreJornadaIndividualService = cierreJornadaIndividualService;
 }
 
     // =====================================================
@@ -105,7 +108,7 @@ return guardada;
     // =====================================================
     // CERRAR JORNADA
     // =====================================================
-
+    @Transactional
     public Jornada cerrarJornada(
         Long usuarioId,
         Long turnoId,
@@ -171,7 +174,7 @@ return guardada;
 Jornada guardada =
         jornadaRepository.save(jornada);
 
-auditoriaRespaldoService.registrar(
+auditoriaRespaldoService.registrarEnTransaccion(
         usuario.getUsername(),
         "JORNADAS",
         "CIERRE",
@@ -227,41 +230,27 @@ return guardada;
     // =====================================================
     // CIERRE AUTOMATICO
     // =====================================================
-
+    
     public void cerrarJornadasPendientes() {
 
     LocalDate hoy = LocalDate.now();
 
     List<Jornada> pendientes =
-            jornadaRepository
-                    .findByHabilitadaTrueAndCerradaFalse();
+            jornadaRepository.findByHabilitadaTrueAndCerradaFalse();
 
     for (Jornada jornada : pendientes) {
 
         if (jornada.getFecha().isBefore(hoy)) {
 
-            jornada.setCerrada(true);
+            try {
+                cierreJornadaIndividualService.cerrar(jornada.getId());
 
-            jornada.setHabilitada(false);
-
-            jornada.setFechaCierre(
-                    LocalDateTime.now());
-
-            jornada.setCierreAutomatico(true);
-            Jornada guardada =
-        jornadaRepository.save(jornada);
-
-auditoriaRespaldoService.registrar(
-        "SISTEMA",
-        "JORNADAS",
-        "CIERRE_AUTOMATICO",
-        "EXITOSO",
-        null,
-        "Se cerró automáticamente la jornada del "
-                + guardada.getFecha()
-                + " - Turno "
-                + guardada.getTurno().getNombre()
-);
+            } catch (Exception e) {
+                System.err.println(
+                        "Error al cerrar automáticamente la jornada ID "
+                        + jornada.getId() + ": " + e.getMessage()
+                );
+            }
         }
     }
 }

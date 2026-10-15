@@ -156,33 +156,39 @@ return guardado;
     }
 
     // DESACTIVAR
-    public void desactivar(Long id) {
+public void desactivar(Long id) {
 
-        Turno turno = turnoRepository.findById(id)
-                .orElseThrow(() ->
-                        new RuntimeException("Turno no encontrado"));
-
-        validarDesactivacion(id);
-
-        turno.setActivo(false);
-
-        Authentication authentication =
-        SecurityContextHolder
-                .getContext()
-                .getAuthentication();
-
-String usuario = authentication.getName();
-
-auditoriaRespaldoService.registrar(
-        usuario,
-        "TURNOS",
-        "BAJA",
-        "EXITOSO",
-        null,
-        "Se desactivó el turno: "
-                + turno.getNombre()
-);
+    Turno turno = turnoRepository.findById(id)
+            .orElseThrow(() ->
+                    new RuntimeException("Turno no encontrado"));
+    
+     if (Boolean.FALSE.equals(turno.getActivo())) {
+        throw new RuntimeException("El turno ya está desactivado");
     }
+
+    validarDesactivacion(id);
+
+    turno.setActivo(false);
+
+    Turno guardado = turnoRepository.save(turno);
+
+    Authentication authentication =
+            SecurityContextHolder
+                    .getContext()
+                    .getAuthentication();
+
+    String usuario = authentication.getName();
+
+    auditoriaRespaldoService.registrar(
+            usuario,
+            "TURNOS",
+            "BAJA",
+            "EXITOSO",
+            null,
+            "Se desactivó el turno: "
+                    + guardado.getNombre()
+    );
+}
 
     // ACTIVAR
     public void activar(Long id) {
@@ -191,8 +197,13 @@ auditoriaRespaldoService.registrar(
                 .orElseThrow(() ->
                         new RuntimeException("Turno no encontrado"));
 
+         if (Boolean.TRUE.equals(turno.getActivo())) {
+        throw new RuntimeException("El turno ya está activo");
+    }
         turno.setActivo(true);
-
+        
+        turnoRepository.save(turno);
+        
         Authentication authentication =
         SecurityContextHolder
                 .getContext()

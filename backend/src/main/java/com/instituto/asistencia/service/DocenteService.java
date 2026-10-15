@@ -33,17 +33,7 @@ public DocenteService(
     public List<Docente> listarTodos() {
         return docenteRepository.findByActivoTrue();
     }
-
-    // ============================
-    // BUSCAR POR ID
-    // ============================
-
-   /* public Docente buscarPorId(Long id) {
-
-        return docenteRepository.findById(id)
-                .orElseThrow(() ->
-                        new RuntimeException("Docente no encontrado"));
-    }*/
+    
 
     // ============================
     // CREAR
@@ -137,19 +127,24 @@ String usuario = authentication.getName();
         Long id,
         Docente docenteActualizado) {
 
+    // 1. Buscar el docente que se quiere modificar
     Docente docente = buscarPorId(id);
 
+    // 2. Validar todos los datos nuevos
     validar(docenteActualizado);
 
+    // 3. Si cambia el DNI, verificar que no esté utilizado
     if (!docente.getDni().equals(docenteActualizado.getDni())) {
 
-        if (docenteRepository.existsByDni(docenteActualizado.getDni())) {
+        if (docenteRepository.existsByDni(
+                docenteActualizado.getDni())) {
 
             throw new RuntimeException(
                     "Ya existe un docente con ese DNI");
         }
     }
 
+    // 4. Actualizar los datos
     docente.setNombre(docenteActualizado.getNombre());
     docente.setApellido(docenteActualizado.getApellido());
     docente.setDni(docenteActualizado.getDni());
@@ -157,13 +152,16 @@ String usuario = authentication.getName();
     docente.setDireccion(docenteActualizado.getDireccion());
     docente.setTelefono(docenteActualizado.getTelefono());
     docente.setCorreo(docenteActualizado.getCorreo());
-    docente.setFechaNacimiento(docenteActualizado.getFechaNacimiento());
+    docente.setFechaNacimiento(
+            docenteActualizado.getFechaNacimiento()
+    );
     docente.setActivo(docenteActualizado.getActivo());
 
-    // Primero guardar
-    Docente guardado = docenteRepository.save(docente);
+    // 5. Guardar solamente si todas las validaciones fueron correctas
+    Docente guardado =
+            docenteRepository.save(docente);
 
-    // Obtener usuario logueado
+    // 6. Obtener usuario logueado
     Authentication authentication =
             SecurityContextHolder
                     .getContext()
@@ -171,7 +169,7 @@ String usuario = authentication.getName();
 
     String usuario = authentication.getName();
 
-    // Registrar auditoría
+    // 7. Registrar auditoría
     auditoriaRespaldoService.registrar(
             usuario,
             "DOCENTES",
@@ -193,6 +191,9 @@ String usuario = authentication.getName();
 public void eliminar(Long id) {
 
     Docente docente = buscarPorId(id);
+     if (!docente.getActivo()) {
+        throw new RuntimeException("El docente ya está eliminado");
+    }
 
     docente.setActivo(false);
 
@@ -222,66 +223,91 @@ public void eliminar(Long id) {
     // VALIDACIONES
     // ============================
 
-    private void validar(Docente docente) {
-    validarMayorEdad(docente.getFechaNacimiento());
-    
-    if (docente.getDni() == null ||
-    docente.getDni().trim().isEmpty()) {
+   private void validar(Docente docente) {
 
-    throw new RuntimeException(
-        "El DNI es obligatorio");
-}
-    
+    // =========================
+    // DNI
+    // =========================
+
+    if (docente.getDni() == null ||
+        docente.getDni().trim().isEmpty()) {
+
+        throw new RuntimeException(
+                "El DNI es obligatorio");
+    }
+
     if (!docente.getDni().matches("\\d{7,8}")) {
 
-    throw new RuntimeException(
-        "El DNI debe contener solo números y tener entre 7 y 8 dígitos"
-    );
-}
-        if (docente.getDni() == null ||
-                docente.getDni().trim().isEmpty()) {
-
-            throw new RuntimeException(
-                    "El DNI es obligatorio");
-        }
-
-        if (docente.getNombre() == null ||
-                docente.getNombre().trim().isEmpty()) {
-
-            throw new RuntimeException(
-                    "El nombre es obligatorio");
-        }
-
-        if (docente.getApellido() == null ||
-                docente.getApellido().trim().isEmpty()) {
-
-            throw new RuntimeException(
-                    "El apellido es obligatorio");
-        }
-
-        if (docente.getCargo() == null ||
-                docente.getCargo().trim().isEmpty()) {
-
-            throw new RuntimeException(
-                    "El cargo es obligatorio");
-        }
-        if (
-    docente.getDireccion() != null &&
-    docente.getDireccion().length() > 250
-) {
-
-    throw new RuntimeException(
-        "La dirección no puede superar los 250 caracteres"
-    );
-}
+        throw new RuntimeException(
+                "El DNI debe contener solo números y tener entre 7 y 8 dígitos");
     }
+
+
+    // =========================
+    // DATOS OBLIGATORIOS
+    // =========================
+
+    if (docente.getNombre() == null ||
+        docente.getNombre().trim().isEmpty()) {
+
+        throw new RuntimeException(
+                "El nombre es obligatorio");
+    }
+
+    if (docente.getApellido() == null ||
+        docente.getApellido().trim().isEmpty()) {
+
+        throw new RuntimeException(
+                "El apellido es obligatorio");
+    }
+
+    if (docente.getCargo() == null ||
+        docente.getCargo().trim().isEmpty()) {
+
+        throw new RuntimeException(
+                "El cargo es obligatorio");
+    }
+
+
+    // =========================
+    // DIRECCIÓN
+    // =========================
+
+    if (docente.getDireccion() != null &&
+        docente.getDireccion().length() > 250) {
+
+        throw new RuntimeException(
+                "La dirección no puede superar los 250 caracteres");
+    }
+
+
+    // =========================
+    // CORREO OPCIONAL
+    // =========================
+
+    if (docente.getCorreo() != null
+            && !docente.getCorreo().isBlank()
+            && !docente.getCorreo().matches(
+                "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$")) {
+
+        throw new RuntimeException(
+                "El correo no es válido");
+    }
+
+
+    // =========================
+    // FECHA DE NACIMIENTO
+    // =========================
+
+    validarMayorEdad(docente.getFechaNacimiento());
+}
     public Docente buscarPorId(Long id) {
     System.out.println("ID RECIBIDO: " + id);
 
     return docenteRepository.findById(id)
             .orElseThrow(() -> new RuntimeException("No existe docente ID: " + id));
 }
-    private void validarMayorEdad(LocalDate fechaNacimiento) {
+   private void validarMayorEdad(LocalDate fechaNacimiento) {
 
     if (fechaNacimiento == null) {
         throw new RuntimeException(
@@ -289,9 +315,19 @@ public void eliminar(Long id) {
         );
     }
 
+    LocalDate hoy = LocalDate.now();
+
+    // La fecha de nacimiento no puede ser futura
+    if (fechaNacimiento.isAfter(hoy)) {
+        throw new RuntimeException(
+            "La fecha de nacimiento no puede ser futura"
+        );
+    }
+
+    // Verificar que tenga al menos 18 años
     int edad = Period.between(
         fechaNacimiento,
-        LocalDate.now()
+        hoy
     ).getYears();
 
     if (edad < 18) {
